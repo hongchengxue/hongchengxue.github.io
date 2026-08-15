@@ -71,12 +71,14 @@
 }
 
 /* 滚动后导航变白底：搜索框文字切回深色 */
-#page-header.nav-fixed #nav-search-input {
+#page-header.nav-fixed #nav-search-input,
+#page-header.not-top-img #nav-search-input {
   color: #1f2637;
   text-shadow: none;
 }
 
-#page-header.nav-fixed #nav-search-input::placeholder {
+#page-header.nav-fixed #nav-search-input::placeholder,
+#page-header.not-top-img #nav-search-input::placeholder {
   color: #8f98a8;
 }
 
@@ -226,7 +228,8 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
-#page-header.nav-fixed #nav #about-nav {
+#page-header.nav-fixed #nav #about-nav,
+#page-header.not-top-img #nav #about-nav {
   color: #1f2637;
   text-shadow: none;
 }
@@ -271,7 +274,9 @@
 
 /* 文字统一：近白字 + 轻投影；导航固定变白底时切回深色字 */
 #page-header.nav-fixed #nav .menus_items .site-page,
-#page-header.nav-fixed #nav #lang-btn {
+#page-header.nav-fixed #nav #lang-btn,
+#page-header.not-top-img #nav .menus_items .site-page,
+#page-header.not-top-img #nav #lang-btn {
   color: #1f2637;
   text-shadow: none;
 }
@@ -399,6 +404,38 @@ html.about-aside #aside-content .card-categories {
 
 .card-cat-title-link:hover {
   color: #4285f4;
+}
+
+/* 当前页面指示 */
+#page-header #nav .menus_items .site-page.active {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.18));
+  box-shadow:
+    0 4px 16px rgba(31, 38, 55, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+#page-header #nav .menus_items .site-page.active::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 2px;
+  border-radius: 2px;
+  background: #4285f4;
+}
+
+#page-header #nav #about-nav.active {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.18));
+  box-shadow:
+    0 4px 16px rgba(31, 38, 55, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* 子页面无横幅时隐藏页面标题残留 */
+#page-header.not-top-img #page-site-info {
+  display: none;
 }
 
 /* 可点击的统计块 */
