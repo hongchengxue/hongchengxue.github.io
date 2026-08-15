@@ -76,6 +76,10 @@
       catHead.parentNode.replaceChild(a, catHead);
     }
 
+    // 最新文章卡标题改为"最近作品"
+    var rpHead = aside.querySelector('.card-recent-post .item-headline span');
+    if (rpHead) rpHead.textContent = '最近作品';
+
     if (document.getElementById('card-all-articles')) return;
 
     var card = document.createElement('div');

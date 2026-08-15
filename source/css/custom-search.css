@@ -375,10 +375,9 @@ html.hide-aside .layout > div:first-child {
   max-width: 900px;
 }
 
-/* "全部"页侧边栏：只保留分类卡（隐藏公告/归档/最近文章卡，标签卡已全局关闭） */
+/* "全部"页侧边栏：保留分类卡与最近作品卡（隐藏公告/归档卡，标签卡已全局关闭） */
 html.archives-aside #aside-content .card-announcement,
-html.archives-aside #aside-content .card-archives,
-html.archives-aside #aside-content .card-recent-post {
+html.archives-aside #aside-content .card-archives {
   display: none;
 }
 
