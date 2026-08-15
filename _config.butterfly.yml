@@ -1064,6 +1064,7 @@ inject:
   head:
     - <link rel="stylesheet" href="/css/custom-search.css">
   bottom:
+    - <script src="/js/nav-search.js"></script>
 
 # CDN Settings
 # Don't modify the following settings unless you know how they work
