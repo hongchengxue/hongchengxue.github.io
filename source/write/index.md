@@ -40,9 +40,15 @@ comments: false
       <div id="write-preview" class="write-preview"><div class="write-preview-empty">实时预览区：输入正文后自动渲染</div></div>
     </div>
     <div class="write-actions">
+      <button id="write-draft" type="button">暂存</button>
       <button id="write-save" type="button">发布 / 保存</button>
       <button id="write-new-btn" type="button">清空新建</button>
     </div>
+  </div>
+
+  <div class="write-card">
+    <div class="write-head2">📝 草稿箱（暂存内容不会上线）</div>
+    <ul id="write-drafts"></ul>
   </div>
 
   <div class="write-card">

@@ -1,8 +1,8 @@
 /* ============================================
-   写作台：站内写博客 / 管理文章
+   写作台：站内写博客 / 管理文章 / 草稿箱
+   - 暂存 → source/_drafts（不会上线）
+   - 发布 → source/_posts（自动构建上线）
    - 分类可选可新建（支持父子层级），Markdown 实时预览
-   - 通过 GitHub API 直接读写仓库里的 source/_posts
-   - 令牌仅存于本浏览器 localStorage，绝不写入代码
    ============================================ */
 (function () {
   'use strict';
@@ -13,6 +13,7 @@
   var token = null;
   var editingPath = null;
   var editingSha = null;
+  var editingDraft = false;
 
   var tokenInput = document.getElementById('write-token');
   var connectBtn = document.getElementById('write-connect');
@@ -26,6 +27,8 @@
   var contentEl = document.getElementById('write-content');
   var previewEl = document.getElementById('write-preview');
   var listEl = document.getElementById('write-list');
+  var draftsListEl = document.getElementById('write-drafts');
+  var draftBtn = document.getElementById('write-draft');
 
   var catPaths = [];
 
@@ -68,7 +71,7 @@
     });
   }
 
-  // ---------- 分类列表（来自 site-stats.json） ----------
+  // ---------- 分类列表 ----------
   function loadCatPaths() {
     fetch('/site-stats.json')
       .then(function (r) { return r.json(); })
@@ -94,7 +97,6 @@
     catNewRow.hidden = catSelect.value !== '__new__';
   });
 
-  // 计算最终分类路径（可能为父子层级字符串）
   function buildCategory() {
     var v = catSelect.value;
     if (v === '__new__') {
@@ -104,6 +106,36 @@
       return parent ? parent + '/' + name : name;
     }
     return v;
+  }
+
+  // 组装 front matter
+  function buildFm(title) {
+    var catPath = buildCategory();
+    var tags = tagsInput.value.split(/[,，]/).map(function (s) { return s.trim(); }).filter(Boolean);
+    var fm = '---\n' +
+      'title: ' + title + '\n' +
+      'date: ' + nowStr() + '\n';
+    if (catPath) {
+      var parts = catPath.split('/').filter(Boolean);
+      if (parts.length > 1) {
+        fm += 'categories:\n  - [' + parts.join(', ') + ']\n';
+      } else {
+        fm += 'categories:\n  - ' + parts[0] + '\n';
+      }
+    }
+    if (tags.length) {
+      fm += 'tags:\n';
+      tags.forEach(function (t) { fm += '  - ' + t + '\n'; });
+    }
+    fm += '---\n\n';
+    return fm;
+  }
+
+  // ---------- 模式界面 ----------
+  function updateModeUI() {
+    // 编辑已发布文章时隐藏"暂存"
+    draftBtn.hidden = !!editingPath && !editingDraft;
+    if (editingDraft) setHint('草稿模式：暂存不会上线，发布后才会出现在网站', true);
   }
 
   // ---------- 连接 ----------
@@ -125,34 +157,60 @@
 
   loadCatPaths();
 
-  // ---------- 文章列表 ----------
+  // ---------- 列表 ----------
   function loadList() {
     setHint('正在加载文章列表…', true);
+
+    // 草稿箱
+    api('source/_drafts')
+      .then(function (files) {
+        var drafts = files.filter(function (f) { return /\.md$/.test(f.name); });
+        drafts.sort(function (a, b) { return b.name.localeCompare(a.name); });
+        draftsListEl.innerHTML = drafts.length
+          ? drafts.map(function (f) {
+            return '<li class="write-item">' +
+              '<span class="write-item-name">' + f.name + '</span>' +
+              '<span class="write-item-actions">' +
+              '<button data-act="edit-draft" data-path="' + f.path + '">继续写</button>' +
+              '<button data-act="pub-draft" data-path="' + f.path + '">发布</button>' +
+              '<button data-act="del-draft" data-path="' + f.path + '">删除</button>' +
+              '</span></li>';
+          }).join('')
+          : '<li class="write-item"><span class="write-item-name">暂无草稿</span></li>';
+      })
+      .catch(function () {
+        draftsListEl.innerHTML = '<li class="write-item"><span class="write-item-name">暂无草稿</span></li>';
+      });
+
+    // 已发布
     api('source/_posts')
       .then(function (files) {
-        setHint('已连接 ✅ 共 ' + files.length + ' 篇文章', true);
+        setHint('已连接 ✅', true);
         var posts = files.filter(function (f) { return /\.md$/.test(f.name); });
         posts.sort(function (a, b) { return b.name.localeCompare(a.name); });
-        listEl.innerHTML = posts.map(function (f) {
-          return '<li class="write-item">' +
-            '<span class="write-item-name">' + f.name + '</span>' +
-            '<span class="write-item-actions">' +
-            '<button data-act="edit" data-path="' + f.path + '">编辑</button>' +
-            '<button data-act="del" data-path="' + f.path + '">删除</button>' +
-            '</span></li>';
-        }).join('');
+        listEl.innerHTML = posts.length
+          ? posts.map(function (f) {
+            return '<li class="write-item">' +
+              '<span class="write-item-name">' + f.name + '</span>' +
+              '<span class="write-item-actions">' +
+              '<button data-act="edit" data-path="' + f.path + '">编辑</button>' +
+              '<button data-act="del" data-path="' + f.path + '">删除</button>' +
+              '</span></li>';
+          }).join('')
+          : '<li class="write-item"><span class="write-item-name">暂无文章</span></li>';
       })
       .catch(function (e) {
         setHint('连接失败：' + e.message + '（检查令牌是否有 Contents 读写权限）', false);
       });
   }
 
+  // 已发布列表
   listEl.addEventListener('click', function (e) {
     var btn = e.target.closest('button');
     if (!btn) return;
     var path = btn.getAttribute('data-path');
     if (btn.getAttribute('data-act') === 'edit') {
-      loadPost(path);
+      loadPost(path, false);
     } else {
       if (!confirm('确定删除 ' + path + ' ？')) return;
       api(path, { method: 'GET' }).then(function (meta) {
@@ -167,17 +225,63 @@
     }
   });
 
-  function loadPost(path) {
+  // 草稿列表
+  draftsListEl.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    var path = btn.getAttribute('data-path');
+    var act = btn.getAttribute('data-act');
+    if (act === 'edit-draft') {
+      loadPost(path, true);
+    } else if (act === 'del-draft') {
+      if (!confirm('确定删除草稿 ' + path + ' ？')) return;
+      api(path, { method: 'GET' }).then(function (meta) {
+        return api(path, {
+          method: 'DELETE',
+          body: JSON.stringify({ message: 'delete draft: ' + path, sha: meta.sha })
+        });
+      }).then(function () {
+        setHint('草稿已删除', true);
+        loadList();
+      }).catch(function (err) { setHint('删除失败：' + err.message, false); });
+    } else if (act === 'pub-draft') {
+      publishDraft(path);
+    }
+  });
+
+  function publishDraft(path) {
+    if (!token) { setHint('请先粘贴令牌并连接', false); return; }
+    setHint('正在发布草稿…', true);
+    api(path, { method: 'GET' }).then(function (meta) {
+      var content = meta.content; // base64 原样搬移
+      var target = 'source/_posts/' + path.replace(/^source\/_drafts\//, '');
+      return api(target, {
+        method: 'PUT',
+        body: JSON.stringify({ message: 'post: publish draft', content: content })
+      }).then(function () {
+        return api(path, {
+          method: 'DELETE',
+          body: JSON.stringify({ message: 'publish draft: ' + path, sha: meta.sha })
+        });
+      });
+    }).then(function () {
+      setHint('✅ 草稿已发布！约 2 分钟后上线', true);
+      newPost();
+      loadList();
+    }).catch(function (err) { setHint('发布失败：' + err.message, false); });
+  }
+
+  function loadPost(path, isDraft) {
     api(path, { method: 'GET' }).then(function (meta) {
       editingPath = path;
       editingSha = meta.sha;
+      editingDraft = !!isDraft;
       var raw = b64decode(meta.content);
       var m = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
       var fm = m ? m[1] : '';
       var titleM = fm.match(/^title:\s*(.+)$/m);
       titleInput.value = titleM ? titleM[1].trim() : '';
 
-      // 解析分类（支持 - a 与 - [a, b] 两种写法）
       var catPath = '';
       var catBlock = /^categories:([\s\S]*?)(?=^\S|\z)/m.exec(fm);
       if (catBlock) {
@@ -202,14 +306,15 @@
       tagsInput.value = tagList.join(', ');
       contentEl.value = m ? raw.slice(m[0].length) : raw;
       renderPreview();
-      setHint('正在编辑：' + path + '（保存后自动发布）', true);
+      updateModeUI();
+      setHint((isDraft ? '正在编辑草稿：' : '正在编辑：') + path, true);
     }).catch(function (err) { setHint('读取失败：' + err.message, false); });
   }
 
-  // ---------- 新建 ----------
-  document.getElementById('write-new-btn').addEventListener('click', function () {
+  function newPost() {
     editingPath = null;
     editingSha = null;
+    editingDraft = false;
     titleInput.value = '';
     catSelect.value = '';
     catNewRow.hidden = true;
@@ -217,8 +322,11 @@
     tagsInput.value = '';
     contentEl.value = '';
     renderPreview();
+    updateModeUI();
     setHint('新建文章模式', true);
-  });
+  }
+
+  document.getElementById('write-new-btn').addEventListener('click', newPost);
 
   // ---------- 实时预览 ----------
   var markedReady = false;
@@ -256,53 +364,86 @@
 
   loadMarked();
 
+  // ---------- 暂存 ----------
+  draftBtn.addEventListener('click', function () {
+    if (!token) { setHint('请先粘贴令牌并连接', false); return; }
+    var title = titleInput.value.trim();
+    if (!title) { setHint('请填写文章标题', false); return; }
+    var content = b64encode(buildFm(title) + contentEl.value);
+
+    if (editingPath && editingDraft) {
+      api(editingPath, { method: 'GET' }).then(function (m) {
+        return api(editingPath, {
+          method: 'PUT',
+          body: JSON.stringify({ message: 'draft: ' + title, content: content, sha: m.sha })
+        });
+      }).then(function () {
+        setHint('✅ 草稿已更新（未上线）', true);
+        loadList();
+      }).catch(function (err) { setHint('暂存失败：' + err.message, false); });
+    } else if (editingPath && !editingDraft) {
+      return; // 已发布文章不提供暂存（按钮已隐藏）
+    } else {
+      var dpath = 'source/_drafts/' + nowStr().slice(0, 10) + '-' + slugify(title) + '.md';
+      api(dpath, {
+        method: 'PUT',
+        body: JSON.stringify({ message: 'draft: ' + title, content: content })
+      }).then(function () {
+        editingPath = dpath;
+        editingDraft = true;
+        updateModeUI();
+        setHint('✅ 已暂存到草稿箱（不会上线），可继续写或点"发布"', true);
+        loadList();
+      }).catch(function (err) { setHint('暂存失败：' + err.message, false); });
+    }
+  });
+
   // ---------- 发布 / 保存 ----------
   document.getElementById('write-save').addEventListener('click', function () {
     if (!token) { setHint('请先粘贴令牌并连接', false); return; }
     var title = titleInput.value.trim();
     if (!title) { setHint('请填写文章标题', false); return; }
-    var catPath = buildCategory();
-    var tags = tagsInput.value.split(/[,，]/).map(function (s) { return s.trim(); }).filter(Boolean);
+    var content = b64encode(buildFm(title) + contentEl.value);
 
-    var fm = '---\n' +
-      'title: ' + title + '\n' +
-      'date: ' + nowStr() + '\n';
-    if (catPath) {
-      var parts = catPath.split('/').filter(Boolean);
-      if (parts.length > 1) {
-        fm += 'categories:\n  - [' + parts.join(', ') + ']\n';
-      } else {
-        fm += 'categories:\n  - ' + parts[0] + '\n';
-      }
-    }
-    if (tags.length) {
-      fm += 'tags:\n';
-      tags.forEach(function (t) { fm += '  - ' + t + '\n'; });
-    }
-    fm += '---\n\n';
-
-    var path;
-    if (editingPath) {
-      path = editingPath;
-    } else {
-      path = 'source/_posts/' + nowStr().slice(0, 10) + '-' + slugify(title) + '.md';
+    if (editingDraft && editingPath) {
+      // 草稿转正：建 post 文件 → 删草稿
+      var target = 'source/_posts/' + editingPath.replace(/^source\/_drafts\//, '');
+      setHint('正在发布草稿…', true);
+      api(target, {
+        method: 'PUT',
+        body: JSON.stringify({ message: 'post: ' + title, content: content })
+      }).then(function () {
+        return api(editingPath, { method: 'GET' }).then(function (m) {
+          return api(editingPath, {
+            method: 'DELETE',
+            body: JSON.stringify({ message: 'publish: ' + title, sha: m.sha })
+          });
+        });
+      }).then(function () {
+        setHint('✅ 已发布！约 2 分钟后上线', true);
+        newPost();
+        loadList();
+      }).catch(function (err) { setHint('发布失败：' + err.message, false); });
+      return;
     }
 
+    var path = editingPath || ('source/_posts/' + nowStr().slice(0, 10) + '-' + slugify(title) + '.md');
     var body = {
       message: (editingPath ? 'update: ' : 'post: ') + title,
-      content: b64encode(fm + contentEl.value)
+      content: content
     };
-    if (editingSha) body.sha = editingSha;
+    if (editingSha && editingPath) body.sha = editingSha;
 
     setHint('正在保存…', true);
     api(path, { method: 'PUT', body: JSON.stringify(body) })
       .then(function () {
-        setHint('✅ 已保存！约 2 分钟后自动发布到网站（可去 Actions 页看构建进度）', true);
-        editingPath = null;
-        editingSha = null;
+        setHint('✅ 已保存！约 2 分钟后自动发布到网站', true);
+        newPost();
         loadList();
         loadCatPaths();
       })
       .catch(function (err) { setHint('保存失败：' + err.message, false); });
   });
+
+  updateModeUI();
 })();
