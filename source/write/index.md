@@ -19,11 +19,14 @@ comments: false
     <div class="write-row">
       <input id="write-title" placeholder="文章标题" autocomplete="off">
       <div class="write-cat-box">
-        <input id="write-cat" placeholder="分类：点击选择或直接输入，用 / 建子分类（如 生活随笔/旅行）" autocomplete="off">
+        <input id="write-cat" placeholder="分类：点击选择，或用 / 直接输入（如 技术文章/AI）" autocomplete="off">
         <div id="write-cat-panel" class="write-cat-panel">
-          <div class="write-cat-panel-head">已有分类（点击选择）</div>
+          <div class="write-cat-panel-head">已有分类（▾ 可展开，点击名称选择）</div>
           <div id="write-cat-options"></div>
-          <div class="write-cat-panel-new">💡 直接输入新分类名即可新建；用 / 分隔表示子分类</div>
+          <div class="write-cat-new-row">
+            <input id="write-cat-new-input" placeholder="新建分类：直接输入，用 / 建子分类" autocomplete="off">
+            <button id="write-cat-new-btn" type="button">选择</button>
+          </div>
         </div>
       </div>
       <input id="write-tags" placeholder="标签（逗号分隔，如：Hexo,教程）" autocomplete="off">

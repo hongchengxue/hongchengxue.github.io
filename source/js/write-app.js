@@ -74,17 +74,64 @@
     });
   }
 
-  // ---------- 分类面板 ----------
+  // ---------- 分类折叠树面板 ----------
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  }
+
+  function buildTree(paths) {
+    var root = {};
+    paths.forEach(function (p) {
+      var node = root;
+      p.split('/').filter(Boolean).forEach(function (part) {
+        if (!node[part]) node[part] = {};
+        node = node[part];
+      });
+    });
+    return root;
+  }
+
+  function renderTree(node, prefix) {
+    var html = '';
+    Object.keys(node).sort().forEach(function (name) {
+      var full = prefix ? prefix + '/' + name : name;
+      var children = Object.keys(node[name]);
+      if (children.length) {
+        html += '<div class="write-cat-node">' +
+          '<div class="write-cat-branch">' +
+          '<span class="write-cat-caret" data-fold="' + esc(full) + '">▾</span>' +
+          '<span class="write-cat-branch-name" data-v="' + esc(full) + '">' + name + '</span>' +
+          '</div>' +
+          '<div class="write-cat-children" data-parent="' + esc(full) + '">' +
+          renderTree(node[name], full) +
+          '</div></div>';
+      } else {
+        html += '<div class="write-cat-option" data-v="' + esc(full) + '">' + name + '</div>';
+      }
+    });
+    return html;
+  }
+
+  function renderCatPanel() {
+    catOptions.innerHTML = catPaths.length
+      ? renderTree(buildTree(catPaths), '')
+      : '<div class="write-cat-none">暂无已有分类</div>';
+  }
+
+  function addCatPath(path) {
+    if (path && catPaths.indexOf(path) < 0) {
+      catPaths.push(path);
+      catPaths.sort();
+      renderCatPanel();
+    }
+  }
+
   function loadCatPaths() {
     fetch('/site-stats.json')
       .then(function (r) { return r.json(); })
       .then(function (d) {
         catPaths = d.catPaths || [];
-        catOptions.innerHTML = catPaths.length
-          ? catPaths.map(function (p) {
-            return '<div class="write-cat-option" data-v="' + p.replace(/"/g, '&quot;') + '">' + p + '</div>';
-          }).join('')
-          : '<div class="write-cat-none">暂无已有分类</div>';
+        renderCatPanel();
       })
       .catch(function () {});
   }
@@ -99,13 +146,34 @@
   catInput.addEventListener('focus', openCatPanel);
   catInput.addEventListener('click', openCatPanel);
   catOptions.addEventListener('click', function (e) {
-    var opt = e.target.closest('.write-cat-option');
-    if (!opt) return;
-    catInput.value = opt.getAttribute('data-v');
-    closeCatPanel();
+    var caret = e.target.closest('.write-cat-caret');
+    if (caret) {
+      var foldKey = caret.getAttribute('data-fold');
+      var box = catOptions.querySelector('.write-cat-children[data-parent="' + foldKey + '"]');
+      if (box) {
+        var collapsed = box.classList.toggle('folded');
+        caret.textContent = collapsed ? '▸' : '▾';
+      }
+      return;
+    }
+    var sel = e.target.closest('.write-cat-branch-name, .write-cat-option');
+    if (sel) {
+      catInput.value = sel.getAttribute('data-v');
+      closeCatPanel();
+    }
   });
   document.addEventListener('click', function (e) {
     if (!e.target.closest('.write-cat-box')) closeCatPanel();
+  });
+
+  // 新建分类：直接输入，用 / 表示子分类
+  document.getElementById('write-cat-new-btn').addEventListener('click', function () {
+    var v = document.getElementById('write-cat-new-input').value.trim();
+    if (!v) return;
+    catInput.value = v;
+    addCatPath(v);
+    document.getElementById('write-cat-new-input').value = '';
+    closeCatPanel();
   });
 
   function buildCategory() {
@@ -519,11 +587,12 @@
     setHint('正在保存…', true);
     api(path, { method: 'PUT', body: JSON.stringify(body) })
       .then(function () {
+        var cat = buildCategory();
         setHint('✅ 已保存！', true);
         trackBuild();
         newPost();
+        if (cat) addCatPath(cat);
         loadList();
-        loadCatPaths();
       })
       .catch(function (err) { setHint('保存失败：' + err.message, false); });
   });

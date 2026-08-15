@@ -952,8 +952,44 @@ html.about-aside #aside-content .card-categories {
   font-size: 0.78rem;
 }
 
+/* 分类折叠树 */
+.write-cat-branch {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.write-cat-branch:hover {
+  background: rgba(66, 133, 244, 0.08);
+}
+
+.write-cat-caret {
+  color: #9aa3b2;
+  font-size: 0.72rem;
+  width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.write-cat-branch-name {
+  color: #1f2637;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.write-cat-children {
+  padding-left: 18px;
+}
+
+.write-cat-children.folded {
+  display: none;
+}
+
 .write-cat-option {
-  padding: 8px 12px;
+  padding: 7px 8px 7px 32px;
   border-radius: 9px;
   color: #1f2637;
   font-size: 0.9rem;
@@ -970,16 +1006,40 @@ html.about-aside #aside-content .card-categories {
   font-size: 0.88rem;
 }
 
-.write-cat-panel-new {
-  margin-top: 8px;
-  padding-top: 8px;
+/* 新建分类行 */
+.write-cat-new-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px dashed rgba(31, 38, 55, 0.1);
-  color: #4285f4;
-  font-size: 0.8rem;
+}
+
+.write-cat-new-row input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid rgba(31, 38, 55, 0.12);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #1f2637;
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.write-cat-new-row button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #4285f4, #2f6fe0);
+  color: #fff;
+  font-size: 0.86rem;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .write-item-time {
   flex-shrink: 0;
+  margin-left: auto;
   color: #9aa3b2;
   font-size: 0.75rem;
 }
