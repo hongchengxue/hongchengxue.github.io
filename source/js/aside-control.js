@@ -18,6 +18,11 @@
     return p === '/archives/' || p === '/archives' || p.indexOf('/archives/') === 0;
   }
 
+  function isPost() {
+    var bw = document.getElementById('body-wrap');
+    return !!(bw && bw.classList.contains('post'));
+  }
+
   // ---------- 折叠列表渲染 ----------
   function buildTree(data) {
     var byYear = {};
@@ -113,10 +118,11 @@
 
   function sync() {
     var html = document.documentElement;
-    var show = isAbout() || isArchives();
+    var show = isAbout() || isArchives() || isPost();
     html.classList.toggle('hide-aside', !show);
     html.classList.toggle('about-aside', isAbout());
     html.classList.toggle('archives-aside', isArchives());
+    html.classList.toggle('post-aside', isPost());
     if (isArchives()) injectArchivesWidget();
   }
 

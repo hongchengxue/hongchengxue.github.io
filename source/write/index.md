@@ -19,21 +19,10 @@ comments: false
     <div class="write-row">
       <input id="write-title" placeholder="文章标题" autocomplete="off">
       <div class="write-cat-box">
-        <select id="write-cat-select">
-          <option value="">— 分类（可选） —</option>
-          <option value="__new__">＋ 新建分类…</option>
-        </select>
+        <input id="write-cat" list="write-cat-list" placeholder="分类：已有可选，用 / 建子分类（如 生活随笔/旅行）" autocomplete="off">
+        <datalist id="write-cat-list"></datalist>
       </div>
       <input id="write-tags" placeholder="标签（逗号分隔，如：Hexo,教程）" autocomplete="off">
-    </div>
-    <div class="write-row" id="write-cat-new" hidden>
-      <div class="write-cat-box">
-        <select id="write-cat-parent">
-          <option value="">无父级（顶级分类）</option>
-        </select>
-      </div>
-      <input id="write-cat-name" placeholder="新分类名（如：旅行）" autocomplete="off">
-      <span class="write-cat-tip">选择已有分类作为父级即创建子分类</span>
     </div>
     <div class="write-editor-row">
       <textarea id="write-content" placeholder="正文，支持 Markdown 语法……"></textarea>

@@ -367,7 +367,7 @@
 }
 
 /* ---------- ABOUT 页 ---------- */
-/* 侧边栏仅 ABOUT 页与"全部"页显示：其余页面隐藏侧栏并让内容居中占宽 */
+/* 侧边栏仅 ABOUT 页、"文章"页与文章详情页显示：其余页面隐藏侧栏并让内容居中占宽 */
 html.hide-aside .layout {
   justify-content: center;
 }
@@ -379,6 +379,24 @@ html.hide-aside .layout > .aside-content {
 html.hide-aside .layout > div:first-child {
   width: 100%;
   max-width: 900px;
+}
+
+/* 侧边栏移到左侧（桌面端） */
+@media (min-width: 900px) {
+  html:not(.hide-aside) #content-inner.layout > .aside-content {
+    order: 1;
+    margin-left: 0;
+    margin-right: 15px;
+  }
+
+  html:not(.hide-aside) #content-inner.layout > div:first-child {
+    order: 2;
+  }
+}
+
+/* 文章详情页：侧边栏只保留目录卡 */
+html.post-aside #aside-content .card-widget:not(#card-toc) {
+  display: none;
 }
 
 /* "全部"页侧边栏：保留分类卡与最近作品卡（隐藏公告/归档卡，标签卡已全局关闭） */

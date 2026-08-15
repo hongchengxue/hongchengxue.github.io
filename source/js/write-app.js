@@ -19,10 +19,8 @@
   var connectBtn = document.getElementById('write-connect');
   var hintEl = document.getElementById('write-hint');
   var titleInput = document.getElementById('write-title');
-  var catSelect = document.getElementById('write-cat-select');
-  var catNewRow = document.getElementById('write-cat-new');
-  var catParent = document.getElementById('write-cat-parent');
-  var catName = document.getElementById('write-cat-name');
+  var catInput = document.getElementById('write-cat');
+  var catList = document.getElementById('write-cat-list');
   var tagsInput = document.getElementById('write-tags');
   var contentEl = document.getElementById('write-content');
   var previewEl = document.getElementById('write-preview');
@@ -71,41 +69,21 @@
     });
   }
 
-  // ---------- 分类列表 ----------
+  // ---------- 分类补全列表 ----------
   function loadCatPaths() {
     fetch('/site-stats.json')
       .then(function (r) { return r.json(); })
       .then(function (d) {
         catPaths = d.catPaths || [];
-        var optHtml = '<option value="">— 分类（可选） —</option>';
-        catPaths.forEach(function (p) {
-          optHtml += '<option value="' + p.replace(/"/g, '&quot;') + '">' + p + '</option>';
-        });
-        optHtml += '<option value="__new__">＋ 新建分类…</option>';
-        catSelect.innerHTML = optHtml;
-
-        var parentHtml = '<option value="">无父级（顶级分类）</option>';
-        catPaths.forEach(function (p) {
-          parentHtml += '<option value="' + p.replace(/"/g, '&quot;') + '">' + p + '</option>';
-        });
-        catParent.innerHTML = parentHtml;
+        catList.innerHTML = catPaths.map(function (p) {
+          return '<option value="' + p.replace(/"/g, '&quot;') + '">';
+        }).join('');
       })
       .catch(function () {});
   }
 
-  catSelect.addEventListener('change', function () {
-    catNewRow.hidden = catSelect.value !== '__new__';
-  });
-
   function buildCategory() {
-    var v = catSelect.value;
-    if (v === '__new__') {
-      var name = catName.value.trim();
-      if (!name) return '';
-      var parent = catParent.value;
-      return parent ? parent + '/' + name : name;
-    }
-    return v;
+    return catInput.value.trim();
   }
 
   // 组装 front matter
@@ -293,8 +271,7 @@
           if (singleM) catPath = singleM[1].trim();
         }
       }
-      catSelect.value = catPaths.indexOf(catPath) >= 0 ? catPath : '';
-      catNewRow.hidden = true;
+      catInput.value = catPath;
 
       var tagList = [];
       var tg = /^tags:([\s\S]*?)(?=^\S|\z)/m.exec(fm);
@@ -316,9 +293,7 @@
     editingSha = null;
     editingDraft = false;
     titleInput.value = '';
-    catSelect.value = '';
-    catNewRow.hidden = true;
-    catName.value = '';
+    catInput.value = '';
     tagsInput.value = '';
     contentEl.value = '';
     renderPreview();
