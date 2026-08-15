@@ -101,8 +101,9 @@
   top: 144px;
   left: 50%;
   transform: translateX(-50%);
-  width: 520px;
-  height: 80px;
+  width: 832px;
+  max-width: calc(100vw - 48px);
+  height: 60px;
   margin-right: 0;
   border: 1px solid rgba(255, 255, 255, 1);
   border-radius: 10px;
@@ -111,7 +112,7 @@
 
 #page-header.full_page #nav-search-input {
   width: 100%;
-  padding: 0 60px 0 22px;
+  padding: 0 56px 0 22px;
   font-size: 1.15rem;
 }
 
@@ -120,14 +121,14 @@
 }
 
 #page-header.full_page #nav-search-submit {
-  right: 10px;
-  width: 40px;
-  height: 40px;
+  right: 8px;
+  width: 36px;
+  height: 36px;
 }
 
 #page-header.full_page #nav-search-submit svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 /* 页面滚动后（导航固定）隐藏英雄区搜索框，避免悬浮在正文上 */
