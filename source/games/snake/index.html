@@ -27,7 +27,13 @@
   }
   h1 { color: #f5f7fa; font-size: 1.5rem; letter-spacing: 2px; margin-bottom: 6px; }
   .score { color: #9ec5ff; font-size: .95rem; margin-bottom: 12px; }
-  .score b { color: #ffd666; }
+  .score b { display: inline-block; }
+  .score b.pop { animation: scorePop .45s ease; }
+  @keyframes scorePop {
+    0% { transform: scale(1); color: #ffd666; }
+    40% { transform: scale(1.7); color: #ff9f43; text-shadow: 0 0 16px rgba(255, 159, 67, .95); }
+    100% { transform: scale(1); color: #ffd666; }
+  }
   canvas {
     display: block;
     border-radius: 12px;
@@ -94,6 +100,7 @@
   </div>
   <div class="btns">
     <button id="restart" type="button">重新开始</button>
+    <a class="btn-link" href="/games/">返回游戏</a>
     <a class="btn-link" href="/">返回首页</a>
   </div>
 </div>
@@ -108,8 +115,36 @@
   canvas.height = GRID * CELL;
 
   var snake, dir, nextDir, food, score, timer, over;
+  var particles = [];
+  var scoreEl = document.getElementById('score');
 
   function rand(n) { return Math.floor(Math.random() * n); }
+
+  function bumpScore() {
+    scoreEl.textContent = score;
+    scoreEl.classList.remove('pop');
+    void scoreEl.offsetWidth;
+    scoreEl.classList.add('pop');
+  }
+
+  function spawnParticle(px, py) {
+    particles.push({ x: px, y: py, born: Date.now(), life: 650 });
+  }
+
+  function renderParticles() {
+    var now = Date.now();
+    for (var i = particles.length - 1; i >= 0; i--) {
+      var p = particles[i];
+      var t = (now - p.born) / p.life;
+      if (t >= 1) { particles.splice(i, 1); continue; }
+      ctx.globalAlpha = 1 - t;
+      ctx.fillStyle = '#ffd666';
+      ctx.font = 'bold 15px "Microsoft YaHei", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('+1', p.x, p.y - t * 20);
+      ctx.globalAlpha = 1;
+    }
+  }
 
   function init() {
     snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
@@ -117,7 +152,8 @@
     nextDir = dir;
     score = 0;
     over = false;
-    document.getElementById('score').textContent = '0';
+    particles = [];
+    scoreEl.textContent = '0';
     placeFood();
     clearInterval(timer);
     timer = setInterval(tick, 130);
@@ -152,7 +188,8 @@
     snake.unshift(head);
     if (head.x === food.x && head.y === food.y) {
       score++;
-      document.getElementById('score').textContent = score;
+      bumpScore();
+      spawnParticle(food.x * CELL + CELL / 2, food.y * CELL + CELL / 2);
       placeFood();
       clearInterval(timer);
       timer = setInterval(tick, speed());
@@ -182,18 +219,33 @@
       ctx.fillRect(s.x * CELL + 1, s.y * CELL + 1, CELL - 2, CELL - 2);
     }
 
+    renderParticles();
+
     if (over) {
-      ctx.fillStyle = 'rgba(0,0,0,.55)';
+      ctx.fillStyle = 'rgba(0,0,0,.6)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#f5f7fa';
-      ctx.font = 'bold 22px "Microsoft YaHei", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('游戏结束', canvas.width / 2, canvas.height / 2 - 10);
+      ctx.font = 'bold 30px "Microsoft YaHei", sans-serif';
+      ctx.fillStyle = '#ff6b6b';
+      ctx.shadowColor = 'rgba(255,107,107,.6)';
+      ctx.shadowBlur = 12;
+      ctx.fillText('游戏结束', canvas.width / 2, canvas.height / 2 - 18);
+      ctx.shadowBlur = 0;
+      ctx.font = 'bold 22px "Microsoft YaHei", sans-serif';
+      ctx.fillStyle = '#ffd666';
+      ctx.fillText('得分 ' + score, canvas.width / 2, canvas.height / 2 + 16);
       ctx.font = '14px "Microsoft YaHei", sans-serif';
       ctx.fillStyle = '#9ec5ff';
-      ctx.fillText('得分 ' + score + '，点击"重新开始"再来一局', canvas.width / 2, canvas.height / 2 + 16);
+      ctx.fillText('点击"重新开始"再来一局', canvas.width / 2, canvas.height / 2 + 42);
     }
   }
+
+  // 粒子动画循环：只在有粒子时重绘
+  function animLoop() {
+    if (particles.length) draw();
+    requestAnimationFrame(animLoop);
+  }
+  requestAnimationFrame(animLoop);
 
   function turn(d) {
     if (d.x === -dir.x && d.y === -dir.y) return; // 不能掉头
