@@ -105,9 +105,36 @@
   max-width: calc(100vw - 48px);
   height: 60px;
   margin-right: 0;
-  border: 1px solid rgba(255, 255, 255, 1);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.13);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.08));
+  -webkit-backdrop-filter: blur(14px) saturate(1.6);
+  backdrop-filter: blur(14px) saturate(1.6);
+  box-shadow:
+    0 8px 24px rgba(31, 38, 55, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* 玻璃折射高光 */
+#page-header.full_page #nav-search-wrap::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 12%;
+  width: 50%;
+  height: 42%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+#page-header.full_page #nav-search-wrap:focus-within {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.14));
+  box-shadow:
+    0 8px 26px rgba(66, 133, 244, 0.25),
+    0 0 0 3px rgba(66, 133, 244, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 #page-header.full_page #nav-search-input {
@@ -140,17 +167,17 @@
    导航栏液态玻璃质感
    ============================================ */
 
-/* 菜单项：玻璃胶囊 */
+/* 菜单项：玻璃胶囊（紧凑版，保证水平排列） */
 #page-header #nav .menus_items .menus_item {
-  padding: 0 0 0 10px;
+  padding: 0 0 0 7px;
 }
 
 #page-header #nav .menus_items .site-page {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
+  gap: 5px;
+  padding: 5px 11px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 999px;
@@ -161,6 +188,7 @@
     0 4px 16px rgba(31, 38, 55, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.55);
   transition: all 0.25s ease;
+  font-size: 0.92em;
 }
 
 /* 玻璃折射高光（左上角光斑） */
@@ -184,17 +212,26 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
-/* ---------- 语言切换下拉框：液态玻璃 ---------- */
-#lang-select {
+/* ---------- 语言切换（自绘玻璃下拉框） ---------- */
+#lang-wrap {
   position: relative;
-  margin-left: 10px;
-  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 7px;
+}
+
+#lang-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: 999px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.08));
   -webkit-backdrop-filter: blur(14px) saturate(1.6);
   backdrop-filter: blur(14px) saturate(1.6);
-  color: inherit;
   font-size: 0.85em;
   cursor: pointer;
   outline: none;
@@ -204,16 +241,84 @@
   transition: all 0.25s ease;
 }
 
-#lang-select:hover {
+#lang-btn::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 10%;
+  width: 46%;
+  height: 46%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+#lang-btn:hover {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.14));
   box-shadow:
     0 6px 20px rgba(31, 38, 55, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
-#lang-select option {
-  color: #333333;
-  background: #ffffff;
+/* 文字可读性：首页深色背景用白字+阴影，白底页面用深色字 */
+#page-header.full_page #nav #lang-btn {
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+#page-header:not(.full_page) #nav #lang-btn {
+  color: #1f2637;
+  text-shadow: none;
+}
+
+#lang-caret {
+  font-size: 0.75em;
+  transition: transform 0.2s ease;
+}
+
+#lang-wrap.open #lang-caret {
+  transform: rotate(180deg);
+}
+
+/* 下拉面板：玻璃质感 */
+#lang-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 136px;
+  padding: 6px;
+  display: none;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  backdrop-filter: blur(20px) saturate(1.6);
+  box-shadow:
+    0 12px 32px rgba(31, 38, 55, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+#lang-wrap.open #lang-menu {
+  display: block;
+}
+
+.lang-option {
+  padding: 8px 12px;
+  border-radius: 9px;
+  color: #1f2637;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.lang-option:hover {
+  background: rgba(66, 133, 244, 0.1);
+}
+
+.lang-option.active {
+  background: rgba(66, 133, 244, 0.15);
+  color: #2f6fe0;
+  font-weight: 600;
 }
 
 /* ---------- 游戏/工具 卡片区 ---------- */

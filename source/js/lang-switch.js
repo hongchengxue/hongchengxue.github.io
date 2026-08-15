@@ -1,22 +1,29 @@
 /* ============================================
-   语言切换（下拉框）：简体中文 ⇄ English
+   语言切换（自绘液态玻璃下拉框）：简体中文 ⇄ English
    ============================================ */
 (function () {
   'use strict';
 
-  if (document.getElementById('lang-select')) return;
+  if (document.getElementById('lang-wrap')) return;
 
-  // ---------- 创建下拉框（放在菜单右侧） ----------
   var menusItems = document.querySelector('#menus .menus_items');
   var menus = document.getElementById('menus');
   if (!menus) return;
 
-  var sel = document.createElement('select');
-  sel.id = 'lang-select';
-  sel.innerHTML =
-    '<option value="zh">简体中文</option>' +
-    '<option value="en">English</option>';
-  menus.insertBefore(sel, menusItems ? menusItems.nextSibling : null);
+  // ---------- 构建自绘下拉框 ----------
+  var wrap = document.createElement('div');
+  wrap.id = 'lang-wrap';
+  wrap.innerHTML =
+    '<button id="lang-btn" type="button">' +
+    '<i class="fas fa-globe fa-fw"></i>' +
+    '<span id="lang-label">简体中文</span>' +
+    '<i class="fas fa-chevron-down" id="lang-caret"></i>' +
+    '</button>' +
+    '<div id="lang-menu">' +
+    '<div class="lang-option" data-lang="zh">简体中文</div>' +
+    '<div class="lang-option" data-lang="en">English</div>' +
+    '</div>';
+  menus.insertBefore(wrap, menusItems ? menusItems.nextSibling : null);
 
   // ---------- 词典 ----------
   var ZH2EN = {
@@ -73,6 +80,15 @@
     try { return localStorage.getItem('site-lang') === 'en' ? 'en' : 'zh'; } catch (e) { return 'zh'; }
   }
 
+  function updateLabel() {
+    var label = document.getElementById('lang-label');
+    if (label) label.textContent = currentLang() === 'zh' ? '简体中文' : 'English';
+    var opts = wrap.querySelectorAll('.lang-option');
+    Array.prototype.forEach.call(opts, function (o) {
+      o.classList.toggle('active', o.getAttribute('data-lang') === currentLang());
+    });
+  }
+
   // ---------- 应用翻译 ----------
   function apply() {
     var lang = currentLang();
@@ -85,7 +101,7 @@
         if (!p) return NodeFilter.FILTER_REJECT;
         var tag = p.tagName;
         if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEXTAREA' || tag === 'INPUT' || tag === 'PRE' || tag === 'CODE') return NodeFilter.FILTER_REJECT;
-        if (p.id === 'lang-select') return NodeFilter.FILTER_REJECT;
+        if (p.closest && p.closest('#lang-wrap')) return NodeFilter.FILTER_REJECT;
         return NodeFilter.FILTER_ACCEPT;
       }
     });
@@ -108,16 +124,30 @@
   function setLang(l) {
     try { localStorage.setItem('site-lang', l); } catch (e) {}
     apply();
+    updateLabel();
+    wrap.classList.remove('open');
     if (window.__searchI18nRender) window.__searchI18nRender();
   }
 
   // ---------- 事件 ----------
-  sel.value = currentLang();
-  sel.addEventListener('change', function () {
-    setLang(sel.value);
+  var btn = wrap.querySelector('#lang-btn');
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    wrap.classList.toggle('open');
+  });
+
+  Array.prototype.forEach.call(wrap.querySelectorAll('.lang-option'), function (o) {
+    o.addEventListener('click', function () {
+      setLang(o.getAttribute('data-lang'));
+    });
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!wrap.contains(e.target)) wrap.classList.remove('open');
   });
 
   // 初始应用 + pjax 后重新应用
+  updateLabel();
   apply();
   if (window.btf && btf.addGlobalFn) {
     btf.addGlobalFn('pjaxComplete', apply, 'lang-apply');
