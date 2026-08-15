@@ -1,21 +1,22 @@
 /* ============================================
-   语言切换：简体中文 ⇄ English（界面文字即时切换）
+   语言切换（下拉框）：简体中文 ⇄ English
    ============================================ */
 (function () {
   'use strict';
 
-  if (document.getElementById('lang-switch')) return;
+  if (document.getElementById('lang-select')) return;
 
-  // ---------- 创建切换按钮（放在菜单右侧） ----------
+  // ---------- 创建下拉框（放在菜单右侧） ----------
   var menusItems = document.querySelector('#menus .menus_items');
   var menus = document.getElementById('menus');
   if (!menus) return;
 
-  var btn = document.createElement('span');
-  btn.id = 'lang-switch';
-  btn.className = 'site-page';
-  btn.innerHTML = '<i class="fas fa-language fa-fw"></i><span id="lang-switch-label">EN</span>';
-  menus.insertBefore(btn, menusItems ? menusItems.nextSibling : null);
+  var sel = document.createElement('select');
+  sel.id = 'lang-select';
+  sel.innerHTML =
+    '<option value="zh">简体中文</option>' +
+    '<option value="en">English</option>';
+  menus.insertBefore(sel, menusItems ? menusItems.nextSibling : null);
 
   // ---------- 词典 ----------
   var ZH2EN = {
@@ -70,11 +71,6 @@
     try { return localStorage.getItem('site-lang') === 'en' ? 'en' : 'zh'; } catch (e) { return 'zh'; }
   }
 
-  function updateLabel() {
-    var label = document.getElementById('lang-switch-label');
-    if (label) label.textContent = currentLang() === 'zh' ? 'EN' : '中';
-  }
-
   // ---------- 应用翻译 ----------
   function apply() {
     var lang = currentLang();
@@ -87,7 +83,7 @@
         if (!p) return NodeFilter.FILTER_REJECT;
         var tag = p.tagName;
         if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEXTAREA' || tag === 'INPUT' || tag === 'PRE' || tag === 'CODE') return NodeFilter.FILTER_REJECT;
-        if (p.id === 'lang-switch-label') return NodeFilter.FILTER_REJECT;
+        if (p.id === 'lang-select') return NodeFilter.FILTER_REJECT;
         return NodeFilter.FILTER_ACCEPT;
       }
     });
@@ -110,18 +106,17 @@
   function setLang(l) {
     try { localStorage.setItem('site-lang', l); } catch (e) {}
     apply();
-    updateLabel();
     if (window.__searchI18nRender) window.__searchI18nRender();
   }
 
   // ---------- 事件 ----------
-  btn.addEventListener('click', function () {
-    setLang(currentLang() === 'zh' ? 'en' : 'zh');
+  sel.value = currentLang();
+  sel.addEventListener('change', function () {
+    setLang(sel.value);
   });
 
   // 初始应用 + pjax 后重新应用
   apply();
-  updateLabel();
   if (window.btf && btf.addGlobalFn) {
     btf.addGlobalFn('pjaxComplete', apply, 'lang-apply');
   }

@@ -136,26 +136,28 @@
   display: none;
 }
 
-/* ---------- 语言切换按钮 ---------- */
-#lang-switch {
-  display: inline-flex;
-  align-items: center;
+/* ---------- 语言切换下拉框 ---------- */
+#lang-select {
   margin-left: 14px;
-  padding: 4px 10px;
-  border-radius: 999px;
+  padding: 4px 8px;
+  border: 1px solid rgba(128, 128, 128, 0.45);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
   font-size: 0.85em;
   cursor: pointer;
-  user-select: none;
-  transition: background-color 0.2s ease, opacity 0.2s ease;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-#lang-switch:hover {
-  background: rgba(128, 128, 128, 0.18);
+#lang-select:hover {
+  border-color: rgba(128, 128, 128, 0.8);
+  background: rgba(128, 128, 128, 0.12);
 }
 
-#lang-switch-label {
-  margin-left: 5px;
-  font-weight: 600;
+#lang-select option {
+  color: #333333;
+  background: #ffffff;
 }
 
 /* ---------- 搜索结果页 ---------- */
