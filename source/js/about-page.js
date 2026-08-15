@@ -32,15 +32,9 @@
         }).join('');
       }
 
-      // 最近作品
-      var recent = document.getElementById('about-recent');
-      if (recent && stats.recent.length) {
-        recent.innerHTML = stats.recent.map(function (p) {
-          return '<a class="about-recent-item" href="' + p.url + '">' +
-            '<span class="about-recent-title">' + p.title + '</span>' +
-            '<span class="about-recent-date">' + p.date + '</span></a>';
-        }).join('');
-      }
+      // 最近作品：改为侧边栏最新文章卡的标题
+      var recentCard = document.querySelector('#aside-content .card-recent-post .item-headline span');
+      if (recentCard) recentCard.textContent = '最近作品';
     })
     .catch(function () {});
 })();

@@ -20,9 +20,9 @@ comments: false
       </div>
     </div>
     <div class="about-stats">
-      <div class="about-stat"><span class="about-stat-num" id="about-stat-posts">-</span><span>文章</span></div>
+      <a class="about-stat about-stat-link" href="/archives/"><span class="about-stat-num" id="about-stat-posts">-</span><span>文章</span></a>
       <div class="about-stat"><span class="about-stat-num" id="about-stat-tags">-</span><span>标签</span></div>
-      <div class="about-stat"><span class="about-stat-num" id="about-stat-cats">-</span><span>分类</span></div>
+      <a class="about-stat about-stat-link" href="/categories/"><span class="about-stat-num" id="about-stat-cats">-</span><span>分类</span></a>
       <div class="about-stat"><span class="about-stat-num" id="about-stat-updated">-</span><span>最近更新</span></div>
     </div>
     <div class="about-bio">
@@ -34,11 +34,6 @@ comments: false
   <div class="about-card">
     <div class="about-section-title"><i class="fas fa-tags"></i> 标签云</div>
     <div class="tag-cloud" id="about-tag-cloud"></div>
-  </div>
-
-  <div class="about-card">
-    <div class="about-section-title"><i class="fas fa-fire"></i> 最近作品</div>
-    <div id="about-recent"></div>
   </div>
 
 </div>

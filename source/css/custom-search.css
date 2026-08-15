@@ -375,10 +375,31 @@ html.hide-aside .layout > div:first-child {
   max-width: 900px;
 }
 
-/* "全部"页侧边栏：只保留分类卡（隐藏公告/归档卡，标签卡已全局关闭） */
+/* "全部"页侧边栏：只保留分类卡（隐藏公告/归档/最近文章卡，标签卡已全局关闭） */
 html.archives-aside #aside-content .card-announcement,
-html.archives-aside #aside-content .card-archives {
+html.archives-aside #aside-content .card-archives,
+html.archives-aside #aside-content .card-recent-post {
   display: none;
+}
+
+/* ABOUT 页侧边栏：隐藏分类卡（顺序：公告 → 最近作品 → 归档） */
+html.about-aside #aside-content .card-categories {
+  display: none;
+}
+
+/* 可点击的统计块 */
+.about-stat-link {
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.about-stat-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(66, 133, 244, 0.18);
+}
+
+.about-stat-link .about-stat-num {
+  color: #4285f4;
 }
 
 /* 全部文章折叠列表 */
