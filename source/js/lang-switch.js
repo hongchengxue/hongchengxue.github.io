@@ -70,7 +70,9 @@
     '单栏和双栏切换': 'Single / Double Column',
     '聊天': 'Chat',
     '页面未找到': 'Page Not Found',
-    '搜索': 'Search'
+    '搜索': 'Search',
+    '标签云': 'Tag Cloud',
+    '更多关于我': 'More About Me'
   };
   var EN2ZH = {};
   Object.keys(ZH2EN).forEach(function (k) { EN2ZH[ZH2EN[k]] = k; });

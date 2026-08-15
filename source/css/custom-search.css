@@ -373,6 +373,158 @@
   color: #9ec5ff;
 }
 
+/* ---------- 首页个人卡片 + 标签云 ---------- */
+#home-profile {
+  margin: 0 auto 20px;
+  padding: 0 24px;
+  max-width: 1200px;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.75);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 8px 24px rgba(31, 38, 55, 0.12);
+}
+
+.profile-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(31, 38, 55, 0.15);
+}
+
+.profile-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1f2637;
+}
+
+.profile-intro {
+  margin-top: 2px;
+  color: #6b7280;
+  font-size: 0.92rem;
+}
+
+.profile-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.profile-contact a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(66, 133, 244, 0.1);
+  color: #4285f4;
+  font-size: 0.88em;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.profile-contact a:hover {
+  background: rgba(66, 133, 244, 0.2);
+  transform: translateY(-1px);
+}
+
+.profile-stats {
+  display: flex;
+  gap: 10px;
+}
+
+.profile-stat {
+  flex: 1;
+  padding: 10px 0;
+  border: 1px solid rgba(31, 38, 55, 0.05);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  text-align: center;
+}
+
+.stat-num {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #4285f4;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #8b93a3;
+}
+
+.tag-cloud-card {
+  padding: 18px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 6px 18px rgba(31, 38, 55, 0.08);
+}
+
+.tag-cloud-title {
+  margin-bottom: 12px;
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: #1f2637;
+}
+
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 18px;
+}
+
+.tag-item {
+  text-decoration: none;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.tag-item:hover {
+  transform: translateY(-2px);
+  opacity: 0.85;
+}
+
+[data-theme='dark'] .profile-card,
+[data-theme='dark'] .tag-cloud-card {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .profile-name,
+[data-theme='dark'] .tag-cloud-title {
+  color: #e6e8ee;
+}
+
+[data-theme='dark'] .profile-intro {
+  color: #8b93a3;
+}
+
+[data-theme='dark'] .profile-stat {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
 /* ---------- 游戏/工具 卡片区 ---------- */
 .hub-grid {
   display: grid;
