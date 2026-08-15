@@ -27,13 +27,13 @@
 
   // ---------- 词典 ----------
   var ZH2EN = {
-    '首页': 'Home',
     '归档': 'Archives',
     '分类': 'Categories',
     '标签': 'Tags',
     '关于': 'About',
     '游戏': 'Games',
     '工具': 'Tools',
+    '全部': 'All',
     '网站信息': 'Website Info',
     '文章数目': 'Article Count',
     '最后更新时间': 'Last Update',

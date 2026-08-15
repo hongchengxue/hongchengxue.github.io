@@ -23,12 +23,13 @@
   function positionWrap() {
     var header = document.getElementById('page-header');
     var menus = document.getElementById('menus');
-    var searchBtn = document.getElementById('search-button');
     if (!header || !menus) return;
     if (header.classList.contains('full_page')) {
       if (wrap.parentNode !== header) header.appendChild(wrap);
-    } else if (searchBtn && searchBtn.parentNode === menus && wrap.parentNode !== menus) {
-      menus.insertBefore(wrap, searchBtn);
+    } else if (wrap.parentNode !== menus) {
+      // 非主页：放在菜单项之后（左侧按钮群末尾、语言选择之前）
+      var menusItems = menus.querySelector('.menus_items');
+      menus.insertBefore(wrap, menusItems ? menusItems.nextSibling : null);
     }
   }
 
