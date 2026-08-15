@@ -23,6 +23,14 @@
     '<div class="lang-option" data-lang="zh">简体中文</div>' +
     '<div class="lang-option" data-lang="en">English</div>' +
     '</div>';
+  // ABOUT 按钮：插在语言按钮之前
+  var aboutBtn = document.createElement('a');
+  aboutBtn.id = 'about-nav';
+  aboutBtn.className = 'site-page';
+  aboutBtn.href = '/about/';
+  aboutBtn.innerHTML = '<i class="fas fa-user fa-fw"></i><span> ABOUT</span>';
+  menus.insertBefore(aboutBtn, wrap);
+
   // 语言按钮放在搜索框之后（若有），否则菜单项之后
   var searchWrap = document.getElementById('nav-search-wrap');
   var after = searchWrap || menusItems || null;
@@ -75,7 +83,9 @@
     '页面未找到': 'Page Not Found',
     '搜索': 'Search',
     '标签云': 'Tag Cloud',
-    '更多关于我': 'More About Me'
+    '更多关于我': 'More About Me',
+    '最近作品': 'Recent Works',
+    '最近更新': 'Last Update'
   };
   var EN2ZH = {};
   Object.keys(ZH2EN).forEach(function (k) { EN2ZH[ZH2EN[k]] = k; });

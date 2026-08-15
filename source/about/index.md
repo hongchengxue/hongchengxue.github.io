@@ -1,23 +1,52 @@
 ---
-title: 关于
+title: ABOUT
 date: 2026-08-15 11:00:00
-type: about
 comments: false
 ---
 
-# 你好，我是 hong 👋
+<div id="about-page">
 
-欢迎来到我的知识库。这里记录我的**技术文章**和**生活随笔**。
+  <div class="about-card">
+    <div class="about-header">
+      <img class="about-avatar" src="/img/avatar.png" alt="avatar">
+      <div>
+        <div class="about-name">hong</div>
+        <div class="about-intro">记录技术与生活的知识库</div>
+        <div class="about-contact">
+          <a href="https://github.com/hongchengxue" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>
+          <a href="mailto:your-email@example.com"><i class="fas fa-envelope"></i> Email</a>
+        </div>
+      </div>
+    </div>
+    <div class="about-stats">
+      <div class="about-stat"><span class="about-stat-num" id="about-stat-posts">-</span><span>文章</span></div>
+      <div class="about-stat"><span class="about-stat-num" id="about-stat-tags">-</span><span>标签</span></div>
+      <div class="about-stat"><span class="about-stat-num" id="about-stat-cats">-</span><span>分类</span></div>
+    </div>
+    <div class="about-bio">
+      <p>你好，我是 hong。欢迎来到我的知识库 👋</p>
+      <p>这里记录我的技术学习笔记与生活随笔。喜欢折腾各种小工具、写写小游戏，希望在这里与你分享交流。</p>
+    </div>
+  </div>
 
-## 关于这个网站
+  <div class="about-card">
+    <div class="about-section-title"><i class="fas fa-bullhorn"></i> 公告</div>
+    <div class="about-announce">欢迎来到我的知识库 🎉 本站持续更新中，感谢你的到访～</div>
+  </div>
 
-- 使用 [Hexo](https://hexo.io/zh-cn/) 搭建，主题为 [Butterfly](https://butterfly.js.org/)
-- 托管在 [GitHub Pages](https://pages.github.com/)（免费）
-- 零基础搭建，全部在浏览器中完成
+  <div class="about-card">
+    <div class="about-section-title"><i class="fas fa-tags"></i> 标签云</div>
+    <div class="tag-cloud" id="about-tag-cloud"></div>
+  </div>
 
-## 联系我
+  <div class="about-card">
+    <div class="about-section-title"><i class="fas fa-fire"></i> 最近作品</div>
+    <div id="about-recent"></div>
+  </div>
 
-- GitHub：[hongchengxue](https://github.com/hongchengxue)
-- 邮箱：待补充
+  <div class="about-card">
+    <div class="about-section-title"><i class="fas fa-chart-line"></i> 网站信息</div>
+    <div id="about-webinfo"></div>
+  </div>
 
-> 这里的内容可以随时在 `source/about/index.md` 中修改。
+</div>
