@@ -7,6 +7,11 @@
   display: none !important;
 }
 
+/* 保险：旧版 JS 若被缓存残留，强制隐藏其下拉结果 */
+#nav-search-dropdown {
+  display: none !important;
+}
+
 /* ---------- 导航栏搜索框：药丸容器 ---------- */
 #nav-search-wrap {
   position: relative;
