@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>五子棋</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    background: linear-gradient(160deg, #0f1720 0%, #1b2a44 55%, #24385c 100%);
+    padding: 20px;
+  }
+  .panel {
+    padding: 26px 24px 22px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,.16);
+    background: linear-gradient(160deg, rgba(255,255,255,.14), rgba(255,255,255,.04));
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 18px 50px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.2);
+    text-align: center;
+  }
+  h1 { color: #f5f7fa; font-size: 1.5rem; letter-spacing: 2px; margin-bottom: 8px; }
+  .status { color: #9ec5ff; font-size: .95rem; margin-bottom: 12px; min-height: 1.2em; }
+  canvas {
+    display: block;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    max-width: 100%;
+    cursor: pointer;
+  }
+  .btns { margin-top: 16px; display: flex; gap: 12px; justify-content: center; }
+  button, .btn-link {
+    display: inline-block;
+    padding: 9px 22px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #4285f4, #2f6fe0);
+    color: #fff;
+    font-size: .92rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  button:hover, .btn-link:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(66,133,244,.4); }
+  .btn-link { background: linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,.08)); border: 1px solid rgba(255,255,255,.25); }
+</style>
+</head>
+<body>
+<div class="panel">
+  <h1>⚫ 五子棋 ⚪</h1>
+  <div class="status" id="status">黑棋落子</div>
+  <canvas id="board"></canvas>
+  <div class="btns">
+    <button id="restart" type="button">重新开始</button>
+    <a class="btn-link" href="/">返回首页</a>
+  </div>
+</div>
+<script>
+(function () {
+  'use strict';
+  var size = 15;
+  var cell = 34;
+  var pad = 20;
+  var canvas = document.getElementById('board');
+  var ctx = canvas.getContext('2d');
+  var board = [];
+  var current = 1; // 1=黑 2=白
+  var over = false;
+
+  canvas.width = size * cell + pad * 2;
+  canvas.height = size * cell + pad * 2;
+
+  var statusEl = document.getElementById('status');
+
+  function init() {
+    board = Array.from({ length: size }, function () { return Array(size).fill(0); });
+    current = 1;
+    over = false;
+    statusEl.textContent = '黑棋落子';
+    draw();
+  }
+
+  function line(x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+
+  function draw() {
+    var g = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    g.addColorStop(0, '#ecd9a8');
+    g.addColorStop(1, '#d9bd82');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = 'rgba(90, 60, 20, 0.5)';
+    ctx.lineWidth = 1;
+    for (var i = 0; i < size; i++) {
+      line(pad + i * cell, pad, pad + i * cell, pad + (size - 1) * cell);
+      line(pad, pad + i * cell, pad + (size - 1) * cell, pad + i * cell);
+    }
+
+    for (var r = 0; r < size; r++) {
+      for (var c = 0; c < size; c++) {
+        if (board[r][c]) drawStone(c, r, board[r][c]);
+      }
+    }
+  }
+
+  function drawStone(col, row, player) {
+    var x = pad + col * cell;
+    var y = pad + row * cell;
+    var rg = ctx.createRadialGradient(x - 5, y - 5, 2, x, y, cell / 2 - 2);
+    if (player === 1) {
+      rg.addColorStop(0, '#777');
+      rg.addColorStop(1, '#101010');
+    } else {
+      rg.addColorStop(0, '#ffffff');
+      rg.addColorStop(1, '#bdbdbd');
+    }
+    ctx.beginPath();
+    ctx.arc(x, y, cell / 2 - 2, 0, Math.PI * 2);
+    ctx.fillStyle = rg;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,.25)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  function countDir(col, row, dx, dy, player) {
+    var n = 0;
+    var c = col + dx, r = row + dy;
+    while (c >= 0 && c < size && r >= 0 && r < size && board[r][c] === player) {
+      n++;
+      c += dx;
+      r += dy;
+    }
+    return n;
+  }
+
+  function checkWin(col, row, player) {
+    var dirs = [[1, 0], [0, 1], [1, 1], [1, -1]];
+    for (var i = 0; i < dirs.length; i++) {
+      var count = 1 + countDir(col, row, dirs[i][0], dirs[i][1], player) + countDir(col, row, -dirs[i][0], -dirs[i][1], player);
+      if (count >= 5) return true;
+    }
+    return false;
+  }
+
+  function isFull() {
+    for (var r = 0; r < size; r++) {
+      if (board[r].indexOf(0) >= 0) return false;
+    }
+    return true;
+  }
+
+  canvas.addEventListener('click', function (e) {
+    if (over) return;
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas.width / rect.width;
+    var scaleY = canvas.height / rect.height;
+    var x = (e.clientX - rect.left) * scaleX;
+    var y = (e.clientY - rect.top) * scaleY;
+    var col = Math.round((x - pad) / cell);
+    var row = Math.round((y - pad) / cell);
+    if (col < 0 || col >= size || row < 0 || row >= size) return;
+    if (board[row][col] !== 0) return;
+
+    board[row][col] = current;
+    draw();
+
+    if (checkWin(col, row, current)) {
+      over = true;
+      statusEl.textContent = (current === 1 ? '⚫ 黑棋' : '⚪ 白棋') + '获胜！';
+      return;
+    }
+    if (isFull()) {
+      over = true;
+      statusEl.textContent = '平局！';
+      return;
+    }
+    current = current === 1 ? 2 : 1;
+    statusEl.textContent = current === 1 ? '黑棋落子' : '白棋落子';
+  });
+
+  document.getElementById('restart').addEventListener('click', init);
+
+  init();
+})();
+</script>
+</body>
+</html>

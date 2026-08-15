@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>贪吃蛇</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    background: linear-gradient(160deg, #0f1720 0%, #1b2a44 55%, #24385c 100%);
+    padding: 20px;
+  }
+  .panel {
+    padding: 26px 24px 22px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,.16);
+    background: linear-gradient(160deg, rgba(255,255,255,.14), rgba(255,255,255,.04));
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 18px 50px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.2);
+    text-align: center;
+  }
+  h1 { color: #f5f7fa; font-size: 1.5rem; letter-spacing: 2px; margin-bottom: 6px; }
+  .score { color: #9ec5ff; font-size: .95rem; margin-bottom: 12px; }
+  .score b { color: #ffd666; }
+  canvas {
+    display: block;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    max-width: 100%;
+    touch-action: none;
+  }
+  .hint { color: #8b93a3; font-size: .8rem; margin-top: 10px; }
+  .btns { margin-top: 12px; display: flex; gap: 12px; justify-content: center; }
+  button, .btn-link {
+    display: inline-block;
+    padding: 9px 22px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #4285f4, #2f6fe0);
+    color: #fff;
+    font-size: .92rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  button:hover, .btn-link:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(66,133,244,.4); }
+  .btn-link { background: linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,.08)); border: 1px solid rgba(255,255,255,.25); }
+</style>
+</head>
+<body>
+<div class="panel">
+  <h1>🐍 贪吃蛇</h1>
+  <div class="score">得分：<b id="score">0</b></div>
+  <canvas id="game"></canvas>
+  <div class="hint">方向键 / WASD 控制，手机可滑动屏幕</div>
+  <div class="btns">
+    <button id="restart" type="button">重新开始</button>
+    <a class="btn-link" href="/">返回首页</a>
+  </div>
+</div>
+<script>
+(function () {
+  'use strict';
+  var GRID = 20;
+  var CELL = 20;
+  var canvas = document.getElementById('game');
+  var ctx = canvas.getContext('2d');
+  canvas.width = GRID * CELL;
+  canvas.height = GRID * CELL;
+
+  var snake, dir, nextDir, food, score, timer, over;
+
+  function rand(n) { return Math.floor(Math.random() * n); }
+
+  function init() {
+    snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
+    dir = { x: 1, y: 0 };
+    nextDir = dir;
+    score = 0;
+    over = false;
+    document.getElementById('score').textContent = '0';
+    placeFood();
+    clearInterval(timer);
+    timer = setInterval(tick, 130);
+    draw();
+  }
+
+  function placeFood() {
+    do {
+      food = { x: rand(GRID), y: rand(GRID) };
+    } while (snake.some(function (s) { return s.x === food.x && s.y === food.y; }));
+  }
+
+  function speed() {
+    return Math.max(70, 130 - score * 3);
+  }
+
+  function tick() {
+    if (over) return;
+    dir = nextDir;
+    var head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+    if (head.x < 0 || head.x >= GRID || head.y < 0 || head.y >= GRID ||
+        snake.some(function (s) { return s.x === head.x && s.y === head.y; })) {
+      over = true;
+      clearInterval(timer);
+      draw();
+      return;
+    }
+    snake.unshift(head);
+    if (head.x === food.x && head.y === food.y) {
+      score++;
+      document.getElementById('score').textContent = score;
+      placeFood();
+      clearInterval(timer);
+      timer = setInterval(tick, speed());
+    } else {
+      snake.pop();
+    }
+    draw();
+  }
+
+  function draw() {
+    ctx.fillStyle = '#0f1720';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 食物
+    ctx.fillStyle = '#ff6b6b';
+    ctx.beginPath();
+    ctx.arc(food.x * CELL + CELL / 2, food.y * CELL + CELL / 2, CELL / 2 - 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 蛇
+    for (var i = snake.length - 1; i >= 0; i--) {
+      var s = snake[i];
+      var g = ctx.createLinearGradient(s.x * CELL, s.y * CELL, (s.x + 1) * CELL, (s.y + 1) * CELL);
+      if (i === 0) { g.addColorStop(0, '#7db1ff'); g.addColorStop(1, '#4285f4'); }
+      else { g.addColorStop(0, '#4a7dff'); g.addColorStop(1, '#2f5fbd'); }
+      ctx.fillStyle = g;
+      ctx.fillRect(s.x * CELL + 1, s.y * CELL + 1, CELL - 2, CELL - 2);
+    }
+
+    if (over) {
+      ctx.fillStyle = 'rgba(0,0,0,.55)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#f5f7fa';
+      ctx.font = 'bold 22px "Microsoft YaHei", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('游戏结束', canvas.width / 2, canvas.height / 2 - 10);
+      ctx.font = '14px "Microsoft YaHei", sans-serif';
+      ctx.fillStyle = '#9ec5ff';
+      ctx.fillText('得分 ' + score + '，点击"重新开始"再来一局', canvas.width / 2, canvas.height / 2 + 16);
+    }
+  }
+
+  function turn(d) {
+    if (d.x === -dir.x && d.y === -dir.y) return; // 不能掉头
+    nextDir = d;
+  }
+
+  document.addEventListener('keydown', function (e) {
+    var k = e.key.toLowerCase();
+    var map = {
+      arrowup: { x: 0, y: -1 }, w: { x: 0, y: -1 },
+      arrowdown: { x: 0, y: 1 }, s: { x: 0, y: 1 },
+      arrowleft: { x: -1, y: 0 }, a: { x: -1, y: 0 },
+      arrowright: { x: 1, y: 0 }, d: { x: 1, y: 0 }
+    };
+    if (map[k]) { e.preventDefault(); turn(map[k]); }
+  });
+
+  // 手机滑动
+  var touchStart = null;
+  canvas.addEventListener('touchstart', function (e) {
+    touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, { passive: true });
+  canvas.addEventListener('touchend', function (e) {
+    if (!touchStart) return;
+    var dx = e.changedTouches[0].clientX - touchStart.x;
+    var dy = e.changedTouches[0].clientY - touchStart.y;
+    touchStart = null;
+    if (Math.abs(dx) < 15 && Math.abs(dy) < 15) return;
+    if (Math.abs(dx) > Math.abs(dy)) turn({ x: dx > 0 ? 1 : -1, y: 0 });
+    else turn({ x: 0, y: dy > 0 ? 1 : -1 });
+  }, { passive: true });
+
+  document.getElementById('restart').addEventListener('click', init);
+
+  init();
+})();
+</script>
+</body>
+</html>

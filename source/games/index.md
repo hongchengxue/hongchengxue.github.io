@@ -6,6 +6,14 @@ comments: false
 ---
 
 <div class="hub-grid">
-  <div class="hub-empty">🎮 游戏区建设中</div>
-  <div class="hub-tip">把自己写的小游戏（HTML 文件或链接）发给 AI 助手，会以卡片形式展示在这里，点击即可游玩。</div>
+  <a class="hub-card" href="/games/gomoku/">
+    <div class="hub-card-icon">⚫</div>
+    <div class="hub-card-title">五子棋</div>
+    <div class="hub-card-desc">经典五子棋，双人轮流落子</div>
+  </a>
+  <a class="hub-card" href="/games/snake/">
+    <div class="hub-card-icon">🐍</div>
+    <div class="hub-card-title">贪吃蛇</div>
+    <div class="hub-card-desc">经典贪吃蛇，键盘或滑动操作</div>
+  </a>
 </div>
