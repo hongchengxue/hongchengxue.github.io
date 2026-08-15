@@ -54,7 +54,7 @@
 <body>
 <div class="panel">
   <h1>⚫ 五子棋 ⚪</h1>
-  <div class="status" id="status">黑棋落子</div>
+  <div class="status" id="status">你的回合（黑棋）</div>
   <canvas id="board"></canvas>
   <div class="btns">
     <button id="restart" type="button">重新开始</button>
@@ -70,8 +70,8 @@
   var canvas = document.getElementById('board');
   var ctx = canvas.getContext('2d');
   var board = [];
-  var current = 1; // 1=黑 2=白
   var over = false;
+  var thinking = false; // AI 计算中，禁止落子
 
   canvas.width = size * cell + pad * 2;
   canvas.height = size * cell + pad * 2;
@@ -80,9 +80,9 @@
 
   function init() {
     board = Array.from({ length: size }, function () { return Array(size).fill(0); });
-    current = 1;
     over = false;
-    statusEl.textContent = '黑棋落子';
+    thinking = false;
+    statusEl.textContent = '你的回合（黑棋）';
     draw();
   }
 
@@ -161,8 +161,105 @@
     return true;
   }
 
-  canvas.addEventListener('click', function (e) {
+  // ---------- AI ----------
+  function analyzeLine(col, row, player, dx, dy) {
+    var count = 1;
+    var open = 0;
+    var c = col + dx, r = row + dy;
+    while (c >= 0 && c < size && r >= 0 && r < size && board[r][c] === player) { count++; c += dx; r += dy; }
+    if (c >= 0 && c < size && r >= 0 && r < size && board[r][c] === 0) open++;
+    c = col - dx; r = row - dy;
+    while (c >= 0 && c < size && r >= 0 && r < size && board[r][c] === player) { count++; c -= dx; r -= dy; }
+    if (c >= 0 && c < size && r >= 0 && r < size && board[r][c] === 0) open++;
+    return { count: count, open: open };
+  }
+
+  function lineScore(count, open) {
+    if (count >= 5) return 1000000;
+    if (open === 0) {
+      if (count >= 4) return 10000;
+      return count * 2;
+    }
+    if (count === 4) return 100000;
+    if (count === 3) return 10000;
+    if (count === 2) return 800;
+    return 20;
+  }
+
+  function evalCell(col, row, player) {
+    board[row][col] = player;
+    var total = 0;
+    var dirs = [[1, 0], [0, 1], [1, 1], [1, -1]];
+    for (var i = 0; i < dirs.length; i++) {
+      var info = analyzeLine(col, row, player, dirs[i][0], dirs[i][1]);
+      total += lineScore(info.count, info.open);
+    }
+    board[row][col] = 0;
+    return total;
+  }
+
+  function aiMove() {
+    var candidates = [];
+    var hasStone = false;
+    for (var r = 0; r < size; r++) {
+      for (var c = 0; c < size; c++) {
+        if (board[r][c]) { hasStone = true; continue; }
+        // 只考虑已有棋子附近两格内的空位
+        var near = false;
+        for (var dr = -2; dr <= 2 && !near; dr++) {
+          for (var dc = -2; dc <= 2 && !near; dc++) {
+            var nr = r + dr, nc = c + dc;
+            if (nr >= 0 && nr < size && nc >= 0 && nc < size && board[nr][nc]) near = true;
+          }
+        }
+        if (near) candidates.push({ r: r, c: c });
+      }
+    }
+
+    if (!hasStone) {
+      board[7][7] = 2;
+      return { r: 7, c: 7 };
+    }
+    if (!candidates.length) return null;
+
+    var best = null;
+    var bestScore = -1;
+    for (var i = 0; i < candidates.length; i++) {
+      var c = candidates[i];
+      var s = evalCell(c.c, c.r, 2) + evalCell(c.c, c.r, 1);
+      if (s > bestScore) { bestScore = s; best = c; }
+    }
+    if (best) board[best.r][best.c] = 2;
+    return best;
+  }
+
+  function aiTurn() {
     if (over) return;
+    thinking = true;
+    statusEl.textContent = 'AI 思考中…';
+    setTimeout(function () {
+      if (over) return;
+      var mv = aiMove();
+      draw();
+      if (mv && checkWin(mv.c, mv.r, 2)) {
+        over = true;
+        statusEl.textContent = 'AI 获胜了！';
+        thinking = false;
+        return;
+      }
+      if (isFull()) {
+        over = true;
+        statusEl.textContent = '平局！';
+        thinking = false;
+        return;
+      }
+      thinking = false;
+      statusEl.textContent = '你的回合（黑棋）';
+    }, 350);
+  }
+
+  canvas.addEventListener('click', function (e) {
+    if (over || thinking) return;
     var rect = canvas.getBoundingClientRect();
     var scaleX = canvas.width / rect.width;
     var scaleY = canvas.height / rect.height;
@@ -173,12 +270,12 @@
     if (col < 0 || col >= size || row < 0 || row >= size) return;
     if (board[row][col] !== 0) return;
 
-    board[row][col] = current;
+    board[row][col] = 1;
     draw();
 
-    if (checkWin(col, row, current)) {
+    if (checkWin(col, row, 1)) {
       over = true;
-      statusEl.textContent = (current === 1 ? '⚫ 黑棋' : '⚪ 白棋') + '获胜！';
+      statusEl.textContent = '🎉 你赢了！';
       return;
     }
     if (isFull()) {
@@ -186,8 +283,7 @@
       statusEl.textContent = '平局！';
       return;
     }
-    current = current === 1 ? 2 : 1;
-    statusEl.textContent = current === 1 ? '黑棋落子' : '白棋落子';
+    aiTurn();
   });
 
   document.getElementById('restart').addEventListener('click', init);

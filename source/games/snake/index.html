@@ -36,6 +36,33 @@
     touch-action: none;
   }
   .hint { color: #8b93a3; font-size: .8rem; margin-top: 10px; }
+  .dpad {
+    display: grid;
+    grid-template-columns: 62px 62px 62px;
+    grid-template-rows: 54px 54px;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+  }
+  .dbtn {
+    font-size: 1.3rem;
+    color: #fff;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 14px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    transition: background .1s ease;
+  }
+  .dbtn:active { background: rgba(66,133,244,.5); }
+  .dbtn.up { grid-column: 2; grid-row: 1; }
+  .dbtn.left { grid-column: 1; grid-row: 2; }
+  .dbtn.down { grid-column: 2; grid-row: 2; }
+  .dbtn.right { grid-column: 3; grid-row: 2; }
   .btns { margin-top: 12px; display: flex; gap: 12px; justify-content: center; }
   button, .btn-link {
     display: inline-block;
@@ -58,7 +85,13 @@
   <h1>🐍 贪吃蛇</h1>
   <div class="score">得分：<b id="score">0</b></div>
   <canvas id="game"></canvas>
-  <div class="hint">方向键 / WASD 控制，手机可滑动屏幕</div>
+  <div class="hint">方向键 / WASD / 屏幕按键控制，撞墙会从对面出现</div>
+  <div class="dpad">
+    <button class="dbtn up" data-dir="up" type="button">▲</button>
+    <button class="dbtn left" data-dir="left" type="button">◀</button>
+    <button class="dbtn down" data-dir="down" type="button">▼</button>
+    <button class="dbtn right" data-dir="right" type="button">▶</button>
+  </div>
   <div class="btns">
     <button id="restart" type="button">重新开始</button>
     <a class="btn-link" href="/">返回首页</a>
@@ -105,8 +138,12 @@
     if (over) return;
     dir = nextDir;
     var head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
-    if (head.x < 0 || head.x >= GRID || head.y < 0 || head.y >= GRID ||
-        snake.some(function (s) { return s.x === head.x && s.y === head.y; })) {
+    // 穿墙：从对面出现
+    if (head.x < 0) head.x = GRID - 1;
+    if (head.x >= GRID) head.x = 0;
+    if (head.y < 0) head.y = GRID - 1;
+    if (head.y >= GRID) head.y = 0;
+    if (snake.some(function (s) { return s.x === head.x && s.y === head.y; })) {
       over = true;
       clearInterval(timer);
       draw();
@@ -172,6 +209,21 @@
       arrowright: { x: 1, y: 0 }, d: { x: 1, y: 0 }
     };
     if (map[k]) { e.preventDefault(); turn(map[k]); }
+  });
+
+  // 屏幕方向键（pointerdown 响应最快，适合手机）
+  var DIRS = {
+    up: { x: 0, y: -1 },
+    down: { x: 0, y: 1 },
+    left: { x: -1, y: 0 },
+    right: { x: 1, y: 0 }
+  };
+  Array.prototype.forEach.call(document.querySelectorAll('.dbtn'), function (btn) {
+    var d = DIRS[btn.getAttribute('data-dir')];
+    btn.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      turn(d);
+    });
   });
 
   // 手机滑动
