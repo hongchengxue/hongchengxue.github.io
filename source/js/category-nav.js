@@ -17,7 +17,7 @@
     });
     if (!segs.length) return;
 
-    var page = document.querySelector('#page');
+    var page = document.querySelector('#category, #page');
     if (!page) return;
 
     var bc = document.createElement('div');
