@@ -85,9 +85,20 @@
 /* ============================================
    导航栏常驻搜索框
    ============================================ */
+/* ============================================
+   导航栏常驻搜索框
+   ============================================ */
+/* 让菜单区强制横向排列（搜索框 + 按钮 + 菜单项同一行） */
+#page-header #nav #menus {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
 #nav-search-wrap {
   position: relative;
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   vertical-align: middle;
   margin-right: 10px;
