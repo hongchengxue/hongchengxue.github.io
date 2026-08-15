@@ -1,224 +1,254 @@
 /* ============================================
-   搜索框美化：毛玻璃圆角药丸风格
+   搜索样式：导航栏内嵌搜索框 + 搜索结果页
    ============================================ */
 
-/* ---------- 搜索弹窗卡片：毛玻璃 + 大圆角 + 柔和阴影 ---------- */
-#local-search .search-dialog {
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(24px) saturate(1.6);
-  -webkit-backdrop-filter: blur(24px) saturate(1.6);
-  box-shadow: 0 18px 50px rgba(31, 38, 55, 0.22);
-}
-
-/* ---------- 搜索输入框：无边框药丸 + 放大镜图标 ---------- */
-#local-search .local-search-input input {
-  height: 54px;
-  padding: 0 22px 0 52px;
-  border: 1px solid rgba(31, 38, 55, 0.08);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.85) url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%239aa3b2'%20stroke-width='2'%20stroke-linecap='round'%3E%3Ccircle%20cx='11'%20cy='11'%20r='7'/%3E%3Cline%20x1='21'%20y1='21'%20x2='16.5'%20y2='16.5'/%3E%3C/svg%3E") no-repeat 18px center / 22px 22px;
-  font-size: 1.05rem;
-  color: #1f2637;
-  box-shadow: 0 4px 16px rgba(31, 38, 55, 0.1);
-  transition: box-shadow 0.25s ease, background-color 0.25s ease;
-}
-
-#local-search .local-search-input input::placeholder {
-  color: #9aa3b2;
-}
-
-/* 聚焦时：蓝色光环 */
-#local-search .local-search-input input:focus {
-  background-color: #ffffff;
-  box-shadow: 0 4px 20px rgba(66, 133, 244, 0.25), 0 0 0 4px rgba(66, 133, 244, 0.12);
-}
-
-/* ---------- 搜索结果：标题悬停色 ---------- */
-#local-search .search-result-list a:hover {
-  color: #4285f4;
-}
-
-/* ---------- 导航栏的搜索按钮：小胶囊 ---------- */
-#search-button .search {
-  padding: 6px 14px;
-  border-radius: 999px;
-  transition: background 0.2s ease;
-}
-
-#search-button .search:hover {
-  background: rgba(128, 128, 128, 0.15);
-}
-
-/* ---------- 深色模式适配 ---------- */
-[data-theme='dark'] #local-search .search-dialog {
-  border-color: rgba(255, 255, 255, 0.08);
-  background: rgba(22, 24, 30, 0.8);
-}
-
-[data-theme='dark'] #local-search .local-search-input input {
-  border-color: rgba(255, 255, 255, 0.1);
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #e6e8ee;
-}
-
-[data-theme='dark'] #local-search .local-search-input input:focus {
-  background-color: rgba(255, 255, 255, 0.12);
-}
-
-[data-theme='dark'] #local-search .local-search-input input::placeholder {
-  color: #6b7280;
-}
-
-/* ---------- 分隔线：去掉剪刀图标，换成干净的细线 ---------- */
-#local-search .search-dialog hr {
-  margin: 18px auto;
-  border: 1px solid rgba(31, 38, 55, 0.08);
-}
-
-#local-search .search-dialog hr::before {
+/* ---------- 隐藏原放大镜按钮 ---------- */
+#search-button {
   display: none !important;
-  content: none !important;
 }
 
-/* ============================================
-   导航栏常驻搜索框
-   ============================================ */
-/* ============================================
-   导航栏常驻搜索框
-   ============================================ */
-/* 让菜单区强制横向排列（搜索框 + 按钮 + 菜单项同一行） */
-#page-header #nav #menus {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-}
-
+/* ---------- 导航栏搜索框：药丸容器 ---------- */
 #nav-search-wrap {
   position: relative;
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
-  vertical-align: middle;
   margin-right: 10px;
-}
-
-#nav-search-input {
-  width: 180px;
-  height: 36px;
-  padding: 0 16px;
+  height: 38px;
   border: 1px solid rgba(31, 38, 55, 0.1);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  font-size: 0.95rem;
-  color: #1f2637;
-  outline: none;
   box-shadow: 0 2px 10px rgba(31, 38, 55, 0.06);
-  transition: width 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  transition: box-shadow 0.25s ease, background-color 0.25s ease;
 }
 
-#nav-search-input:focus {
-  width: 250px;
+#nav-search-input {
+  width: 200px;
+  height: 100%;
+  padding: 0 42px 0 16px;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.95rem;
+  color: #1f2637;
+  transition: width 0.25s ease;
+}
+
+#nav-search-wrap:focus-within {
   background: #ffffff;
   box-shadow: 0 2px 14px rgba(66, 133, 244, 0.2), 0 0 0 3px rgba(66, 133, 244, 0.12);
+}
+
+#nav-search-wrap:focus-within #nav-search-input {
+  width: 250px;
 }
 
 #nav-search-input::placeholder {
   color: #9aa3b2;
 }
 
-#nav-search-dropdown {
-  display: none;
+/* 内嵌搜索按钮：藏在药丸内部右侧，点击/输入后浮现 */
+#nav-search-submit {
   position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  width: 330px;
-  max-height: 420px;
-  overflow-y: auto;
-  padding: 8px;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(31, 38, 55, 0.06);
-  border-radius: 16px;
-  box-shadow: 0 16px 40px rgba(31, 38, 55, 0.18);
+  right: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: #4285f4;
+  color: #ffffff;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.6);
+  transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
 }
 
-#nav-search-dropdown.show {
-  display: block;
+#nav-search-wrap:focus-within #nav-search-submit,
+#nav-search-wrap.has-value #nav-search-submit {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
 }
 
-.nav-search-item {
-  display: block;
-  padding: 10px 12px;
-  border-radius: 10px;
-  text-decoration: none;
+#nav-search-submit:hover {
+  background: #2f6fe0;
 }
 
-.nav-search-item:hover,
-.nav-search-item.active {
-  background: rgba(66, 133, 244, 0.08);
+/* ---------- 搜索结果页 ---------- */
+#search-page {
+  max-width: 760px;
+  margin: 0 auto;
 }
 
-.nav-search-title {
-  display: block;
+.search-page-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 10px 0 26px;
+  height: 52px;
+  border: 1px solid rgba(31, 38, 55, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 6px 20px rgba(31, 38, 55, 0.08);
+  transition: box-shadow 0.25s ease;
+}
+
+.search-page-input-wrap:focus-within {
+  box-shadow: 0 6px 24px rgba(66, 133, 244, 0.22), 0 0 0 3px rgba(66, 133, 244, 0.12);
+}
+
+#search-page-input {
+  flex: 1;
+  height: 100%;
+  padding: 0 18px;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 1.02rem;
   color: #1f2637;
-  font-weight: 600;
-  font-size: 0.95rem;
 }
 
-.nav-search-snippet {
-  display: block;
-  margin-top: 2px;
-  color: #6b7280;
-  font-size: 0.82rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.nav-search-empty {
-  padding: 16px;
-  text-align: center;
+#search-page-input::placeholder {
   color: #9aa3b2;
+}
+
+#search-page-btn {
+  margin-right: 6px;
+  padding: 0 20px;
+  height: 40px;
+  border: none;
+  border-radius: 999px;
+  background: #4285f4;
+  color: #ffffff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#search-page-btn:hover {
+  background: #2f6fe0;
+}
+
+.search-page-stats {
+  margin-bottom: 14px;
+  color: #6b7280;
   font-size: 0.9rem;
 }
 
-/* 手机屏幕隐藏常驻搜索框（空间不够，仍可用放大镜按钮） */
+.search-page-empty {
+  padding: 40px 0;
+  text-align: center;
+  color: #9aa3b2;
+}
+
+.search-page-item {
+  display: block;
+  margin-bottom: 14px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(31, 38, 55, 0.06);
+  box-shadow: 0 2px 10px rgba(31, 38, 55, 0.05);
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-page-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(31, 38, 55, 0.12);
+}
+
+.search-page-title {
+  display: block;
+  color: #1f2637;
+  font-weight: 600;
+  font-size: 1.02rem;
+}
+
+.search-page-snippet {
+  display: block;
+  margin-top: 6px;
+  color: #6b7280;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.search-page-item mark {
+  background: #ffe08a;
+  color: inherit;
+  padding: 0 2px;
+  border-radius: 3px;
+}
+
+.search-page-cat {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(66, 133, 244, 0.1);
+  color: #4285f4;
+  font-size: 0.78rem;
+}
+
+/* ---------- 手机 ---------- */
 @media (max-width: 768px) {
   #nav-search-wrap {
     display: none;
   }
+
+  .search-page-input-wrap {
+    height: 48px;
+  }
+
+  #search-page-btn {
+    padding: 0 14px;
+  }
 }
 
-/* 深色模式 */
-[data-theme='dark'] #nav-search-input {
+/* ---------- 深色模式 ---------- */
+[data-theme='dark'] #nav-search-wrap {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.12);
-  color: #e6e8ee;
 }
 
-[data-theme='dark'] #nav-search-input:focus {
+[data-theme='dark'] #nav-search-wrap:focus-within {
   background: rgba(255, 255, 255, 0.12);
 }
 
-[data-theme='dark'] #nav-search-dropdown {
-  background: rgba(30, 32, 38, 0.96);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-[data-theme='dark'] .nav-search-title {
+[data-theme='dark'] #nav-search-input {
   color: #e6e8ee;
 }
 
-[data-theme='dark'] .nav-search-snippet {
+[data-theme='dark'] .search-page-input-wrap {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme='dark'] #search-page-input {
+  color: #e6e8ee;
+}
+
+[data-theme='dark'] .search-page-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] .search-page-title {
+  color: #e6e8ee;
+}
+
+[data-theme='dark'] .search-page-snippet {
   color: #8b93a3;
 }
 
-[data-theme='dark'] .nav-search-item:hover,
-[data-theme='dark'] .nav-search-item.active {
-  background: rgba(66, 133, 244, 0.15);
+[data-theme='dark'] .search-page-item mark {
+  background: rgba(255, 214, 102, 0.35);
 }
