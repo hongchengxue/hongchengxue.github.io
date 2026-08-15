@@ -18,6 +18,27 @@ hexo.extend.generator.register('site-stats', function (locals) {
     };
   });
 
+  // 全部分类路径（含父子层级，如 "生活随笔/旅行"）
+  var catPaths = [];
+  var seenCat = {};
+  function fullPath(c) {
+    var parts = [];
+    var cur = c;
+    while (cur) {
+      parts.unshift(cur.name);
+      cur = cur.parent || null;
+    }
+    return parts.join('/');
+  }
+  locals.categories.forEach(function (c) {
+    var p = fullPath(c);
+    if (!seenCat[p]) {
+      seenCat[p] = true;
+      catPaths.push(p);
+    }
+  });
+  catPaths.sort();
+
   // 全部文章（用于"全部"页侧边栏的按年月日折叠列表）
   var all = locals.posts.sort('-date').map(function (p) {
     return {
@@ -36,6 +57,7 @@ hexo.extend.generator.register('site-stats', function (locals) {
       total: locals.posts.length,
       tags: tags,
       categories: categories,
+      catPaths: catPaths,
       recent: recent,
       all: all
     })

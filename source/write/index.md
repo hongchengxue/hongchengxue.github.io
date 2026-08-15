@@ -18,18 +18,31 @@ comments: false
   <div class="write-card" id="write-new-card">
     <div class="write-row">
       <input id="write-title" placeholder="文章标题" autocomplete="off">
-      <input id="write-cat" placeholder="分类（如：技术文章）" autocomplete="off">
+      <div class="write-cat-box">
+        <select id="write-cat-select">
+          <option value="">— 分类（可选） —</option>
+          <option value="__new__">＋ 新建分类…</option>
+        </select>
+      </div>
       <input id="write-tags" placeholder="标签（逗号分隔，如：Hexo,教程）" autocomplete="off">
     </div>
-    <div class="write-row">
+    <div class="write-row" id="write-cat-new" hidden>
+      <div class="write-cat-box">
+        <select id="write-cat-parent">
+          <option value="">无父级（顶级分类）</option>
+        </select>
+      </div>
+      <input id="write-cat-name" placeholder="新分类名（如：旅行）" autocomplete="off">
+      <span class="write-cat-tip">选择已有分类作为父级即创建子分类</span>
+    </div>
+    <div class="write-editor-row">
       <textarea id="write-content" placeholder="正文，支持 Markdown 语法……"></textarea>
+      <div id="write-preview" class="write-preview"><div class="write-preview-empty">实时预览区：输入正文后自动渲染</div></div>
     </div>
     <div class="write-actions">
-      <button id="write-preview-btn" type="button">预览</button>
       <button id="write-save" type="button">发布 / 保存</button>
       <button id="write-new-btn" type="button">清空新建</button>
     </div>
-    <div id="write-preview" class="write-preview" hidden></div>
   </div>
 
   <div class="write-card">
