@@ -694,7 +694,7 @@ knocket:
 # --------------------------------------
 
 # https://tongji.baidu.com/web/welcome/login
-baidu_analytics:
+baidu_analytics:f61d14621a825c62877cadd2a41848d0
 
 # https://analytics.google.com/analytics/web/
 google_analytics:
