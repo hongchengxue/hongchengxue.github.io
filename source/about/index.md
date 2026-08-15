@@ -15,6 +15,7 @@ comments: false
         <div class="about-contact">
           <a href="https://github.com/hongchengxue" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>
           <a href="mailto:your-email@example.com"><i class="fas fa-envelope"></i> Email</a>
+          <a href="/archives/"><i class="fas fa-ellipsis-h"></i> more</a>
         </div>
       </div>
     </div>
