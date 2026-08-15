@@ -64,7 +64,19 @@
 
   function injectArchivesWidget() {
     var aside = document.getElementById('aside-content');
-    if (!aside || document.getElementById('card-all-articles')) return;
+    if (!aside) return;
+
+    // "分类"卡片标题可点击 → 分类页
+    var catHead = aside.querySelector('.card-categories .item-headline span');
+    if (catHead && !document.querySelector('.card-cat-title-link')) {
+      var a = document.createElement('a');
+      a.href = '/categories/';
+      a.className = 'card-cat-title-link';
+      a.textContent = catHead.textContent;
+      catHead.parentNode.replaceChild(a, catHead);
+    }
+
+    if (document.getElementById('card-all-articles')) return;
 
     var card = document.createElement('div');
     card.className = 'card-widget';

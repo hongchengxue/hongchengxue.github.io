@@ -387,6 +387,21 @@ html.about-aside #aside-content .card-categories {
   display: none;
 }
 
+/* 移除菜单悬停时的底部移动蓝条 */
+#page-header #nav .site-page:not(.child)::after {
+  display: none;
+}
+
+/* "文章"页侧边栏分类标题可点击 */
+.card-cat-title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.card-cat-title-link:hover {
+  color: #4285f4;
+}
+
 /* 可点击的统计块 */
 .about-stat-link {
   text-decoration: none;
