@@ -1226,6 +1226,65 @@ html.about-aside #aside-content .card-categories {
   background: rgba(255, 255, 255, 0.04);
 }
 
+/* ---------- 分类面包屑 ---------- */
+.cat-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 16px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  font-size: 0.9rem;
+}
+
+.cat-breadcrumb a {
+  color: #4285f4;
+  text-decoration: none;
+}
+
+.cat-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.cat-bc-sep {
+  color: #9aa3b2;
+}
+
+.cat-bc-current {
+  color: #1f2637;
+  font-weight: 600;
+}
+
+.cat-bc-back {
+  margin-left: 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #4285f4, #2f6fe0);
+  color: #ffffff !important;
+  font-size: 0.85rem;
+}
+
+.cat-bc-back:hover {
+  text-decoration: none !important;
+  opacity: 0.9;
+}
+
+[data-theme='dark'] .cat-breadcrumb {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme='dark'] .cat-bc-current {
+  color: #e6e8ee;
+}
+
 /* ---------- 游戏/工具 卡片区 ---------- */
 .hub-grid {
   display: grid;
