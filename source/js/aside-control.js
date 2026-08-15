@@ -103,7 +103,7 @@
     if (allData) {
       render(allData);
     } else {
-      fetch('/site-stats.json')
+      fetch('/site-stats.json?t=' + Date.now())
         .then(function (r) { return r.json(); })
         .then(function (d) {
           allData = d.all;

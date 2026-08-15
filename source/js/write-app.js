@@ -127,7 +127,7 @@
   }
 
   function loadCatPaths() {
-    fetch('/site-stats.json')
+    fetch('/site-stats.json?t=' + Date.now())
       .then(function (r) { return r.json(); })
       .then(function (d) {
         catPaths = d.catPaths || [];
