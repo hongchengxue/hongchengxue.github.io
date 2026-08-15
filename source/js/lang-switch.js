@@ -13,6 +13,7 @@
     '游戏': 'Games',
     '工具': 'Tools',
     '全部': 'All',
+    '写作': 'Write',
     '网站信息': 'Website Info',
     '文章数目': 'Article Count',
     '最后更新时间': 'Last Update',
