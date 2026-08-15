@@ -14,8 +14,10 @@
   var el = null;
 
   function build() {
-    var inner = document.getElementById('content-inner');
-    if (!inner || document.getElementById('home-profile')) return;
+    var header = document.getElementById('page-header');
+    // 只注入到首页 hero（有壁纸和搜索框的区域），不放内容区
+    if (!header || !header.classList.contains('full_page')) return;
+    if (document.getElementById('home-profile')) return;
 
     el = document.createElement('div');
     el.id = 'home-profile';
@@ -42,7 +44,7 @@
         '<div class="tag-cloud-title"><i class="fas fa-tags"></i> 标签云</div>' +
         '<div class="tag-cloud" id="tag-cloud"></div>' +
       '</div>';
-    inner.insertBefore(el, inner.firstChild);
+    header.appendChild(el);
     loadStats();
   }
 

@@ -373,11 +373,22 @@
   color: #9ec5ff;
 }
 
-/* ---------- 首页个人卡片 + 标签云 ---------- */
-#home-profile {
-  margin: 0 auto 20px;
-  padding: 0 24px;
-  max-width: 1200px;
+/* ---------- 首页个人卡片 + 标签云（位于 hero 壁纸区域，搜索框下方） ---------- */
+#page-header.full_page #home-profile {
+  position: absolute;
+  top: 224px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 832px;
+  max-width: calc(100vw - 48px);
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  #page-header.full_page #home-profile {
+    top: 96px;
+  }
 }
 
 .profile-card {
