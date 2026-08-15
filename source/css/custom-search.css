@@ -146,19 +146,6 @@
   width: auto;
 }
 
-/* 玻璃折射高光（左上角光斑） */
-#page-header #nav .menus_items .site-page::before {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 14%;
-  width: 32%;
-  height: 36%;
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
-  pointer-events: none;
-}
-
 /* 悬停：折射增强（与 ABOUT 按钮一致） */
 #page-header #nav .menus_items .site-page:hover {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.14));
@@ -273,18 +260,6 @@
     0 4px 16px rgba(31, 38, 55, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
   transition: all 0.25s ease;
-}
-
-#lang-btn::before {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 12%;
-  width: 30%;
-  height: 38%;
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0));
-  pointer-events: none;
 }
 
 #lang-btn:hover {
