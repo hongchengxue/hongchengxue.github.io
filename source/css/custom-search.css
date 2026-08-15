@@ -175,7 +175,7 @@
     0 4px 16px rgba(31, 38, 55, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.55);
   transition: all 0.25s ease;
-  font-size: 0.84em;
+  font-size: 0.78em;
 }
 
 /* 图标不占固定宽度，进一步压缩 */
@@ -188,11 +188,11 @@
   content: '';
   position: absolute;
   top: 2px;
-  left: 10%;
-  width: 46%;
-  height: 46%;
+  left: 14%;
+  width: 32%;
+  height: 36%;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
   pointer-events: none;
 }
 
@@ -224,7 +224,7 @@
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.08));
   -webkit-backdrop-filter: blur(14px) saturate(1.6);
   backdrop-filter: blur(14px) saturate(1.6);
-  font-size: 0.78em;
+  font-size: 0.86em;
   cursor: pointer;
   outline: none;
   box-shadow:
@@ -237,11 +237,11 @@
   content: '';
   position: absolute;
   top: 2px;
-  left: 10%;
-  width: 46%;
-  height: 46%;
+  left: 12%;
+  width: 30%;
+  height: 38%;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0));
   pointer-events: none;
 }
 
