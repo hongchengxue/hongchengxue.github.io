@@ -23,7 +23,10 @@
     '<div class="lang-option" data-lang="zh">简体中文</div>' +
     '<div class="lang-option" data-lang="en">English</div>' +
     '</div>';
-  menus.insertBefore(wrap, menusItems ? menusItems.nextSibling : null);
+  // 语言按钮放在搜索框之后（若有），否则菜单项之后
+  var searchWrap = document.getElementById('nav-search-wrap');
+  var after = searchWrap || menusItems || null;
+  menus.insertBefore(wrap, after ? after.nextSibling : null);
 
   // ---------- 词典 ----------
   var ZH2EN = {

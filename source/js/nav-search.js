@@ -26,10 +26,14 @@
     if (!header || !menus) return;
     if (header.classList.contains('full_page')) {
       if (wrap.parentNode !== header) header.appendChild(wrap);
-    } else if (wrap.parentNode !== menus) {
-      // 非主页：放在菜单项之后（左侧按钮群末尾、语言选择之前）
+    } else {
+      // 非主页：菜单项之后、语言按钮之前
       var menusItems = menus.querySelector('.menus_items');
-      menus.insertBefore(wrap, menusItems ? menusItems.nextSibling : null);
+      var langWrap = document.getElementById('lang-wrap');
+      var before = langWrap || (menusItems ? menusItems.nextSibling : null);
+      if (wrap.parentNode !== menus || wrap.nextSibling !== before) {
+        menus.insertBefore(wrap, before);
+      }
     }
   }
 
