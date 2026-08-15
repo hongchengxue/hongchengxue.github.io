@@ -1,0 +1,52 @@
+# 网站自动构建与部署：每次提交到 main 分支，自动生成网站并发布到 GitHub Pages
+name: 部署到 GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # 允许在 GitHub 网页上手动点击运行
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 下载 Butterfly 主题
+        run: |
+          git clone --depth 1 --branch 5.7.0 https://github.com/jerryc127/hexo-theme-butterfly themes/butterfly
+          ls themes/butterfly
+
+      - name: 构建网站
+        run: npx hexo generate
+
+      - name: 配置 Pages
+        uses: actions/configure-pages@v5
+
+      - name: 上传构建产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+      - name: 发布到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
