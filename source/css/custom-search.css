@@ -159,12 +159,12 @@
   pointer-events: none;
 }
 
-/* 悬停：折射增强 */
+/* 悬停：折射增强（与 ABOUT 按钮一致） */
 #page-header #nav .menus_items .site-page:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.12));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.14));
   box-shadow:
     0 6px 20px rgba(31, 38, 55, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
 /* ---------- 导航布局：隐藏 Welcome，菜单靠左，语言靠右 ---------- */
