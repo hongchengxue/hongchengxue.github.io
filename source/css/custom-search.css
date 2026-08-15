@@ -70,3 +70,13 @@
 [data-theme='dark'] #local-search .local-search-input input::placeholder {
   color: #6b7280;
 }
+
+/* ---------- 分隔线：去掉剪刀图标，换成干净的细线 ---------- */
+#local-search .search-dialog hr {
+  margin: 18px auto;
+  border: 1px solid rgba(31, 38, 55, 0.08);
+}
+
+#local-search .search-dialog hr::before {
+  display: none;
+}
