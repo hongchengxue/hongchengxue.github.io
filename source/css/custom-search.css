@@ -87,8 +87,9 @@
    ============================================ */
 #nav-search-wrap {
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  vertical-align: middle;
   margin-right: 10px;
 }
 
