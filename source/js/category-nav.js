@@ -12,7 +12,10 @@
     if (old && old.parentNode) old.parentNode.removeChild(old);
     if (!m) return;
 
-    var segs = m[1].split('/').filter(Boolean).map(function (s) {
+    var segs = m[1].split('/').filter(function (s) {
+      var t = s.toLowerCase();
+      return s && t !== 'index.html' && t !== 'index.htm';
+    }).map(function (s) {
       try { return decodeURIComponent(s); } catch (e) { return s; }
     });
     if (!segs.length) return;
@@ -30,7 +33,7 @@
       html += '<span class="cat-bc-sep">/</span><a href="' + parentPath + '">' + segs[i] + '</a>';
     }
     html += '<span class="cat-bc-sep">/</span><span class="cat-bc-current">' + segs[segs.length - 1] + '</span>';
-    html += '<a class="cat-bc-back" href="' + (segs.length > 1 ? parentPath : '/categories/') + '">← 返回上一级</a>';
+    html += '<a class="cat-bc-back" href="' + (segs.length > 1 ? parentPath : '/categories/') + '">' + (segs.length > 1 ? '← 返回上一级' : '← 返回全部分类') + '</a>';
 
     bc.innerHTML = html;
     page.insertBefore(bc, page.firstChild);
