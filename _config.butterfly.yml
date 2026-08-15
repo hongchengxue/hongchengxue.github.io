@@ -292,9 +292,9 @@ aside:
     description: 记录技术与生活的知识库
     button:
       enable: true
-      icon: fab fa-github
-      text: Follow Me
-      link: https://github.com/hongchengxue
+      icon: fas fa-user
+      text: 更多关于我
+      link: /about/
   card_announcement:
     enable: true
     content: 欢迎来到我的知识库 🎉
