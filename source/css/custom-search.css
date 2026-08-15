@@ -136,23 +136,79 @@
   display: none;
 }
 
-/* ---------- 语言切换下拉框 ---------- */
+/* ============================================
+   导航栏液态玻璃质感
+   ============================================ */
+
+/* 菜单项：玻璃胶囊 */
+#page-header #nav .menus_items .menus_item {
+  padding: 0 0 0 10px;
+}
+
+#page-header #nav .menus_items .site-page {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.06));
+  -webkit-backdrop-filter: blur(14px) saturate(1.6);
+  backdrop-filter: blur(14px) saturate(1.6);
+  box-shadow:
+    0 4px 16px rgba(31, 38, 55, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  transition: all 0.25s ease;
+}
+
+/* 玻璃折射高光（左上角光斑） */
+#page-header #nav .menus_items .site-page::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 10%;
+  width: 46%;
+  height: 46%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+/* 悬停：折射增强 */
+#page-header #nav .menus_items .site-page:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.12));
+  box-shadow:
+    0 6px 20px rgba(31, 38, 55, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* ---------- 语言切换下拉框：液态玻璃 ---------- */
 #lang-select {
-  margin-left: 14px;
-  padding: 4px 8px;
-  border: 1px solid rgba(128, 128, 128, 0.45);
-  border-radius: 8px;
-  background: transparent;
+  position: relative;
+  margin-left: 10px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.08));
+  -webkit-backdrop-filter: blur(14px) saturate(1.6);
+  backdrop-filter: blur(14px) saturate(1.6);
   color: inherit;
   font-size: 0.85em;
   cursor: pointer;
   outline: none;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  box-shadow:
+    0 4px 16px rgba(31, 38, 55, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: all 0.25s ease;
 }
 
 #lang-select:hover {
-  border-color: rgba(128, 128, 128, 0.8);
-  background: rgba(128, 128, 128, 0.12);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.14));
+  box-shadow:
+    0 6px 20px rgba(31, 38, 55, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
 #lang-select option {
