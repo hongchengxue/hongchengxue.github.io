@@ -19,21 +19,15 @@
     '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>' +
     '</button>';
 
-  // ---------- 位置管理：首页移到英雄区（脱离菜单，避免干扰折叠检测），其他页面放回导航 ----------
+  // ---------- 位置管理：所有页面统一放在菜单项之后、语言按钮之前 ----------
   function positionWrap() {
-    var header = document.getElementById('page-header');
     var menus = document.getElementById('menus');
-    if (!header || !menus) return;
-    if (header.classList.contains('full_page')) {
-      if (wrap.parentNode !== header) header.appendChild(wrap);
-    } else {
-      // 非主页：菜单项之后、语言按钮之前
-      var menusItems = menus.querySelector('.menus_items');
-      var langWrap = document.getElementById('lang-wrap');
-      var before = langWrap || (menusItems ? menusItems.nextSibling : null);
-      if (wrap.parentNode !== menus || wrap.nextSibling !== before) {
-        menus.insertBefore(wrap, before);
-      }
+    if (!menus) return;
+    var menusItems = menus.querySelector('.menus_items');
+    var langWrap = document.getElementById('lang-wrap');
+    var before = langWrap || (menusItems ? menusItems.nextSibling : null);
+    if (wrap.parentNode !== menus || wrap.nextSibling !== before) {
+      menus.insertBefore(wrap, before);
     }
   }
 
