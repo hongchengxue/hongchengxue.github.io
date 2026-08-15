@@ -439,6 +439,72 @@ html.about-aside #aside-content .card-categories {
   display: none;
 }
 
+/* ---------- 页脚和谐化：透明背景 + 协调配色 ---------- */
+#footer {
+  background-color: transparent;
+}
+
+#footer > * {
+  color: #8b93a3;
+}
+
+#footer a {
+  color: #4285f4;
+}
+
+#footer a:hover {
+  color: #2f6fe0;
+}
+
+/* ---------- 夜间模式切换按钮（右上角） ---------- */
+#rightside #darkmode {
+  display: none;
+}
+
+#darkmode-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 7px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.08));
+  -webkit-backdrop-filter: blur(14px) saturate(1.6);
+  backdrop-filter: blur(14px) saturate(1.6);
+  color: #f5f7fa;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  font-size: 0.82em;
+  cursor: pointer;
+  outline: none;
+  box-shadow:
+    0 4px 16px rgba(31, 38, 55, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: all 0.25s ease;
+}
+
+#darkmode-nav:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.14));
+  box-shadow:
+    0 6px 20px rgba(31, 38, 55, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+#page-header.nav-fixed #nav #darkmode-nav,
+#page-header.not-top-img #nav #darkmode-nav {
+  color: #1f2637;
+  text-shadow: none;
+}
+
+#page-header #nav #darkmode-nav {
+  order: 5;
+}
+
+#page-header #nav #toggle-menu {
+  order: 6;
+}
+
 /* 可点击的统计块 */
 .about-stat-link {
   text-decoration: none;

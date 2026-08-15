@@ -150,13 +150,39 @@
       aboutBtn.innerHTML = '<i class="fas fa-user fa-fw"></i><span> ABOUT</span>';
     }
 
-    // 固定顺序：菜单项 → 搜索框 → ABOUT → 语言
+    // 夜间模式切换按钮（最右）：复用主题 rightside 的切换逻辑
+    var dmBtn = document.getElementById('darkmode-nav');
+    var dmFresh = false;
+    if (!dmBtn) {
+      dmBtn = document.createElement('button');
+      dmBtn.id = 'darkmode-nav';
+      dmBtn.type = 'button';
+      dmBtn.title = '日间和夜间模式切换';
+      dmBtn.innerHTML = '<i class="fas fa-moon fa-fw"></i>';
+      dmFresh = true;
+    }
+
+    // 固定顺序：菜单项 → 搜索框 → ABOUT → 语言 → 夜间切换
     var searchWrap = document.getElementById('nav-search-wrap');
     menus.appendChild(wrap);
     menus.insertBefore(aboutBtn, wrap);
     if (searchWrap && searchWrap.parentNode === menus) {
       menus.insertBefore(searchWrap, aboutBtn);
     }
+    menus.appendChild(dmBtn);
+
+    if (dmFresh) {
+      dmBtn.addEventListener('click', function () {
+        var origin = document.getElementById('darkmode');
+        if (origin) origin.click();
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        var icon = dmBtn.querySelector('i');
+        if (icon) icon.className = isDark ? 'fas fa-sun fa-fw' : 'fas fa-moon fa-fw';
+      });
+    }
+    var isDarkNow = document.documentElement.getAttribute('data-theme') === 'dark';
+    var dmIcon = dmBtn.querySelector('i');
+    if (dmIcon) dmIcon.className = isDarkNow ? 'fas fa-sun fa-fw' : 'fas fa-moon fa-fw';
 
     if (freshLang) {
       var btn = wrap.querySelector('#lang-btn');
