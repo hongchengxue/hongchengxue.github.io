@@ -361,7 +361,7 @@
 }
 
 /* ---------- ABOUT 页 ---------- */
-/* 侧边栏仅 ABOUT 页显示：其余页面隐藏侧栏并让内容居中占宽 */
+/* 侧边栏仅 ABOUT 页与"全部"页显示：其余页面隐藏侧栏并让内容居中占宽 */
 html.hide-aside .layout {
   justify-content: center;
 }
@@ -373,6 +373,96 @@ html.hide-aside .layout > .aside-content {
 html.hide-aside .layout > div:first-child {
   width: 100%;
   max-width: 900px;
+}
+
+/* "全部"页侧边栏：只保留分类卡（隐藏公告/归档卡，标签卡已全局关闭） */
+html.archives-aside #aside-content .card-announcement,
+html.archives-aside #aside-content .card-archives {
+  display: none;
+}
+
+/* 全部文章折叠列表 */
+.all-articles-tree {
+  padding: 0 8px 8px;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.all-articles-tree summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 2px;
+  font-size: 0.92rem;
+  color: #1f2637;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.all-articles-tree summary::before {
+  content: '▸';
+  color: #9aa3b2;
+  font-size: 0.8rem;
+  transition: transform 0.2s ease;
+}
+
+.all-articles-tree details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.aa-count {
+  color: #9aa3b2;
+  font-size: 0.78rem;
+}
+
+.aa-year > summary {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.aa-month {
+  margin-left: 10px;
+}
+
+.aa-month > summary {
+  font-weight: 600;
+}
+
+.aa-day {
+  margin-left: 20px;
+}
+
+.aa-day > summary {
+  color: #6b7280;
+}
+
+.aa-item {
+  display: block;
+  margin-left: 30px;
+  padding: 3px 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #4b5563;
+  font-size: 0.88rem;
+  text-decoration: none;
+}
+
+.aa-item:hover {
+  color: #4285f4;
+}
+
+[data-theme='dark'] .all-articles-tree summary {
+  color: #e6e8ee;
+}
+
+[data-theme='dark'] .aa-day > summary {
+  color: #8b93a3;
+}
+
+[data-theme='dark'] .aa-item {
+  color: #8b93a3;
 }
 
 #about-page {

@@ -18,13 +18,26 @@ hexo.extend.generator.register('site-stats', function (locals) {
     };
   });
 
+  // 全部文章（用于"全部"页侧边栏的按年月日折叠列表）
+  var all = locals.posts.sort('-date').map(function (p) {
+    return {
+      title: p.title,
+      url: '/' + p.path,
+      date: p.date.format('YYYY-MM-DD'),
+      year: String(p.date.year()),
+      month: String(p.date.month() + 1).padStart(2, '0'),
+      day: String(p.date.date()).padStart(2, '0')
+    };
+  });
+
   return {
     path: 'site-stats.json',
     data: JSON.stringify({
       total: locals.posts.length,
       tags: tags,
       categories: categories,
-      recent: recent
+      recent: recent,
+      all: all
     })
   };
 });

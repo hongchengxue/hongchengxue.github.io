@@ -31,11 +31,6 @@ comments: false
   </div>
 
   <div class="about-card">
-    <div class="about-section-title"><i class="fas fa-bullhorn"></i> 公告</div>
-    <div class="about-announce">欢迎来到我的知识库 🎉 本站持续更新中，感谢你的到访～</div>
-  </div>
-
-  <div class="about-card">
     <div class="about-section-title"><i class="fas fa-tags"></i> 标签云</div>
     <div class="tag-cloud" id="about-tag-cloud"></div>
   </div>
