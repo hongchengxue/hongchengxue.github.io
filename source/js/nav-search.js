@@ -18,7 +18,24 @@
     '<button id="nav-search-submit" type="button" aria-label="搜索">' +
     '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>' +
     '</button>';
-  btn.parentNode.insertBefore(wrap, btn);
+
+  // ---------- 位置管理：首页移到英雄区（脱离菜单，避免干扰折叠检测），其他页面放回导航 ----------
+  function positionWrap() {
+    var header = document.getElementById('page-header');
+    var menus = document.getElementById('menus');
+    var searchBtn = document.getElementById('search-button');
+    if (!header || !menus) return;
+    if (header.classList.contains('full_page')) {
+      if (wrap.parentNode !== header) header.appendChild(wrap);
+    } else if (searchBtn && searchBtn.parentNode === menus && wrap.parentNode !== menus) {
+      menus.insertBefore(wrap, searchBtn);
+    }
+  }
+
+  positionWrap();
+  if (window.btf && btf.addGlobalFn) {
+    btf.addGlobalFn('pjaxComplete', positionWrap, 'nav-search-position');
+  }
 
   var input = wrap.querySelector('input');
   var submit = wrap.querySelector('button');

@@ -116,19 +116,6 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-/* 玻璃折射高光 */
-#page-header.full_page #nav-search-wrap::before {
-  content: '';
-  position: absolute;
-  top: 3px;
-  left: 12%;
-  width: 50%;
-  height: 42%;
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
-  pointer-events: none;
-}
-
 #page-header.full_page #nav-search-wrap:focus-within {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.14));
   box-shadow:
@@ -169,15 +156,15 @@
 
 /* 菜单项：玻璃胶囊（紧凑版，保证水平排列） */
 #page-header #nav .menus_items .menus_item {
-  padding: 0 0 0 7px;
+  padding: 0 0 0 5px;
 }
 
 #page-header #nav .menus_items .site-page {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 11px;
+  gap: 4px;
+  padding: 4px 9px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 999px;
@@ -188,7 +175,12 @@
     0 4px 16px rgba(31, 38, 55, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.55);
   transition: all 0.25s ease;
-  font-size: 0.92em;
+  font-size: 0.84em;
+}
+
+/* 图标不占固定宽度，进一步压缩 */
+#page-header #nav .menus_items .site-page i.fa-fw {
+  width: auto;
 }
 
 /* 玻璃折射高光（左上角光斑） */
@@ -224,15 +216,15 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 11px;
+  gap: 5px;
+  padding: 4px 9px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: 999px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.08));
   -webkit-backdrop-filter: blur(14px) saturate(1.6);
   backdrop-filter: blur(14px) saturate(1.6);
-  font-size: 0.85em;
+  font-size: 0.78em;
   cursor: pointer;
   outline: none;
   box-shadow:
@@ -280,45 +272,78 @@
   transform: rotate(180deg);
 }
 
-/* 下拉面板：玻璃质感 */
+/* 下拉面板：液态玻璃 + 展开动画 */
 #lang-menu {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 10px);
   right: 0;
-  min-width: 136px;
-  padding: 6px;
-  display: none;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.88);
-  -webkit-backdrop-filter: blur(20px) saturate(1.6);
-  backdrop-filter: blur(20px) saturate(1.6);
+  min-width: 150px;
+  padding: 8px;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.96);
+  transform-origin: top right;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.42));
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  backdrop-filter: blur(24px) saturate(1.8);
   box-shadow:
-    0 12px 32px rgba(31, 38, 55, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    0 16px 40px rgba(31, 38, 55, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
 }
 
 #lang-wrap.open #lang-menu {
-  display: block;
+  visibility: visible;
+  opacity: 1;
+  transform: none;
 }
 
 .lang-option {
-  padding: 8px 12px;
-  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 12px;
+  border-radius: 10px;
   color: #1f2637;
   font-size: 0.9em;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: background-color 0.15s ease, transform 0.15s ease;
 }
 
 .lang-option:hover {
-  background: rgba(66, 133, 244, 0.1);
+  background: rgba(66, 133, 244, 0.12);
+  transform: translateX(2px);
+}
+
+/* 选项前的圆点指示器 */
+.lang-option::before {
+  content: '';
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c4cdd9;
+  transition: all 0.2s ease;
 }
 
 .lang-option.active {
-  background: rgba(66, 133, 244, 0.15);
+  background: linear-gradient(135deg, rgba(66, 133, 244, 0.18), rgba(66, 133, 244, 0.08));
   color: #2f6fe0;
   font-weight: 600;
+}
+
+.lang-option.active::before {
+  background: #4285f4;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.25);
+}
+
+/* 当前选项右侧的勾 */
+.lang-option.active::after {
+  content: '✓';
+  margin-left: auto;
+  color: #2f6fe0;
 }
 
 /* ---------- 游戏/工具 卡片区 ---------- */
