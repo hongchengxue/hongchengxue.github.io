@@ -56,6 +56,18 @@ npx hexo server
 
 浏览器打开 http://localhost:4000 预览。正式发布不需要这一步。
 
+## 🚀 用 VSCode + Git 管理（快速修改方式）
+
+日常小改动（改样式、改配置）不需要在网页上操作：
+
+1. 在 VSCode 中打开本项目文件夹
+2. 修改由 AI 助手完成并提交
+3. 在 VSCode「源代码管理」面板点击**同步更改**即可推送
+4. GitHub Actions 自动构建，1~2 分钟后网站更新
+
+> 如果 git 推送提示连不上 GitHub，说明代理软件没开，或需要在终端执行：
+> `git config --global http.proxy http://127.0.0.1:7897`
+
 ## 📖 更多资料
 
 - Butterfly 主题文档（中文）：https://butterfly.js.org/
