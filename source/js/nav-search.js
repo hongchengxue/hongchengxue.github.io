@@ -14,7 +14,7 @@
   var wrap = document.createElement('div');
   wrap.id = 'nav-search-wrap';
   wrap.innerHTML =
-    '<input id="nav-search-input" type="text" placeholder="搜索文章..." autocomplete="off">' +
+    '<input id="nav-search-input" type="text" placeholder="Attention Is All You Need" autocomplete="off">' +
     '<button id="nav-search-submit" type="button" aria-label="搜索">' +
     '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>' +
     '</button>';
