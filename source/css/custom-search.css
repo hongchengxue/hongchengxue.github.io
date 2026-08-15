@@ -907,22 +907,96 @@ html.about-aside #aside-content .card-categories {
   resize: vertical;
 }
 
-.write-cat-box select {
+.write-cat-box {
+  position: relative;
   flex: 1;
   min-width: 160px;
+}
+
+.write-cat-box > input {
+  width: 100%;
   padding: 9px 14px;
   border: 1px solid rgba(31, 38, 55, 0.12);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.8);
   color: #1f2637;
   outline: none;
+}
+
+/* 分类自定义面板 */
+.write-cat-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: none;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 14px 36px rgba(31, 38, 55, 0.2);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.write-cat-panel.open {
+  display: block;
+}
+
+.write-cat-panel-head {
+  margin-bottom: 6px;
+  color: #8b93a3;
+  font-size: 0.78rem;
+}
+
+.write-cat-option {
+  padding: 8px 12px;
+  border-radius: 9px;
+  color: #1f2637;
+  font-size: 0.9rem;
   cursor: pointer;
 }
 
-.write-cat-tip {
-  align-self: center;
+.write-cat-option:hover {
+  background: rgba(66, 133, 244, 0.12);
+}
+
+.write-cat-none {
+  padding: 8px 12px;
   color: #9aa3b2;
+  font-size: 0.88rem;
+}
+
+.write-cat-panel-new {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(31, 38, 55, 0.1);
+  color: #4285f4;
   font-size: 0.8rem;
+}
+
+.write-item-time {
+  flex-shrink: 0;
+  color: #9aa3b2;
+  font-size: 0.75rem;
+}
+
+[data-theme='dark'] .write-cat-panel {
+  background: rgba(30, 32, 38, 0.96);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme='dark'] .write-cat-option {
+  color: #e6e8ee;
+}
+
+[data-theme='dark'] .write-cat-box > input {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #e6e8ee;
 }
 
 /* 编辑器与预览左右分栏 */

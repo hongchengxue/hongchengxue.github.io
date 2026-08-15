@@ -20,7 +20,8 @@
   var hintEl = document.getElementById('write-hint');
   var titleInput = document.getElementById('write-title');
   var catInput = document.getElementById('write-cat');
-  var catList = document.getElementById('write-cat-list');
+  var catPanel = document.getElementById('write-cat-panel');
+  var catOptions = document.getElementById('write-cat-options');
   var tagsInput = document.getElementById('write-tags');
   var contentEl = document.getElementById('write-content');
   var previewEl = document.getElementById('write-preview');
@@ -69,18 +70,39 @@
     });
   }
 
-  // ---------- 分类补全列表 ----------
+  // ---------- 分类面板 ----------
   function loadCatPaths() {
     fetch('/site-stats.json')
       .then(function (r) { return r.json(); })
       .then(function (d) {
         catPaths = d.catPaths || [];
-        catList.innerHTML = catPaths.map(function (p) {
-          return '<option value="' + p.replace(/"/g, '&quot;') + '">';
-        }).join('');
+        catOptions.innerHTML = catPaths.length
+          ? catPaths.map(function (p) {
+            return '<div class="write-cat-option" data-v="' + p.replace(/"/g, '&quot;') + '">' + p + '</div>';
+          }).join('')
+          : '<div class="write-cat-none">暂无已有分类</div>';
       })
       .catch(function () {});
   }
+
+  function openCatPanel() {
+    catPanel.classList.add('open');
+  }
+  function closeCatPanel() {
+    catPanel.classList.remove('open');
+  }
+
+  catInput.addEventListener('focus', openCatPanel);
+  catInput.addEventListener('click', openCatPanel);
+  catOptions.addEventListener('click', function (e) {
+    var opt = e.target.closest('.write-cat-option');
+    if (!opt) return;
+    catInput.value = opt.getAttribute('data-v');
+    closeCatPanel();
+  });
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.write-cat-box')) closeCatPanel();
+  });
 
   function buildCategory() {
     return catInput.value.trim();
@@ -135,6 +157,56 @@
 
   loadCatPaths();
 
+  // ---------- 上次编辑时间 ----------
+  var REPO_API = 'https://api.github.com/repos/hongchengxue/hongchengxue.github.io/';
+
+  function attachTimes(listEl, files) {
+    files.forEach(function (f) {
+      fetch(REPO_API + 'commits?path=' + encodeURIComponent(f.path) + '&per_page=1', {
+        headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+      }).then(function (r) { return r.json(); }).then(function (arr) {
+        if (!arr || !arr.length || !arr[0].commit) return;
+        var t = new Date(arr[0].commit.committer.date);
+        var p = function (n) { return n < 10 ? '0' + n : '' + n; };
+        var label = t.getFullYear() + '-' + p(t.getMonth() + 1) + '-' + p(t.getDate()) + ' ' + p(t.getHours()) + ':' + p(t.getMinutes());
+        var span = listEl.querySelector('.write-item-time[data-path="' + f.path + '"]');
+        if (span) span.textContent = '更新于 ' + label;
+      }).catch(function () {});
+    });
+  }
+
+  // ---------- 构建进度 ----------
+  function trackBuild() {
+    var runsUrl = REPO_API + 'actions/runs?per_page=1';
+    var tries = 0;
+    function poll() {
+      fetch(runsUrl, { headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' } })
+        .then(function (r) {
+          if (r.status === 403 || r.status === 401) {
+            setHint('✅ 已保存！约 2 分钟上线。想显示构建进度，请给令牌加上 "Actions → Read-only" 权限', true);
+            return;
+          }
+          return r.json().then(function (j) {
+            tries++;
+            var run = j.workflow_runs && j.workflow_runs[0];
+            if (run) {
+              if (run.status === 'completed') {
+                setHint(run.conclusion === 'success' ? '🎉 构建完成，网站已更新！' : '⚠️ 构建失败，请检查内容', run.conclusion === 'success');
+                return;
+              }
+              setHint('✅ 已保存，正在自动构建上线…（' + (run.status === 'in_progress' ? '构建中' : '排队中') + '）', true);
+            }
+            if (tries < 18) setTimeout(poll, 10000);
+            else setHint('✅ 已保存！构建可能仍在进行，稍后刷新网站查看', true);
+          });
+        })
+        .catch(function () {
+          if (tries < 18) setTimeout(poll, 10000);
+        });
+    }
+    setTimeout(poll, 1500);
+  }
+
   // ---------- 列表 ----------
   function loadList() {
     setHint('正在加载文章列表…', true);
@@ -148,6 +220,7 @@
           ? drafts.map(function (f) {
             return '<li class="write-item">' +
               '<span class="write-item-name">' + f.name + '</span>' +
+              '<span class="write-item-time" data-path="' + f.path + '"></span>' +
               '<span class="write-item-actions">' +
               '<button data-act="edit-draft" data-path="' + f.path + '">继续写</button>' +
               '<button data-act="pub-draft" data-path="' + f.path + '">发布</button>' +
@@ -155,6 +228,7 @@
               '</span></li>';
           }).join('')
           : '<li class="write-item"><span class="write-item-name">暂无草稿</span></li>';
+        attachTimes(draftsListEl, drafts);
       })
       .catch(function () {
         draftsListEl.innerHTML = '<li class="write-item"><span class="write-item-name">暂无草稿</span></li>';
@@ -170,12 +244,14 @@
           ? posts.map(function (f) {
             return '<li class="write-item">' +
               '<span class="write-item-name">' + f.name + '</span>' +
+              '<span class="write-item-time" data-path="' + f.path + '"></span>' +
               '<span class="write-item-actions">' +
               '<button data-act="edit" data-path="' + f.path + '">编辑</button>' +
               '<button data-act="del" data-path="' + f.path + '">删除</button>' +
               '</span></li>';
           }).join('')
           : '<li class="write-item"><span class="write-item-name">暂无文章</span></li>';
+        attachTimes(listEl, posts);
       })
       .catch(function (e) {
         setHint('连接失败：' + e.message + '（检查令牌是否有 Contents 读写权限）', false);
@@ -243,7 +319,8 @@
         });
       });
     }).then(function () {
-      setHint('✅ 草稿已发布！约 2 分钟后上线', true);
+      setHint('✅ 草稿已发布！', true);
+      trackBuild();
       newPost();
       loadList();
     }).catch(function (err) { setHint('发布失败：' + err.message, false); });
@@ -395,7 +472,8 @@
           });
         });
       }).then(function () {
-        setHint('✅ 已发布！约 2 分钟后上线', true);
+        setHint('✅ 已发布！', true);
+        trackBuild();
         newPost();
         loadList();
       }).catch(function (err) { setHint('发布失败：' + err.message, false); });
@@ -412,7 +490,8 @@
     setHint('正在保存…', true);
     api(path, { method: 'PUT', body: JSON.stringify(body) })
       .then(function () {
-        setHint('✅ 已保存！约 2 分钟后自动发布到网站', true);
+        setHint('✅ 已保存！', true);
+        trackBuild();
         newPost();
         loadList();
         loadCatPaths();
