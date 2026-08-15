@@ -78,5 +78,6 @@
 }
 
 #local-search .search-dialog hr::before {
-  display: none;
+  display: none !important;
+  content: none !important;
 }
