@@ -43,7 +43,7 @@
   outline: none;
   font-size: 0.95rem;
   color: #1f2637;
-  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.4);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.35);
   transition: width 0.25s ease;
 }
 
@@ -128,6 +128,12 @@
   width: 100%;
   padding: 0 56px 0 22px;
   font-size: 1.15rem;
+  color: #f5f7fa;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+#page-header.full_page #nav-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.72);
 }
 
 #page-header.full_page #nav-search-wrap:focus-within #nav-search-input {
