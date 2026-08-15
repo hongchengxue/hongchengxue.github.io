@@ -204,6 +204,26 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
+/* ---------- 导航布局：隐藏 Welcome，菜单靠左，语言靠右 ---------- */
+#page-header #nav #blog-info {
+  flex: 0 0 auto;
+}
+
+#page-header #nav #blog-info .nav-site-title {
+  display: none;
+}
+
+#page-header #nav #menus {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  flex-wrap: nowrap;
+}
+
+#page-header #nav #lang-wrap {
+  margin-left: auto;
+}
+
 /* ---------- 语言切换（自绘玻璃下拉框） ---------- */
 #lang-wrap {
   position: relative;
