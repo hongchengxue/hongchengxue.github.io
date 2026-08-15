@@ -244,6 +244,23 @@
   margin-left: auto;
 }
 
+/* 强制视觉顺序：菜单 → 搜索框 → 语言（不受脚本插入顺序影响） */
+#page-header #nav .menus_items {
+  order: 1;
+}
+
+#page-header #nav #nav-search-wrap {
+  order: 2;
+}
+
+#page-header #nav #lang-wrap {
+  order: 3;
+}
+
+#page-header #nav #toggle-menu {
+  order: 4;
+}
+
 /* ---------- 语言切换（自绘玻璃下拉框） ---------- */
 #lang-wrap {
   position: relative;
