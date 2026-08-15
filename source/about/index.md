@@ -22,6 +22,7 @@ comments: false
       <div class="about-stat"><span class="about-stat-num" id="about-stat-posts">-</span><span>文章</span></div>
       <div class="about-stat"><span class="about-stat-num" id="about-stat-tags">-</span><span>标签</span></div>
       <div class="about-stat"><span class="about-stat-num" id="about-stat-cats">-</span><span>分类</span></div>
+      <div class="about-stat"><span class="about-stat-num" id="about-stat-updated">-</span><span>最近更新</span></div>
     </div>
     <div class="about-bio">
       <p>你好，我是 hong。欢迎来到我的知识库 👋</p>
@@ -42,11 +43,6 @@ comments: false
   <div class="about-card">
     <div class="about-section-title"><i class="fas fa-fire"></i> 最近作品</div>
     <div id="about-recent"></div>
-  </div>
-
-  <div class="about-card">
-    <div class="about-section-title"><i class="fas fa-chart-line"></i> 网站信息</div>
-    <div id="about-webinfo"></div>
   </div>
 
 </div>

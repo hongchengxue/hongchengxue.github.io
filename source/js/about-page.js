@@ -17,6 +17,8 @@
       if (tagsEl) tagsEl.textContent = stats.tags.length;
       var catsEl = document.getElementById('about-stat-cats');
       if (catsEl) catsEl.textContent = stats.categories.length;
+      var updatedEl = document.getElementById('about-stat-updated');
+      if (updatedEl && stats.recent.length) updatedEl.textContent = stats.recent[0].date;
 
       // 标签云
       var cloud = document.getElementById('about-tag-cloud');
@@ -38,17 +40,6 @@
             '<span class="about-recent-title">' + p.title + '</span>' +
             '<span class="about-recent-date">' + p.date + '</span></a>';
         }).join('');
-      }
-
-      // 网站信息
-      var webinfo = document.getElementById('about-webinfo');
-      if (webinfo) {
-        var lastDate = stats.recent.length ? stats.recent[0].date : '-';
-        webinfo.innerHTML =
-          '<div class="about-info-row"><span>文章数目</span><b>' + stats.total + '</b></div>' +
-          '<div class="about-info-row"><span>标签数目</span><b>' + stats.tags.length + '</b></div>' +
-          '<div class="about-info-row"><span>分类数目</span><b>' + stats.categories.length + '</b></div>' +
-          '<div class="about-info-row"><span>最近更新</span><b>' + lastDate + '</b></div>';
       }
     })
     .catch(function () {});
