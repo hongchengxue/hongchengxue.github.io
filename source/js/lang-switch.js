@@ -1,40 +1,8 @@
 /* ============================================
-   语言切换（自绘液态玻璃下拉框）：简体中文 ⇄ English
+   语言切换（自绘玻璃下拉）+ ABOUT 按钮
    ============================================ */
 (function () {
   'use strict';
-
-  if (document.getElementById('lang-wrap')) return;
-
-  var menusItems = document.querySelector('#menus .menus_items');
-  var menus = document.getElementById('menus');
-  if (!menus) return;
-
-  // ---------- 构建自绘下拉框 ----------
-  var wrap = document.createElement('div');
-  wrap.id = 'lang-wrap';
-  wrap.innerHTML =
-    '<button id="lang-btn" type="button">' +
-    '<i class="fas fa-globe fa-fw"></i>' +
-    '<span id="lang-label">简体中文</span>' +
-    '<i class="fas fa-chevron-down" id="lang-caret"></i>' +
-    '</button>' +
-    '<div id="lang-menu">' +
-    '<div class="lang-option" data-lang="zh">简体中文</div>' +
-    '<div class="lang-option" data-lang="en">English</div>' +
-    '</div>';
-  // 语言按钮放在搜索框之后（若有），否则菜单项之后
-  var searchWrap = document.getElementById('nav-search-wrap');
-  var after = searchWrap || menusItems || null;
-  menus.insertBefore(wrap, after ? after.nextSibling : null);
-
-  // ABOUT 按钮：插在语言按钮之前（此时语言按钮已在 DOM 中）
-  var aboutBtn = document.createElement('a');
-  aboutBtn.id = 'about-nav';
-  aboutBtn.className = 'site-page';
-  aboutBtn.href = '/about/';
-  aboutBtn.innerHTML = '<i class="fas fa-user fa-fw"></i><span> ABOUT</span>';
-  menus.insertBefore(aboutBtn, wrap);
 
   // ---------- 词典 ----------
   var ZH2EN = {
@@ -98,10 +66,12 @@
   function updateLabel() {
     var label = document.getElementById('lang-label');
     if (label) label.textContent = currentLang() === 'zh' ? '简体中文' : 'English';
-    var opts = wrap.querySelectorAll('.lang-option');
-    Array.prototype.forEach.call(opts, function (o) {
-      o.classList.toggle('active', o.getAttribute('data-lang') === currentLang());
-    });
+    var wrap = document.getElementById('lang-wrap');
+    if (wrap) {
+      Array.prototype.forEach.call(wrap.querySelectorAll('.lang-option'), function (o) {
+        o.classList.toggle('active', o.getAttribute('data-lang') === currentLang());
+      });
+    }
   }
 
   // ---------- 应用翻译 ----------
@@ -129,7 +99,6 @@
       }
     }
 
-    // 搜索页输入框/按钮文案
     var spInput = document.getElementById('search-page-input');
     if (spInput) spInput.placeholder = lang === 'en' ? 'Type keywords and press Enter' : '输入关键词，回车或点按钮搜索';
     var spBtn = document.getElementById('search-page-btn');
@@ -140,31 +109,81 @@
     try { localStorage.setItem('site-lang', l); } catch (e) {}
     apply();
     updateLabel();
-    wrap.classList.remove('open');
+    var wrap = document.getElementById('lang-wrap');
+    if (wrap) wrap.classList.remove('open');
     if (window.__searchI18nRender) window.__searchI18nRender();
   }
 
-  // ---------- 事件 ----------
-  var btn = wrap.querySelector('#lang-btn');
-  btn.addEventListener('click', function (e) {
-    e.stopPropagation();
-    wrap.classList.toggle('open');
-  });
+  // ---------- 创建/恢复按钮（pjax 重建导航后可复活） ----------
+  var menus = document.getElementById('menus');
+  if (!menus) return;
 
-  Array.prototype.forEach.call(wrap.querySelectorAll('.lang-option'), function (o) {
-    o.addEventListener('click', function () {
-      setLang(o.getAttribute('data-lang'));
-    });
-  });
+  function ensureButtons() {
+    menus = document.getElementById('menus');
+    if (!menus) return;
+    var menusItems = menus.querySelector('.menus_items');
+
+    var freshLang = false;
+    var wrap = document.getElementById('lang-wrap');
+    if (!wrap) {
+      wrap = document.createElement('div');
+      wrap.id = 'lang-wrap';
+      wrap.innerHTML =
+        '<button id="lang-btn" type="button">' +
+        '<i class="fas fa-globe fa-fw"></i>' +
+        '<span id="lang-label">简体中文</span>' +
+        '<i class="fas fa-chevron-down" id="lang-caret"></i>' +
+        '</button>' +
+        '<div id="lang-menu">' +
+        '<div class="lang-option" data-lang="zh">简体中文</div>' +
+        '<div class="lang-option" data-lang="en">English</div>' +
+        '</div>';
+      freshLang = true;
+    }
+
+    var aboutBtn = document.getElementById('about-nav');
+    if (!aboutBtn) {
+      aboutBtn = document.createElement('a');
+      aboutBtn.id = 'about-nav';
+      aboutBtn.className = 'site-page';
+      aboutBtn.href = '/about/';
+      aboutBtn.innerHTML = '<i class="fas fa-user fa-fw"></i><span> ABOUT</span>';
+    }
+
+    // 固定顺序：菜单项 → 搜索框 → ABOUT → 语言
+    var searchWrap = document.getElementById('nav-search-wrap');
+    menus.appendChild(wrap);
+    menus.insertBefore(aboutBtn, wrap);
+    if (searchWrap && searchWrap.parentNode === menus) {
+      menus.insertBefore(searchWrap, aboutBtn);
+    }
+
+    if (freshLang) {
+      var btn = wrap.querySelector('#lang-btn');
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        wrap.classList.toggle('open');
+      });
+      Array.prototype.forEach.call(wrap.querySelectorAll('.lang-option'), function (o) {
+        o.addEventListener('click', function () {
+          setLang(o.getAttribute('data-lang'));
+        });
+      });
+    }
+  }
 
   document.addEventListener('click', function (e) {
-    if (!wrap.contains(e.target)) wrap.classList.remove('open');
+    var wrap = document.getElementById('lang-wrap');
+    if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
   });
 
-  // 初始应用 + pjax 后重新应用
+  ensureButtons();
   updateLabel();
   apply();
   if (window.btf && btf.addGlobalFn) {
-    btf.addGlobalFn('pjaxComplete', apply, 'lang-apply');
+    btf.addGlobalFn('pjaxComplete', function () {
+      ensureButtons();
+      apply();
+    }, 'lang-apply');
   }
 })();
