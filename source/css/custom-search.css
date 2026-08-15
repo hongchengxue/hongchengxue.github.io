@@ -160,6 +160,73 @@
   background: #ffffff;
 }
 
+/* ---------- 游戏/工具 卡片区 ---------- */
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hub-card {
+  display: block;
+  padding: 18px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(31, 38, 55, 0.06);
+  box-shadow: 0 2px 10px rgba(31, 38, 55, 0.05);
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hub-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(31, 38, 55, 0.14);
+}
+
+.hub-card-icon {
+  margin-bottom: 8px;
+  font-size: 2rem;
+}
+
+.hub-card-title {
+  color: #1f2637;
+  font-weight: 600;
+  font-size: 1.02rem;
+}
+
+.hub-card-desc {
+  margin-top: 4px;
+  color: #6b7280;
+  font-size: 0.86rem;
+}
+
+.hub-empty {
+  grid-column: 1 / -1;
+  padding: 40px 0 10px;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #6b7280;
+}
+
+.hub-tip {
+  grid-column: 1 / -1;
+  padding: 0 0 30px;
+  text-align: center;
+  color: #9aa3b2;
+  font-size: 0.9rem;
+}
+
+[data-theme='dark'] .hub-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] .hub-card-title {
+  color: #e6e8ee;
+}
+
 /* ---------- 搜索结果页 ---------- */
 #search-page {
   max-width: 760px;

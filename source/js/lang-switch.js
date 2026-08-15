@@ -25,6 +25,8 @@
     '分类': 'Categories',
     '标签': 'Tags',
     '关于': 'About',
+    '游戏': 'Games',
+    '工具': 'Tools',
     '网站信息': 'Website Info',
     '文章数目': 'Article Count',
     '最后更新时间': 'Last Update',
