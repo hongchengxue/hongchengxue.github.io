@@ -841,7 +841,7 @@ blog_title_font:
 
 # The setting of divider icon
 hr_icon:
-  enable: true
+  enable: false
   # The unicode value of Font Awesome icon, such as '\3423'
   icon:
   icon_top:
