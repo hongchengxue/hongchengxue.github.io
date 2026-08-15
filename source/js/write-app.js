@@ -64,7 +64,11 @@
     };
     return fetch(API + path, opts).then(function (r) {
       return r.json().then(function (j) {
-        if (!r.ok) throw new Error(j.message || ('HTTP ' + r.status));
+        if (!r.ok) {
+          var e = new Error(j.message || ('HTTP ' + r.status));
+          e.status = r.status;
+          throw e;
+        }
         return j;
       });
     });
@@ -133,9 +137,20 @@
 
   // ---------- 模式界面 ----------
   function updateModeUI() {
-    // 编辑已发布文章时隐藏"暂存"
-    draftBtn.hidden = !!editingPath && !editingDraft;
-    if (editingDraft) setHint('草稿模式：暂存不会上线，发布后才会出现在网站', true);
+    var modeEl = document.getElementById('write-mode-badge');
+    if (editingDraft) {
+      draftBtn.hidden = false;
+      draftBtn.textContent = '更新草稿';
+      if (modeEl) modeEl.textContent = '📝 草稿模式（更新不会上线）';
+      setHint('草稿模式：点「更新草稿」保存，点「发布」上线', true);
+    } else if (editingPath) {
+      draftBtn.hidden = true;
+      if (modeEl) modeEl.textContent = '📄 编辑已发布文章（保存即更新上线）';
+    } else {
+      draftBtn.hidden = false;
+      draftBtn.textContent = '暂存';
+      if (modeEl) modeEl.textContent = '✍️ 新建文章';
+    }
   }
 
   // ---------- 连接 ----------
@@ -222,7 +237,7 @@
               '<span class="write-item-name">' + f.name + '</span>' +
               '<span class="write-item-time" data-path="' + f.path + '"></span>' +
               '<span class="write-item-actions">' +
-              '<button data-act="edit-draft" data-path="' + f.path + '">继续写</button>' +
+              '<button data-act="edit-draft" data-path="' + f.path + '">继续编辑</button>' +
               '<button data-act="pub-draft" data-path="' + f.path + '">发布</button>' +
               '<button data-act="del-draft" data-path="' + f.path + '">删除</button>' +
               '</span></li>';
@@ -437,18 +452,32 @@
       return; // 已发布文章不提供暂存（按钮已隐藏）
     } else {
       var dpath = 'source/_drafts/' + nowStr().slice(0, 10) + '-' + slugify(title) + '.md';
-      api(dpath, {
-        method: 'PUT',
-        body: JSON.stringify({ message: 'draft: ' + title, content: content })
-      }).then(function () {
-        editingPath = dpath;
-        editingDraft = true;
-        updateModeUI();
-        setHint('✅ 已暂存到草稿箱（不会上线），可继续写或点"发布"', true);
-        loadList();
-      }).catch(function (err) { setHint('暂存失败：' + err.message, false); });
+      createDraft(dpath, content, title, false);
     }
   });
+
+  function createDraft(dpath, content, title, isRetry) {
+    var path = isRetry
+      ? dpath.replace(/\.md$/, '-' + nowStr().slice(11).replace(/:/g, '') + '.md')
+      : dpath;
+    api(path, {
+      method: 'PUT',
+      body: JSON.stringify({ message: 'draft: ' + title, content: content })
+    }).then(function () {
+      editingPath = path;
+      editingDraft = true;
+      updateModeUI();
+      setHint('✅ 已暂存到草稿箱（不会上线），可继续写或点"发布"', true);
+      loadList();
+    }).catch(function (err) {
+      if (!isRetry && err.status === 422) {
+        // 同名草稿已存在：换带时间戳的新文件名，避免覆盖旧草稿
+        createDraft(dpath, content, title, true);
+      } else {
+        setHint('暂存失败：' + err.message, false);
+      }
+    });
+  }
 
   // ---------- 发布 / 保存 ----------
   document.getElementById('write-save').addEventListener('click', function () {
