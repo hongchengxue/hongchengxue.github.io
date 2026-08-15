@@ -91,6 +91,44 @@
   background: #2f6fe0;
 }
 
+/* ============================================
+   首页英雄区搜索框：居中偏上（覆盖默认导航样式）
+   宽度 520px / 高度 40px / 顶部边距 144px / 圆角 10px
+   透明度 13% / 白色边框 1px
+   ============================================ */
+#page-header.full_page #nav-search-wrap {
+  position: absolute;
+  top: 144px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 520px;
+  height: 40px;
+  margin-right: 0;
+  border: 1px solid rgba(255, 255, 255, 1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+#page-header.full_page #nav-search-input {
+  width: 100%;
+  font-size: 1rem;
+}
+
+#page-header.full_page #nav-search-wrap:focus-within #nav-search-input {
+  width: 100%;
+}
+
+#page-header.full_page #nav-search-submit {
+  right: 6px;
+  width: 28px;
+  height: 28px;
+}
+
+/* 页面滚动后（导航固定）隐藏英雄区搜索框，避免悬浮在正文上 */
+#page-header.full_page.nav-fixed #nav-search-wrap {
+  display: none;
+}
+
 /* ---------- 搜索结果页 ---------- */
 #search-page {
   max-width: 760px;
