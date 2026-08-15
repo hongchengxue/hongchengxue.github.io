@@ -168,7 +168,7 @@ subtitle:
   source: false
   # If you close the typewriter effect, the subtitle will only show the first line of sub
   sub:
-    - 记录技术与生活的知识库
+    - Attention Is All You Need
     - 持续学习，保持好奇
 
 # Article layout on the homepage
