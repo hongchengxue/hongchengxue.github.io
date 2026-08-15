@@ -23,18 +23,18 @@
     '<div class="lang-option" data-lang="zh">简体中文</div>' +
     '<div class="lang-option" data-lang="en">English</div>' +
     '</div>';
-  // ABOUT 按钮：插在语言按钮之前
+  // 语言按钮放在搜索框之后（若有），否则菜单项之后
+  var searchWrap = document.getElementById('nav-search-wrap');
+  var after = searchWrap || menusItems || null;
+  menus.insertBefore(wrap, after ? after.nextSibling : null);
+
+  // ABOUT 按钮：插在语言按钮之前（此时语言按钮已在 DOM 中）
   var aboutBtn = document.createElement('a');
   aboutBtn.id = 'about-nav';
   aboutBtn.className = 'site-page';
   aboutBtn.href = '/about/';
   aboutBtn.innerHTML = '<i class="fas fa-user fa-fw"></i><span> ABOUT</span>';
   menus.insertBefore(aboutBtn, wrap);
-
-  // 语言按钮放在搜索框之后（若有），否则菜单项之后
-  var searchWrap = document.getElementById('nav-search-wrap');
-  var after = searchWrap || menusItems || null;
-  menus.insertBefore(wrap, after ? after.nextSibling : null);
 
   // ---------- 词典 ----------
   var ZH2EN = {
