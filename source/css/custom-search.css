@@ -136,6 +136,28 @@
   display: none;
 }
 
+/* ---------- 语言切换按钮 ---------- */
+#lang-switch {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 14px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.85em;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+#lang-switch:hover {
+  background: rgba(128, 128, 128, 0.18);
+}
+
+#lang-switch-label {
+  margin-left: 5px;
+  font-weight: 600;
+}
+
 /* ---------- 搜索结果页 ---------- */
 #search-page {
   max-width: 760px;

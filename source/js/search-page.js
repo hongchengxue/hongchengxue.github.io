@@ -47,6 +47,43 @@
     return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : '';
   }
 
+  // ---------- 界面语言 ----------
+  function lang() {
+    try { return localStorage.getItem('site-lang') === 'en' ? 'en' : 'zh'; } catch (e) { return 'zh'; }
+  }
+  var S = {
+    zh: {
+      placeholder: '输入关键词，回车或点按钮搜索',
+      btn: '搜索',
+      empty: '输入关键词开始搜索',
+      loading: '正在加载搜索索引…',
+      noResult: '没有找到与「{kw}」相关的文章',
+      stats: '找到 {n} 篇相关文章',
+      fail: '搜索索引加载失败，请刷新页面重试'
+    },
+    en: {
+      placeholder: 'Type keywords and press Enter',
+      btn: 'Search',
+      empty: 'Type keywords to start searching',
+      loading: 'Loading search index…',
+      noResult: 'No results for "{kw}"',
+      stats: '{n} article(s) found',
+      fail: 'Failed to load search index, please refresh the page'
+    }
+  };
+  function t(key, vars) {
+    var s = S[lang()][key] || key;
+    if (vars) {
+      Object.keys(vars).forEach(function (k) { s = s.replace('{' + k + '}', vars[k]); });
+    }
+    return s;
+  }
+
+  function applyStaticText() {
+    if (input) input.placeholder = t('placeholder');
+    if (btn) btn.textContent = t('btn');
+  }
+
   // ---------- 加载索引 ----------
   function loadIndex() {
     return fetch('/search.xml')
@@ -70,11 +107,11 @@
   function render(kw) {
     var k = kw.trim();
     if (!k) {
-      resultsBox.innerHTML = '<div class="search-page-empty">输入关键词开始搜索</div>';
+      resultsBox.innerHTML = '<div class="search-page-empty">' + t('empty') + '</div>';
       return;
     }
     if (!entries) {
-      resultsBox.innerHTML = '<div class="search-page-empty">正在加载搜索索引…</div>';
+      resultsBox.innerHTML = '<div class="search-page-empty">' + t('loading') + '</div>';
       return;
     }
 
@@ -95,11 +132,11 @@
     }
 
     if (!hits.length) {
-      resultsBox.innerHTML = '<div class="search-page-empty">没有找到与「' + esc(k) + '」相关的文章</div>';
+      resultsBox.innerHTML = '<div class="search-page-empty">' + t('noResult', { kw: esc(k) }) + '</div>';
       return;
     }
 
-    var stat = '<div class="search-page-stats">找到 ' + hits.length + ' 篇相关文章</div>';
+    var stat = '<div class="search-page-stats">' + t('stats', { n: hits.length }) + '</div>';
     var list = hits.map(function (h) {
       var catHtml = h.e.categories.length
         ? '<span class="search-page-cat">' + esc(h.e.categories[0]) + '</span>'
@@ -116,7 +153,7 @@
   function run(kw) {
     if (!entries) {
       loadIndex().then(function () { render(kw); }).catch(function () {
-        resultsBox.innerHTML = '<div class="search-page-empty">搜索索引加载失败，请刷新页面重试</div>';
+        resultsBox.innerHTML = '<div class="search-page-empty">' + t('fail') + '</div>';
       });
     } else {
       render(kw);
@@ -124,9 +161,16 @@
   }
 
   // ---------- 初始加载 & 交互 ----------
+  applyStaticText();
   var initQ = getQ();
   if (input) input.value = initQ;
   run(initQ);
+
+  // 供语言切换后重绘
+  window.__searchI18nRender = function () {
+    applyStaticText();
+    run(getQ());
+  };
 
   function submit() {
     var v = input.value.trim();
