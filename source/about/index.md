@@ -12,7 +12,7 @@ comments: false
       <img class="about-avatar" src="/img/avatar.png" alt="avatar">
       <div>
         <div class="about-name">hong</div>
-        <div class="about-intro">记录技术与生活的知识库</div>
+        <div class="about-intro">记录技术与生活</div>
         <div class="about-contact">
           <a href="https://github.com/hongchengxue" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>
           <a href="mailto:your-email@example.com"><i class="fas fa-envelope"></i> Email</a>

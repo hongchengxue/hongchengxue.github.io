@@ -147,7 +147,7 @@
       aboutBtn.id = 'about-nav';
       aboutBtn.className = 'site-page';
       aboutBtn.href = '/about/';
-      aboutBtn.innerHTML = '<i class="fas fa-user fa-fw"></i><span> ABOUT</span>';
+      aboutBtn.innerHTML = '<i class="fas fa-user fa-fw"></i><span> ABOUT ME</span>';
     }
 
     // 夜间模式切换按钮（最右）：复用主题 rightside 的切换逻辑

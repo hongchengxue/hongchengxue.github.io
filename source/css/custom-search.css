@@ -163,7 +163,7 @@
 }
 
 #page-header #nav #blog-info .nav-site-title {
-  display: none;
+  display: none !important;
 }
 
 #page-header #nav #menus {
