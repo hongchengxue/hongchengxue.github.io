@@ -2,12 +2,6 @@
    搜索样式：导航栏内嵌搜索框 + 搜索结果页
    ============================================ */
 
-/* 导航胶囊统一变量：字号与玻璃高光高度全局一致 */
-:root {
-  --nav-pill-font: 0.82em;
-  --nav-glass-h: 36%;
-}
-
 /* ---------- 隐藏原放大镜按钮 ---------- */
 #search-button {
   display: none !important;
@@ -181,7 +175,7 @@
     0 4px 16px rgba(31, 38, 55, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.55);
   transition: all 0.25s ease;
-  font-size: var(--nav-pill-font);
+  font-size: 0.78em;
 }
 
 /* 图标不占固定宽度，进一步压缩 */
@@ -196,7 +190,7 @@
   top: 2px;
   left: 14%;
   width: 32%;
-  height: var(--nav-glass-h);
+  height: 36%;
   border-radius: 999px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
   pointer-events: none;
@@ -230,7 +224,7 @@
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.08));
   -webkit-backdrop-filter: blur(14px) saturate(1.6);
   backdrop-filter: blur(14px) saturate(1.6);
-  font-size: var(--nav-pill-font);
+  font-size: 0.86em;
   cursor: pointer;
   outline: none;
   box-shadow:
@@ -244,8 +238,8 @@
   position: absolute;
   top: 2px;
   left: 12%;
-  width: 32%;
-  height: var(--nav-glass-h);
+  width: 30%;
+  height: 38%;
   border-radius: 999px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0));
   pointer-events: none;
