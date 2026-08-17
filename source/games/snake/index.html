@@ -12,12 +12,26 @@ layout: false
   body {
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
     background: linear-gradient(160deg, #0f1720 0%, #1b2a44 55%, #24385c 100%);
     padding: 20px;
   }
+  #game-comments {
+    width: min(720px, 100%);
+    margin-top: 18px;
+    padding: 18px 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.06);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 18px 50px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.2);
+    text-align: left;
+  }
+  .gc-head { color: #f5f7fa; font-size: 1.05rem; font-weight: 600; margin-bottom: 10px; }
   .panel {
     padding: 26px 24px 22px;
     border-radius: 22px;
@@ -301,5 +315,23 @@ layout: false
   init();
 })();
 </script>
+<section id="game-comments">
+  <div class="gc-head">💬 评论</div>
+  <div class="giscus"></div>
+</section>
+<script src="https://giscus.app/client.js"
+        data-repo="hongchengxue/hongchengxue.github.io"
+        data-repo-id="R_kgDOT441Lg"
+        data-category="General"
+        data-category-id="DIC_kwDOT441Ls4DDkT6"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-lang="zh-CN"
+        data-theme="noborder_dark"
+        crossorigin="anonymous"
+        async></script>
 </body>
 </html>
