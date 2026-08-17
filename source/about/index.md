@@ -2,7 +2,6 @@
 title: ABOUT
 date: 2026-08-15 11:00:00
 top_img: false
-comments: false
 ---
 
 <div id="about-page">

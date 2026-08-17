@@ -18,7 +18,9 @@
       var catsEl = document.getElementById('about-stat-cats');
       if (catsEl) catsEl.textContent = stats.categories.length;
       var updatedEl = document.getElementById('about-stat-updated');
-      if (updatedEl && stats.recent.length) updatedEl.textContent = stats.recent[0].date;
+      if (updatedEl) {
+        updatedEl.textContent = stats.lastUpdated || (stats.recent.length ? stats.recent[0].date : '-');
+      }
 
       // 标签云
       var cloud = document.getElementById('about-tag-cloud');

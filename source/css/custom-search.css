@@ -1558,3 +1558,75 @@ html.about-aside #aside-content .card-categories {
   border-color: rgba(255, 255, 255, 0.12);
   color: #e6e8ee;
 }
+
+/* ---------- 文章点赞 ---------- */
+.post-like-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 20px auto;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.post-like-text {
+  color: #1f2637;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.iine-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #4285f4;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.iine-button .icon {
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.iine-button:hover .icon {
+  transform: scale(1.2);
+}
+
+.iine-button.clicked .icon {
+  animation: like-pop 0.45s ease;
+}
+
+@keyframes like-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.6); }
+  100% { transform: scale(1); }
+}
+
+[data-theme='dark'] .post-like-wrap {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme='dark'] .post-like-text {
+  color: #e6e8ee;
+}
+
+[data-theme='dark'] .iine-button {
+  color: #9ec5ff;
+}

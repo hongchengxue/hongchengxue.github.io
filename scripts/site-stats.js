@@ -51,6 +51,14 @@ hexo.extend.generator.register('site-stats', function (locals) {
     };
   });
 
+  // 构建时间（中国时区，YYYY-MM-DD），用于 ABOUT 页"最近更新"
+  var lastUpdated = new Intl.DateTimeFormat('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date()).replace(/\//g, '-');
+
   return {
     path: 'site-stats.json',
     data: JSON.stringify({
@@ -59,7 +67,8 @@ hexo.extend.generator.register('site-stats', function (locals) {
       categories: categories,
       catPaths: catPaths,
       recent: recent,
-      all: all
+      all: all,
+      lastUpdated: lastUpdated
     })
   };
 });
