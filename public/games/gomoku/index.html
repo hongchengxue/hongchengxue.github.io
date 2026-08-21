@@ -1,0 +1,489 @@
+---
+layout: false
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>五子棋</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    background: linear-gradient(160deg, #0f1720 0%, #1b2a44 55%, #24385c 100%);
+    padding: 20px;
+  }
+  #game-comments {
+    width: min(720px, 100%);
+    margin-top: 18px;
+    padding: 18px 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.06);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 18px 50px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.2);
+    text-align: left;
+  }
+  .gc-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #f5f7fa;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .gc-head .iine-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    border: none;
+    background: transparent;
+    color: #9ec5ff;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .gc-head .iine-button .icon {
+    display: inline-flex;
+    align-items: center;
+    transition: transform .2s ease;
+  }
+  .gc-head .iine-button:hover .icon { transform: scale(1.2); }
+  .panel {
+    padding: 26px 24px 22px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,.16);
+    background: linear-gradient(160deg, rgba(255,255,255,.14), rgba(255,255,255,.04));
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 18px 50px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.2);
+    text-align: center;
+  }
+  h1 { color: #f5f7fa; font-size: 1.5rem; letter-spacing: 2px; margin-bottom: 8px; }
+  .status { color: #9ec5ff; font-size: 1.05rem; margin-bottom: 12px; min-height: 1.2em; transition: color .3s ease; }
+  .status.win { color: #ffd666; font-weight: 700; }
+  .status.lose { color: #ff6b6b; font-weight: 700; }
+  canvas {
+    display: block;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    max-width: 100%;
+    cursor: pointer;
+  }
+  .btns { margin-top: 16px; display: flex; gap: 12px; justify-content: center; }
+  button, .btn-link {
+    display: inline-block;
+    padding: 9px 22px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #4285f4, #2f6fe0);
+    color: #fff;
+    font-size: .92rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  button:hover, .btn-link:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(66,133,244,.4); }
+  .btn-link { background: linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,.08)); border: 1px solid rgba(255,255,255,.25); }
+</style>
+</head>
+<body>
+<div class="panel">
+  <h1>⚫ 五子棋 ⚪</h1>
+  <div class="status" id="status">你的回合（黑棋）</div>
+  <canvas id="board"></canvas>
+  <div class="btns">
+    <button id="restart" type="button">重新开始</button>
+    <a class="btn-link" href="/games/">返回游戏</a>
+    <a class="btn-link" href="/">返回首页</a>
+  </div>
+</div>
+<script>
+(function () {
+  'use strict';
+  var size = 15;
+  var cell = 34;
+  var pad = 20;
+  var canvas = document.getElementById('board');
+  var ctx = canvas.getContext('2d');
+  var board = [];
+  var over = false;
+  var thinking = false; // AI 计算中，禁止落子
+  var winCells = null;  // 获胜的 5 颗棋子坐标
+  var resultText = '';  // 结果提示文字
+
+  canvas.width = size * cell + pad * 2;
+  canvas.height = size * cell + pad * 2;
+
+  var statusEl = document.getElementById('status');
+
+  function init() {
+    board = Array.from({ length: size }, function () { return Array(size).fill(0); });
+    over = false;
+    thinking = false;
+    winCells = null;
+    resultText = '';
+    statusEl.textContent = '你的回合（黑棋）';
+    statusEl.className = 'status';
+    draw();
+  }
+
+  function line(x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+
+  function draw() {
+    var g = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    g.addColorStop(0, '#ecd9a8');
+    g.addColorStop(1, '#d9bd82');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = 'rgba(90, 60, 20, 0.5)';
+    ctx.lineWidth = 1;
+    for (var i = 0; i < size; i++) {
+      line(pad + i * cell, pad, pad + i * cell, pad + (size - 1) * cell);
+      line(pad, pad + i * cell, pad + (size - 1) * cell, pad + i * cell);
+    }
+
+    for (var r = 0; r < size; r++) {
+      for (var c = 0; c < size; c++) {
+        if (board[r][c]) drawStone(c, r, board[r][c]);
+      }
+    }
+
+    // 获胜的 5 颗棋子上画金圈
+    if (winCells) {
+      ctx.strokeStyle = '#ffd666';
+      ctx.lineWidth = 3.5;
+      ctx.shadowColor = 'rgba(255, 214, 102, 0.9)';
+      ctx.shadowBlur = 10;
+      for (var i = 0; i < winCells.length; i++) {
+        ctx.beginPath();
+        ctx.arc(pad + winCells[i].c * cell, pad + winCells[i].r * cell, cell / 2 - 1, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.shadowBlur = 0;
+    }
+
+    // 结果遮罩 + 大字提示
+    if (resultText) {
+      ctx.fillStyle = 'rgba(15, 23, 32, 0.55)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 34px "Microsoft YaHei", sans-serif';
+      ctx.fillStyle = resultText.indexOf('你赢') >= 0 ? '#ffd666' : '#ff6b6b';
+      ctx.shadowColor = 'rgba(0,0,0,.5)';
+      ctx.shadowBlur = 8;
+      ctx.fillText(resultText, canvas.width / 2, canvas.height / 2);
+      ctx.shadowBlur = 0;
+      ctx.font = '14px "Microsoft YaHei", sans-serif';
+      ctx.fillStyle = '#f5f7fa';
+      ctx.fillText('点击"重新开始"再来一局', canvas.width / 2, canvas.height / 2 + 30);
+    }
+  }
+
+  function drawStone(col, row, player) {
+    var x = pad + col * cell;
+    var y = pad + row * cell;
+    var rg = ctx.createRadialGradient(x - 5, y - 5, 2, x, y, cell / 2 - 2);
+    if (player === 1) {
+      rg.addColorStop(0, '#777');
+      rg.addColorStop(1, '#101010');
+    } else {
+      rg.addColorStop(0, '#ffffff');
+      rg.addColorStop(1, '#bdbdbd');
+    }
+    ctx.beginPath();
+    ctx.arc(x, y, cell / 2 - 2, 0, Math.PI * 2);
+    ctx.fillStyle = rg;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,.25)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  function countDir(col, row, dx, dy, player) {
+    var n = 0;
+    var c = col + dx, r = row + dy;
+    while (c >= 0 && c < size && r >= 0 && r < size && board[r][c] === player) {
+      n++;
+      c += dx;
+      r += dy;
+    }
+    return n;
+  }
+
+  function checkWin(col, row, player) {
+    var dirs = [[1, 0], [0, 1], [1, 1], [1, -1]];
+    for (var i = 0; i < dirs.length; i++) {
+      var cells = [{ r: row, c: col }];
+      var c = col + dirs[i][0], r = row + dirs[i][1];
+      while (c >= 0 && c < size && r >= 0 && r < size && board[r][c] === player) { cells.push({ r: r, c: c }); c += dirs[i][0]; r += dirs[i][1]; }
+      c = col - dirs[i][0]; r = row - dirs[i][1];
+      while (c >= 0 && c < size && r >= 0 && r < size && board[r][c] === player) { cells.unshift({ r: r, c: c }); c -= dirs[i][0]; r -= dirs[i][1]; }
+      if (cells.length >= 5) return cells;
+    }
+    return null;
+  }
+
+  function isFull() {
+    for (var r = 0; r < size; r++) {
+      if (board[r].indexOf(0) >= 0) return false;
+    }
+    return true;
+  }
+
+  // ---------- AI：minimax + Alpha-Beta 剪枝（推演 4 步） ----------
+  var DIRS4 = [[1, 0], [0, 1], [1, 1], [1, -1]];
+  var WIN = 100000000;
+
+  function patternScore(count, open) {
+    if (count >= 5) return 10000000;
+    if (open === 0) {
+      if (count >= 4) return 100000;
+      return count * 10;
+    }
+    if (count === 4) return 1000000;
+    if (count === 3) return 100000;
+    if (count === 2) return 5000;
+    return 100;
+  }
+
+  function lineValue(arr, player) {
+    var total = 0;
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i] !== player) continue;
+      var j = i;
+      while (j < arr.length && arr[j] === player) j++;
+      var count = j - i;
+      var open = 0;
+      if (i > 0 && arr[i - 1] === 0) open++;
+      if (j < arr.length && arr[j] === 0) open++;
+      total += patternScore(count, open);
+      i = j - 1;
+    }
+    return total;
+  }
+
+  // 全盘评估：AI(2) 得分 - 玩家(1) 得分
+  function boardEval() {
+    var score = 0;
+    for (var d = 0; d < 4; d++) {
+      var dx = DIRS4[d][0], dy = DIRS4[d][1];
+      for (var r = 0; r < size; r++) {
+        for (var c = 0; c < size; c++) {
+          if (r - dy >= 0 && r - dy < size && c - dx >= 0 && c - dx < size) continue;
+          var arr = [];
+          var rr = r, cc = c;
+          while (rr >= 0 && rr < size && cc >= 0 && cc < size) {
+            arr.push(board[rr][cc]);
+            rr += dy; cc += dx;
+          }
+          if (arr.length >= 5) {
+            score += lineValue(arr, 2) - lineValue(arr, 1);
+          }
+        }
+      }
+    }
+    return score;
+  }
+
+  // 单点快速评分（用于候选排序）
+  function evalCell(col, row, player) {
+    board[row][col] = player;
+    var total = 0;
+    for (var i = 0; i < 4; i++) {
+      var dx = DIRS4[i][0], dy = DIRS4[i][1];
+      var count = 1;
+      var open = 0;
+      var c = col + dx, r = row + dy;
+      while (c >= 0 && c < size && r >= 0 && r < size && board[r][c] === player) { count++; c += dx; r += dy; }
+      if (c >= 0 && c < size && r >= 0 && r < size && board[r][c] === 0) open++;
+      c = col - dx; r = row - dy;
+      while (c >= 0 && c < size && r >= 0 && r < size && board[r][c] === player) { count++; c -= dx; r -= dy; }
+      if (c >= 0 && c < size && r >= 0 && r < size && board[r][c] === 0) open++;
+      total += patternScore(count, open);
+    }
+    board[row][col] = 0;
+    return total;
+  }
+
+  function genCandidates(depth) {
+    var limit = depth >= 2 ? 10 : 5;
+    var list = [];
+    var hasStone = false;
+    for (var r = 0; r < size; r++) {
+      for (var c = 0; c < size; c++) {
+        if (board[r][c]) { hasStone = true; continue; }
+        var near = false;
+        for (var dr = -2; dr <= 2 && !near; dr++) {
+          for (var dc = -2; dc <= 2 && !near; dc++) {
+            var nr = r + dr, nc = c + dc;
+            if (nr >= 0 && nr < size && nc >= 0 && nc < size && board[nr][nc]) near = true;
+          }
+        }
+        if (near) list.push({ r: r, c: c, s: evalCell(c, r, 2) + evalCell(c, r, 1) });
+      }
+    }
+    if (!hasStone) return [{ r: 7, c: 7, s: 0 }];
+    list.sort(function (a, b) { return b.s - a.s; });
+    return list.slice(0, limit);
+  }
+
+  function search(depth, alpha, beta, aiTurn, lastMove) {
+    if (lastMove && checkWin(lastMove.c, lastMove.r, lastMove.player)) {
+      return lastMove.player === 2 ? WIN + depth : -WIN - depth;
+    }
+    if (depth === 0) return boardEval();
+    var cands = genCandidates(depth);
+    if (!cands.length) return boardEval();
+
+    var best;
+    if (aiTurn) {
+      best = -Infinity;
+      for (var i = 0; i < cands.length; i++) {
+        var m = cands[i];
+        board[m.r][m.c] = 2;
+        var v = search(depth - 1, alpha, beta, false, { r: m.r, c: m.c, player: 2 });
+        board[m.r][m.c] = 0;
+        if (v > best) best = v;
+        if (v > alpha) alpha = v;
+        if (alpha >= beta) break;
+      }
+    } else {
+      best = Infinity;
+      for (var i = 0; i < cands.length; i++) {
+        var m = cands[i];
+        board[m.r][m.c] = 1;
+        var v = search(depth - 1, alpha, beta, true, { r: m.r, c: m.c, player: 1 });
+        board[m.r][m.c] = 0;
+        if (v < best) best = v;
+        if (v < beta) beta = v;
+        if (alpha >= beta) break;
+      }
+    }
+    return best;
+  }
+
+  function aiMove() {
+    var cands = genCandidates(2);
+    if (!cands.length) return null;
+    var bestMove = null;
+    var bestV = -Infinity;
+    for (var i = 0; i < cands.length; i++) {
+      var m = cands[i];
+      board[m.r][m.c] = 2;
+      var v = search(3, -Infinity, Infinity, false, { r: m.r, c: m.c, player: 2 });
+      board[m.r][m.c] = 0;
+      if (v > bestV) { bestV = v; bestMove = m; }
+    }
+    if (bestMove) board[bestMove.r][bestMove.c] = 2;
+    return bestMove;
+  }
+
+  function aiTurn() {
+    if (over) return;
+    thinking = true;
+    statusEl.textContent = 'AI 思考中…';
+    setTimeout(function () {
+      if (over) return;
+      var mv = aiMove();
+      draw();
+      var win2 = mv && checkWin(mv.c, mv.r, 2);
+      if (win2) {
+        over = true;
+        winCells = win2;
+        resultText = 'AI 获胜了！';
+        statusEl.textContent = resultText;
+        statusEl.className = 'status lose';
+        draw();
+        thinking = false;
+        return;
+      }
+      if (isFull()) {
+        over = true;
+        resultText = '平局！';
+        statusEl.textContent = resultText;
+        draw();
+        thinking = false;
+        return;
+      }
+      thinking = false;
+      statusEl.textContent = '你的回合（黑棋）';
+    }, 80);
+  }
+
+  canvas.addEventListener('click', function (e) {
+    if (over || thinking) return;
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas.width / rect.width;
+    var scaleY = canvas.height / rect.height;
+    var x = (e.clientX - rect.left) * scaleX;
+    var y = (e.clientY - rect.top) * scaleY;
+    var col = Math.round((x - pad) / cell);
+    var row = Math.round((y - pad) / cell);
+    if (col < 0 || col >= size || row < 0 || row >= size) return;
+    if (board[row][col] !== 0) return;
+
+    board[row][col] = 1;
+    draw();
+
+    var win = checkWin(col, row, 1);
+    if (win) {
+      over = true;
+      winCells = win;
+      resultText = '🎉 你赢了！';
+      statusEl.textContent = resultText;
+      statusEl.className = 'status win';
+      draw();
+      return;
+    }
+    if (isFull()) {
+      over = true;
+      resultText = '平局！';
+      statusEl.textContent = resultText;
+      draw();
+      return;
+    }
+    aiTurn();
+  });
+
+  document.getElementById('restart').addEventListener('click', init);
+
+  init();
+})();
+</script>
+<section id="game-comments">
+  <div class="gc-head">💬 评论<button class="iine-button" data-slug="/games/gomoku" aria-label="点赞"></button></div>
+  <div class="giscus"></div>
+</section>
+<script src="https://giscus.app/client.js"
+        data-repo="hongchengxue/hongchengxue.github.io"
+        data-repo-id="R_kgDOT441Lg"
+        data-category="General"
+        data-category-id="DIC_kwDOT441Ls4DDkT6"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-lang="zh-CN"
+        data-theme="noborder_dark"
+        crossorigin="anonymous"
+        async></script>
+<script src="https://cdn.jsdelivr.net/gh/welpo/iine@main/iine.mini.js" defer></script>
+</body>
+</html>

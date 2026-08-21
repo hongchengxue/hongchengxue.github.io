@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>hong 的知识库</title>
+    <script>
+      // GitHub Pages SPA 回退：把原始路径暂存到 sessionStorage 后跳转首页，
+      // src/main.tsx 会恢复该路径并交给 React Router 渲染（深链接可用）。
+      sessionStorage.setItem('redirect', location.pathname + location.search + location.hash)
+      location.replace('/')
+    </script>
+  </head>
+  <body></body>
+</html>

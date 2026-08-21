@@ -1,0 +1,32 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 本地依赖与构建产物
+node_modules
+dist
+dist-ssr
+*.local
+
+# 沙箱环境本地缓存
+.npm-cache/
+.edge-profile/
+
+# V1 旧站点源码（由 Hexo 构建，保留在 GitHub main 分支与本目录，不进入 V2 分支）
+hongchengxue.github.io-mainV2/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

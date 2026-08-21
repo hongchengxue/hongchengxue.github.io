@@ -1,0 +1,49 @@
+# 网站自动构建与部署：推送到 V2 分支时，自动构建 Vite 项目并发布到 GitHub Pages。
+# 说明：main 分支保留 V1（旧 Hexo 站），V2 分支是新的 Vite 站；
+#       GitHub Pages 同一时间只展示一个线上版本 —— 推 main 则 V1 上线，推 V2 则 V2 上线（最后一次构建生效）。
+name: 部署到 GitHub Pages (V2)
+
+on:
+  push:
+    branches: [V2]
+  workflow_dispatch: # 允许在 GitHub 网页上手动点击运行
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 类型检查 + 构建
+        run: npm run build
+
+      - name: 配置 Pages
+        uses: actions/configure-pages@v5
+
+      - name: 上传构建产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+      - name: 发布到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
