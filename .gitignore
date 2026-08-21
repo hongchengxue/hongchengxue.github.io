@@ -9,7 +9,7 @@ lerna-debug.log*
 
 # 本地依赖与构建产物
 node_modules
-dist
+/dist
 dist-ssr
 *.local
 
