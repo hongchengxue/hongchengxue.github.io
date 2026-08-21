@@ -47,6 +47,7 @@ export default function WritePage() {
   const [drafts, setDrafts] = useState<GitHubFileMeta[]>([])
   const [published, setPublished] = useState<GitHubFileMeta[]>([])
   const [times, setTimes] = useState<Record<string, string>>({})
+  const [helpOpen, setHelpOpen] = useState(false)
 
   const [preview, setPreview] = useState('')
   const previewTimer = useRef<number | undefined>(undefined)
@@ -123,7 +124,13 @@ export default function WritePage() {
 
   const loadList = useCallback(() => {
     if (!token) return
-    Promise.all([listDir(GITHUB_REPO.draftsDir, token), listDir(GITHUB_REPO.postsDir, token)])
+    // 草稿箱目录可能还不存在（git 不提交空目录）：404 视为空列表，不阻断连接
+    const listOrEmpty = (dir: string) =>
+      listDir(dir, token).catch((e: unknown) => {
+        if (e instanceof GitHubError && e.status === 404) return []
+        throw e
+      })
+    Promise.all([listOrEmpty(GITHUB_REPO.draftsDir), listOrEmpty(GITHUB_REPO.postsDir)])
       .then(([draftFiles, postFiles]) => {
         const sortByName = (a: GitHubFileMeta, b: GitHubFileMeta) => b.name.localeCompare(a.name)
         setDrafts(draftFiles.sort(sortByName))
@@ -132,8 +139,14 @@ export default function WritePage() {
         showHint('已连接 ✅', true)
       })
       .catch((e: unknown) => {
-        const msg = e instanceof GitHubError ? e.message : String(e)
-        showHint(`连接失败：${msg}（检查令牌是否有 Contents 读写权限）`, false)
+        const err = e instanceof GitHubError ? e : null
+        const msg = err ? err.message : String(e)
+        const hint =
+          err && (err.status === 401 || err.status === 403)
+            ? `连接失败：${msg}。令牌无效或缺少 Contents 读写权限，点下方「令牌获取教程」检查`
+            : `连接失败：${msg}。请检查网络后重试，或点下方「令牌获取教程」`
+        showHint(hint, false)
+        setHelpOpen(true)
       })
   }, [token, attachTimes, showHint])
 
@@ -387,14 +400,24 @@ export default function WritePage() {
         insertAtCursor(`\n:::${kind} 提示标题\n\n提示内容\n:::\n`)
         return
       }
+      if (act === 'details') return insertAtCursor('\n<details><summary>点击展开</summary>\n\n', '\n\n</details>\n', '折叠内容')
       if (act === 'bold') return insertAtCursor('**', '**', '加粗文字')
       if (act === 'italic') return insertAtCursor('*', '*', '斜体文字')
+      if (act === 'strike') return insertAtCursor('~~', '~~', '删除线文字')
+      if (act === 'mark') return insertAtCursor('==', '==', '高亮文字')
+      if (act === 'inline-code') return insertAtCursor('`', '`', '代码')
+      if (act === 'h1') return insertAtCursor('\n# ', '', '标题')
       if (act === 'h2') return insertAtCursor('\n## ', '', '标题')
       if (act === 'h3') return insertAtCursor('\n### ', '', '标题')
       if (act === 'link') return insertAtCursor('[', '](https://)', '链接文字')
       if (act === 'quote') return insertAtCursor('\n> ', '', '引用内容')
       if (act === 'code') return insertAtCursor('\n```\n', '\n```\n', '代码')
-      if (act === 'list') return insertAtCursor('\n- ', '', '列表项')
+      if (act === 'bullet') return insertAtCursor('\n- ', '', '列表项')
+      if (act === 'number') return insertAtCursor('\n1. ', '', '列表项')
+      if (act === 'task') return insertAtCursor('\n- [ ] ', '', '任务事项')
+      if (act === 'hr') return insertAtCursor('\n\n---\n\n')
+      if (act === 'table')
+        return insertAtCursor('\n| 列1 | 列2 |\n| --- | --- |\n| 内容 | 内容 |\n')
     },
     [insertAtCursor],
   )
@@ -433,19 +456,43 @@ export default function WritePage() {
     [token, insertAtCursor, showHint],
   )
 
-  /** 工具栏按钮定义（符号语言无关，悬浮显示中文提示） */
-  const TOOLBAR: { act: string; label: string; title: string }[] = [
-    { act: 'bold', label: 'B', title: '加粗' },
-    { act: 'italic', label: 'I', title: '斜体' },
-    { act: 'h2', label: 'H2', title: '二级标题' },
-    { act: 'h3', label: 'H3', title: '三级标题' },
-    { act: 'link', label: '🔗', title: '链接' },
-    { act: 'quote', label: '❝', title: '引用' },
-    { act: 'code', label: '{ }', title: '代码块' },
-    { act: 'list', label: '•', title: '列表' },
-    { act: 'callout', label: '💡', title: '提示框' },
-    { act: 'video', label: '🎬', title: '插入视频' },
-    { act: 'image', label: '🖼', title: '上传图片' },
+  /**
+   * 工具栏按钮定义（分组展示，仿 Obsidian Editing Toolbar / Word 风格）。
+   * 想增删按钮：在对应分组加一行 { act, label, title }，并在 onToolbarAction 中实现插入逻辑。
+   */
+  const TOOLBAR_GROUPS: { act: string; label: React.ReactNode; title: string }[][] = [
+    // 标题
+    [
+      { act: 'h1', label: 'H1', title: '一级标题' },
+      { act: 'h2', label: 'H2', title: '二级标题' },
+      { act: 'h3', label: 'H3', title: '三级标题' },
+    ],
+    // 文字样式
+    [
+      { act: 'bold', label: <b>B</b>, title: '加粗' },
+      { act: 'italic', label: <i>I</i>, title: '斜体' },
+      { act: 'strike', label: <s>S</s>, title: '删除线' },
+      { act: 'mark', label: '==', title: '高亮' },
+      { act: 'inline-code', label: '`', title: '行内代码' },
+    ],
+    // 列表 / 段落
+    [
+      { act: 'bullet', label: '•', title: '无序列表' },
+      { act: 'number', label: '1.', title: '有序列表' },
+      { act: 'task', label: '☑', title: '任务清单' },
+      { act: 'quote', label: '❝', title: '引用' },
+      { act: 'hr', label: '—', title: '分割线' },
+    ],
+    // 插入
+    [
+      { act: 'link', label: '🔗', title: '链接' },
+      { act: 'image', label: '🖼', title: '上传图片' },
+      { act: 'video', label: '🎬', title: '视频' },
+      { act: 'table', label: '▦', title: '表格' },
+      { act: 'code', label: '{ }', title: '代码块' },
+      { act: 'callout', label: '💡', title: '提示框' },
+      { act: 'details', label: '📁', title: '折叠块' },
+    ],
   ]
 
   const modeBadge = isDraftMode
@@ -474,6 +521,57 @@ export default function WritePage() {
           <p className={hint.ok ? 'write-hint ok' : 'write-hint'}>{hint.text}</p>
         </div>
 
+        <details
+          className="write-help"
+          open={helpOpen}
+          onToggle={(e) => setHelpOpen(e.currentTarget.open)}
+        >
+          <summary>🔑 令牌获取教程（第一次使用必看 / 连接失败时自动展开）</summary>
+          <div className="write-help-body">
+            <p>
+              写作台通过你的 GitHub 令牌把文章写入仓库，令牌<b>只保存在你的浏览器里</b>，不会上传到任何地方。按下面 6 步获取：
+            </p>
+            <ol>
+              <li>
+                打开{' '}
+                <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer">
+                  github.com/settings/tokens
+                </a>{' '}
+                （需登录 GitHub）
+              </li>
+              <li>
+                点右上角 <b>Generate new token</b> → 选 <b>Fine-grained personal access token</b>
+              </li>
+              <li>
+                Token name 随便填（如 write-desk）；Expiration 有效期选 <b>90 天</b> 或 No expiration
+              </li>
+              <li>
+                Repository access → 选 <b>Only select repositories</b> → 勾选{' '}
+                <b>hongchengxue/hongchengxue.github.io</b>
+              </li>
+              <li>
+                Permissions → Repository permissions → 找到 <b>Contents</b> → 设为 <b>Read and write</b>
+              </li>
+              <li>
+                点最下方 <b>Generate token</b>，复制以 <code>github_pat_</code> 开头的字符串，粘贴到上方输入框，点「连接」
+              </li>
+            </ol>
+            <p className="write-help-faq-title">常见问题排查：</p>
+            <ul>
+              <li>
+                <b>403 / 401（权限不足）</b>：令牌过期，或没把 Contents 设为 Read and write → 重新生成或编辑令牌权限
+              </li>
+              <li>
+                <b>Not Found</b>：通常是草稿箱目录还不存在，属正常情况（已自动处理为空），不会影响连接
+              </li>
+              <li>
+                <b>网络失败</b>：检查网络 / 代理是否正常，稍后重试
+              </li>
+              <li>令牌建议 90 天过期；到期后重新生成并粘贴新令牌即可</li>
+            </ul>
+          </div>
+        </details>
+
         <div className="card write-card">
           <div className="write-row">
             <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t('writeTitle')} autoComplete="off" />
@@ -499,16 +597,20 @@ export default function WritePage() {
             <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder={t('writeTags')} autoComplete="off" />
           </div>
           <div className="write-toolbar" role="toolbar" aria-label="格式工具栏">
-            {TOOLBAR.map((btn) => (
-              <button
-                key={btn.act}
-                type="button"
-                className={btn.act === 'bold' ? 'tb-bold' : btn.act === 'italic' ? 'tb-italic' : ''}
-                title={btn.title}
-                onClick={() => onToolbarAction(btn.act)}
-              >
-                {btn.label}
-              </button>
+            {TOOLBAR_GROUPS.map((group, gi) => (
+              <div key={gi} className="write-tb-group">
+                {group.map((btn) => (
+                  <button
+                    key={btn.act}
+                    type="button"
+                    className={btn.act === 'bold' ? 'tb-bold' : btn.act === 'italic' ? 'tb-italic' : ''}
+                    title={btn.title}
+                    onClick={() => onToolbarAction(btn.act)}
+                  >
+                    {btn.label}
+                  </button>
+                ))}
+              </div>
             ))}
             <input ref={fileInputRef} type="file" accept="image/*" hidden onChange={onImagePicked} />
           </div>

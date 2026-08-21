@@ -31,6 +31,8 @@ export const GISCUS = {
 /** 写作台操作的目标仓库与目录（写入后触发 CI 自动构建上线） */
 export const GITHUB_REPO = {
   repo: 'hongchengxue/hongchengxue.github.io',
+  /** 内容所在分支：V1 保留在 main，V2 是当前线上版本 */
+  branch: 'V2',
   postsDir: 'src/content/posts',
   draftsDir: 'src/content/_drafts',
 } as const
