@@ -1,6 +1,9 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
+// 侧效应引入中文本地化词典（设置 window.VditorI18n），
+// 配合下方 i18n 选项让编辑器同步初始化，完全不依赖外部 CDN
+import 'vditor/dist/js/i18n/zh_CN.js'
 import { useTheme } from '@/hooks/useTheme'
 
 /**
@@ -60,6 +63,11 @@ export const VditorEditor = forwardRef<VditorEditorHandle, VditorEditorProps>(fu
       placeholder: init.placeholder ?? '',
       lang: 'zh_CN',
       theme: 'classic',
+      // 全部资源走本站路径，不依赖 unpkg CDN（国内常被拦截导致编辑器崩溃）
+      cdn: '/vditor',
+      _lutePath: '/vditor/dist/js/lute/lute.min.js',
+      // 传入完整本地化词典 → 构造函数同步初始化（绕开 CDN i18n 异步加载）
+      i18n: window.VditorI18n,
       cache: { enable: false },
       toolbarConfig: { pin: true },
       toolbar: [
