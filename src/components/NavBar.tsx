@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { DarkModeToggle } from '@/components/DarkModeToggle'
 import { Icon, type IconName } from '@/components/Icon'
 import { LangSwitch } from '@/components/LangSwitch'
@@ -46,10 +46,13 @@ export function NavBar({ solid }: NavBarProps) {
 
         <div className="nav-right">
           <SearchBar />
-          <Link className="nav-link nav-about" to="/about/">
+          <NavLink
+            className={({ isActive }) => (isActive ? 'nav-link nav-about active' : 'nav-link nav-about')}
+            to="/about/"
+          >
             <Icon name="user" size={13} />
             <span>ABOUT ME</span>
-          </Link>
+          </NavLink>
           <LangSwitch />
           <DarkModeToggle />
           <button
@@ -78,10 +81,14 @@ export function NavBar({ solid }: NavBarProps) {
               <span>{t(item.label)}</span>
             </NavLink>
           ))}
-          <Link className="nav-link" to="/about/" onClick={() => setMobileOpen(false)}>
+          <NavLink
+            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+            to="/about/"
+            onClick={() => setMobileOpen(false)}
+          >
             <Icon name="user" size={14} />
             <span>ABOUT ME</span>
-          </Link>
+          </NavLink>
         </div>
       )}
     </header>
