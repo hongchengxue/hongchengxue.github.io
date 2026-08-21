@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { VditorEditor, type VditorEditorHandle } from '@/components/VditorEditor'
 import { WriteCatPanel } from '@/components/WriteCatPanel'
 import { useLang } from '@/hooks/useLang'
 import { useTitle } from '@/hooks/useUi'
@@ -16,7 +17,6 @@ import {
   putFile,
   type GitHubFileMeta,
 } from '@/lib/github'
-import { renderMarkdown } from '@/lib/markdown'
 import { nowStr } from '@/lib/date'
 import { slugify } from '@/lib/slug'
 import { GITHUB_REPO } from '@/lib/site'
@@ -25,9 +25,10 @@ import { getStorage, setStorage, STORAGE_KEYS } from '@/lib/storage'
 
 /**
  * 写作台：在浏览器里写博客 / 管理文章 / 草稿箱。
+ * - 编辑器为 Typora 式所见即所得（Vditor 即时渲染：输入即渲染，点击段落显示源码）
  * - 暂存 → src/content/_drafts（不会上线）
  * - 发布 → src/content/posts（触发 CI 自动构建上线）
- * - 分类可选可新建（支持父子层级），Markdown 实时预览
+ * - 分类可选可新建（支持父子层级），图片一键上传
  */
 export default function WritePage() {
   const { t } = useLang()
@@ -49,8 +50,7 @@ export default function WritePage() {
   const [times, setTimes] = useState<Record<string, string>>({})
   const [helpOpen, setHelpOpen] = useState(false)
 
-  const [preview, setPreview] = useState('')
-  const previewTimer = useRef<number | undefined>(undefined)
+  const vditorRef = useRef<VditorEditorHandle>(null)
   const buildTimer = useRef<number | undefined>(undefined)
   const catPaths = siteStats.catPaths
 
@@ -59,14 +59,40 @@ export default function WritePage() {
 
   const showHint = useCallback((text: string, ok = false) => setHint({ text, ok }), [])
 
-  // ---------- 实时预览（防抖 250ms） ----------
-  useEffect(() => {
-    window.clearTimeout(previewTimer.current)
-    previewTimer.current = window.setTimeout(() => {
-      setPreview(content.trim() ? renderMarkdown(content) : '')
-    }, 250)
-    return () => window.clearTimeout(previewTimer.current)
-  }, [content])
+  /** 编辑器输入 → 同步内容状态（保存/暂存时读取） */
+  const onEditorInput = useCallback((md: string) => setContent(md), [])
+
+  /**
+   * 图片上传：上传到仓库 public/img/posts/（触发 CI 上线后即可访问）。
+   * 成功返回 `![alt](url)` 由编辑器插入；失败返回错误信息（编辑器显示为提示）。
+   */
+  const uploadImages = useCallback(
+    async (files: File[]): Promise<string | null> => {
+      if (!token) return '请先粘贴令牌并连接'
+      if (!files.length) return null
+      const file = files[0]
+      if (file.size > 8 * 1024 * 1024) {
+        return `「${file.name}」超过 8MB，请压缩后再上传（GitHub 接口限制）`
+      }
+      const ext = (file.name.match(/\.([^.]+)$/)?.[1] ?? 'png').toLowerCase().replace(/[^a-z0-9]/g, '')
+      const name = `${nowStr().slice(0, 10)}-${slugify(file.name.replace(/\.[^.]+$/, ''))}.${ext}`
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(String(reader.result).split(',')[1] ?? '')
+        reader.onerror = () => reject(new Error('读取文件失败'))
+        reader.readAsDataURL(file)
+      })
+      showHint('正在上传图片…', true)
+      try {
+        await putFile(`public/img/posts/${name}`, token, base64, `image: ${name}`)
+        showHint('✅ 图片已上传', true)
+        return `![${name.replace(/\.[^.]+$/, '')}](/img/posts/${name})`
+      } catch (e) {
+        return `图片上传失败：${e instanceof GitHubError ? e.message : String(e)}`
+      }
+    },
+    [token, showHint],
+  )
 
   // ---------- 构建进度轮询（发布/保存后提示上线状态） ----------
   const trackBuild = useCallback(() => {
@@ -183,18 +209,19 @@ export default function WritePage() {
         .then((meta) => {
           const raw = b64decode(meta.content)
           const parsed = parseFrontmatter(raw)
+          const body = parsed ? parsed.body : raw
           setEditing({ path, sha: meta.sha, isDraft })
           if (parsed) {
             setTitle(parsed.meta.title)
             setCatPath(parsed.meta.categories[0]?.join('/') ?? '')
             setTags(parsed.meta.tags.join(', '))
-            setContent(parsed.body)
           } else {
             setTitle('')
             setCatPath('')
             setTags('')
-            setContent(raw)
           }
+          setContent(body)
+          vditorRef.current?.setValue(body)
           showHint(`${isDraft ? '正在编辑草稿：' : '正在编辑：'}${path}`, true)
         })
         .catch((e: unknown) => {
@@ -210,7 +237,7 @@ export default function WritePage() {
     setCatPath('')
     setTags('')
     setContent('')
-    setPreview('')
+    vditorRef.current?.setValue('')
     showHint('新建文章模式', true)
   }, [showHint])
 
@@ -364,137 +391,6 @@ export default function WritePage() {
     }
   }
 
-  // ---------- 格式工具栏：在光标处插入 Markdown 语法 ----------
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const insertAtCursor = useCallback((before: string, after = '', placeholder = '') => {
-    const el = textareaRef.current
-    if (!el) return
-    const start = el.selectionStart
-    const end = el.selectionEnd
-    const cur = el.value // 取 textarea 实时值，避免异步上传后读到过期内容
-    const selected = cur.slice(start, end) || placeholder
-    const next = cur.slice(0, start) + before + selected + after + cur.slice(end)
-    setContent(next)
-    requestAnimationFrame(() => {
-      el.focus()
-      const pos = start + before.length + selected.length
-      el.setSelectionRange(pos, pos + after.length)
-    })
-  }, [])
-
-  const onToolbarAction = useCallback(
-    (act: string) => {
-      if (act === 'image') {
-        fileInputRef.current?.click()
-        return
-      }
-      if (act === 'video') {
-        const url = window.prompt('粘贴视频链接（B站 / YouTube / mp4 直链）')
-        if (url?.trim()) insertAtCursor(`\n:::video ${url.trim()}\n:::\n`)
-        return
-      }
-      if (act === 'callout') {
-        const kind = (window.prompt('提示框类型：tip / info / warning / danger（默认 tip）') ?? 'tip').trim() || 'tip'
-        insertAtCursor(`\n:::${kind} 提示标题\n\n提示内容\n:::\n`)
-        return
-      }
-      if (act === 'details') return insertAtCursor('\n<details><summary>点击展开</summary>\n\n', '\n\n</details>\n', '折叠内容')
-      if (act === 'bold') return insertAtCursor('**', '**', '加粗文字')
-      if (act === 'italic') return insertAtCursor('*', '*', '斜体文字')
-      if (act === 'strike') return insertAtCursor('~~', '~~', '删除线文字')
-      if (act === 'mark') return insertAtCursor('==', '==', '高亮文字')
-      if (act === 'inline-code') return insertAtCursor('`', '`', '代码')
-      if (act === 'h1') return insertAtCursor('\n# ', '', '标题')
-      if (act === 'h2') return insertAtCursor('\n## ', '', '标题')
-      if (act === 'h3') return insertAtCursor('\n### ', '', '标题')
-      if (act === 'link') return insertAtCursor('[', '](https://)', '链接文字')
-      if (act === 'quote') return insertAtCursor('\n> ', '', '引用内容')
-      if (act === 'code') return insertAtCursor('\n```\n', '\n```\n', '代码')
-      if (act === 'bullet') return insertAtCursor('\n- ', '', '列表项')
-      if (act === 'number') return insertAtCursor('\n1. ', '', '列表项')
-      if (act === 'task') return insertAtCursor('\n- [ ] ', '', '任务事项')
-      if (act === 'hr') return insertAtCursor('\n\n---\n\n')
-      if (act === 'table')
-        return insertAtCursor('\n| 列1 | 列2 |\n| --- | --- |\n| 内容 | 内容 |\n')
-    },
-    [insertAtCursor],
-  )
-
-  /** 选择图片 → 上传到仓库 public/img/posts/ → 插入图片语法 */
-  const onImagePicked = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0]
-      e.target.value = '' // 允许重复选择同一文件
-      if (!file) return
-      if (!token) {
-        showHint('请先粘贴令牌并连接', false)
-        return
-      }
-      if (file.size > 8 * 1024 * 1024) {
-        showHint('图片超过 8MB，请先压缩后再上传（GitHub 接口限制）', false)
-        return
-      }
-      const ext = (file.name.match(/\.([^.]+)$/)?.[1] ?? 'png').toLowerCase().replace(/[^a-z0-9]/g, '')
-      const reader = new FileReader()
-      reader.onload = () => {
-        const base64 = String(reader.result).split(',')[1] ?? ''
-        const name = `${nowStr().slice(0, 10)}-${slugify(file.name.replace(/\.[^.]+$/, ''))}.${ext}`
-        showHint('正在上传图片…', true)
-        putFile(`public/img/posts/${name}`, token, base64, `image: ${name}`)
-          .then(() => {
-            insertAtCursor(`![${name.replace(/\.[^.]+$/, '')}](/img/posts/${name})`)
-            showHint('✅ 图片已上传并插入正文', true)
-          })
-          .catch((err: unknown) => {
-            showHint(`图片上传失败：${err instanceof GitHubError ? err.message : String(err)}`, false)
-          })
-      }
-      reader.readAsDataURL(file)
-    },
-    [token, insertAtCursor, showHint],
-  )
-
-  /**
-   * 工具栏按钮定义（分组展示，仿 Obsidian Editing Toolbar / Word 风格）。
-   * 想增删按钮：在对应分组加一行 { act, label, title }，并在 onToolbarAction 中实现插入逻辑。
-   */
-  const TOOLBAR_GROUPS: { act: string; label: React.ReactNode; title: string }[][] = [
-    // 标题
-    [
-      { act: 'h1', label: 'H1', title: '一级标题' },
-      { act: 'h2', label: 'H2', title: '二级标题' },
-      { act: 'h3', label: 'H3', title: '三级标题' },
-    ],
-    // 文字样式
-    [
-      { act: 'bold', label: <b>B</b>, title: '加粗' },
-      { act: 'italic', label: <i>I</i>, title: '斜体' },
-      { act: 'strike', label: <s>S</s>, title: '删除线' },
-      { act: 'mark', label: '==', title: '高亮' },
-      { act: 'inline-code', label: '`', title: '行内代码' },
-    ],
-    // 列表 / 段落
-    [
-      { act: 'bullet', label: '•', title: '无序列表' },
-      { act: 'number', label: '1.', title: '有序列表' },
-      { act: 'task', label: '☑', title: '任务清单' },
-      { act: 'quote', label: '❝', title: '引用' },
-      { act: 'hr', label: '—', title: '分割线' },
-    ],
-    // 插入
-    [
-      { act: 'link', label: '🔗', title: '链接' },
-      { act: 'image', label: '🖼', title: '上传图片' },
-      { act: 'video', label: '🎬', title: '视频' },
-      { act: 'table', label: '▦', title: '表格' },
-      { act: 'code', label: '{ }', title: '代码块' },
-      { act: 'callout', label: '💡', title: '提示框' },
-      { act: 'details', label: '📁', title: '折叠块' },
-    ],
-  ]
-
   const modeBadge = isDraftMode
     ? t('writeModeDraft')
     : isEditMode
@@ -596,39 +492,13 @@ export default function WritePage() {
             </div>
             <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder={t('writeTags')} autoComplete="off" />
           </div>
-          <div className="write-toolbar" role="toolbar" aria-label="格式工具栏">
-            {TOOLBAR_GROUPS.map((group, gi) => (
-              <div key={gi} className="write-tb-group">
-                {group.map((btn) => (
-                  <button
-                    key={btn.act}
-                    type="button"
-                    className={btn.act === 'bold' ? 'tb-bold' : btn.act === 'italic' ? 'tb-italic' : ''}
-                    title={btn.title}
-                    onClick={() => onToolbarAction(btn.act)}
-                  >
-                    {btn.label}
-                  </button>
-                ))}
-              </div>
-            ))}
-            <input ref={fileInputRef} type="file" accept="image/*" hidden onChange={onImagePicked} />
-          </div>
-          <div className="write-editor-row">
-            <textarea
-              ref={textareaRef}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder={t('writeContent')}
-            />
-            <div className="write-preview">
-              {preview ? (
-                <div className="markdown-body" dangerouslySetInnerHTML={{ __html: preview }} />
-              ) : (
-                <div className="write-preview-empty">{t('writePreviewEmpty')}</div>
-              )}
-            </div>
-          </div>
+          <VditorEditor
+            ref={vditorRef}
+            height={640}
+            placeholder="所见即所得写作：输入即渲染，点击段落即可编辑其 Markdown 源码（Typora 风格）"
+            onInput={onEditorInput}
+            uploadImages={uploadImages}
+          />
           <div className="write-actions">
             <span className="write-mode-badge">{modeBadge}</span>
             {!isEditMode || isDraftMode ? (

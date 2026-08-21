@@ -17,7 +17,8 @@
     "marked": "^15.0.7",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router-dom": "^7.6.3"
+    "react-router-dom": "^7.6.3",
+    "vditor": "^3.11.3"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
