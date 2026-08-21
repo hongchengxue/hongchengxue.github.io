@@ -27,6 +27,7 @@ try {
   const { siteStats } = await server.ssrLoadModule('/src/lib/stats.ts')
   const { searchPosts } = await server.ssrLoadModule('/src/lib/search.ts')
   const { buildCategoryTree } = await server.ssrLoadModule('/src/lib/categories.ts')
+  const { videoEmbedHtml } = await server.ssrLoadModule('/src/lib/markdown.ts')
 
   console.log('posts:')
   assert(posts.length === 5, `共加载 ${posts.length} 篇文章`)
@@ -59,6 +60,22 @@ try {
   const tree = buildCategoryTree(siteStats.catPaths)
   const techNode = tree.find((n) => n.name === '技术文章')
   assert(!!techNode?.children.find((c) => c.name === 'AI'), '分类树包含 技术文章/AI 层级')
+
+  console.log('video embed:')
+  assert(
+    videoEmbedHtml('https://www.bilibili.com/video/BV1GJ411x7h7').includes(
+      'player.bilibili.com/player.html?bvid=BV1GJ411x7h7',
+    ),
+    'B站视频链接 → 播放器 iframe',
+  )
+  assert(
+    videoEmbedHtml('https://www.youtube.com/watch?v=dQw4w9WgXcQ').includes(
+      'youtube.com/embed/dQw4w9WgXcQ',
+    ),
+    'YouTube 链接 → embed iframe',
+  )
+  assert(videoEmbedHtml('https://example.com/video.mp4').includes('<video'), 'mp4 直链 → video 标签')
+  assert(videoEmbedHtml('https://example.com/page').includes('<iframe'), '未知站点 → iframe 嵌入')
 
   console.log(failed === 0 ? '\n✅ 全部通过' : `\n❌ ${failed} 项失败`)
 } finally {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Giscus } from '@/components/Giscus'
 import { Icon } from '@/components/Icon'
@@ -30,6 +30,7 @@ function PostContent({ post }: { post: Post }) {
   const { t } = useLang()
   const { prev, next } = getAdjacentPosts(post)
   const contentRef = useRef<HTMLDivElement>(null)
+  const [lightbox, setLightbox] = useState<string | null>(null)
 
   // Markdown 渲染结果与目录（渲染期间派生，不做状态，避免多余渲染）
   const html = useMemo(() => renderMarkdown(post.raw), [post])
@@ -39,6 +40,31 @@ function PostContent({ post }: { post: Post }) {
   useEffect(() => {
     if (contentRef.current) void highlightCodeBlocks(contentRef.current)
   }, [html])
+
+  // 正文图片：懒加载 + 点击放大（lightbox，容器级事件委托）
+  useEffect(() => {
+    const el = contentRef.current
+    if (!el) return
+    el.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
+      img.loading = 'lazy'
+    })
+    const onClick = (e: Event) => {
+      const img = (e.target as HTMLElement).closest('img')
+      if (img) setLightbox(img.src)
+    }
+    el.addEventListener('click', onClick)
+    return () => el.removeEventListener('click', onClick)
+  }, [html])
+
+  // Esc 关闭 lightbox
+  useEffect(() => {
+    if (!lightbox) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightbox(null)
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [lightbox])
 
   const cats = post.meta.categories
   const tags = post.meta.tags
@@ -129,6 +155,15 @@ function PostContent({ post }: { post: Post }) {
           {toc.length > 0 ? <TocCard title={t('toc')} items={toc} /> : null}
         </aside>
       </div>
+
+      {lightbox ? (
+        <div className="lightbox" role="dialog" aria-label="图片预览" onClick={() => setLightbox(null)}>
+          <img src={lightbox} alt="" />
+          <span className="lightbox-close" aria-hidden="true">
+            ✕
+          </span>
+        </div>
+      ) : null}
     </div>
   )
 }

@@ -91,6 +91,68 @@ description: 一句话介绍这篇文章
 - 改分类/标签名字即可，分类页、标签页、统计全部自动更新
 - 写作台会写 `src/content/_drafts/`（草稿，不上线）
 
+## 🎨 图文教程写作指南（图片 / 视频 / 提示框）
+
+Markdown 之外，站点还支持这些"教程友好"的扩展语法，**在 GitHub 网页版和写作台里都能直接写**（GitHub 预览不显示，发布后站点正常渲染）：
+
+### 图片
+
+```markdown
+![图片说明](/img/posts/2026-08-15-截图.png)
+```
+
+- **写作台**：点工具栏 🖼 选择本地图片 → 自动上传到仓库 `public/img/posts/` 并插入语法（不用手动传 GitHub）
+- **GitHub 网页版**：把图片上传到仓库的 `public/img/posts/` 文件夹，再引用 `/img/posts/文件名.png`
+- 发布后：图片懒加载、点击可放大查看
+
+### 视频（B站 / YouTube / mp4 直链）
+
+```markdown
+:::video https://www.bilibili.com/video/BV1GJ411x7h7
+:::
+
+:::video https://www.youtube.com/watch?v=dQw4w9WgXcQ
+:::
+
+:::video https://example.com/demo.mp4
+:::
+```
+
+- 写作台：点工具栏 🎬 粘贴链接自动生成
+- B站视频页 / B站短链（b23.tv）/ YouTube / 任意 mp4、webm 直链都支持，16:9 自适应
+
+### 提示框（教程里强调重点、注意事项）
+
+```markdown
+:::tip 小提示
+这里写提示内容，支持 **Markdown**
+:::
+
+:::warning 注意
+这里写警告内容
+:::
+
+:::danger 重要
+这里写危险/易错内容
+:::
+
+:::info 补充
+这里写补充说明
+:::
+```
+
+### 其他排版能力（全部原生支持）
+
+| 能力 | 写法 |
+| --- | --- |
+| 折叠块（适合"展开看答案"） | `<details><summary>点击展开</summary>内容</details>` |
+| 表格 | 标准 Markdown 表格 |
+| 代码块 + 高亮 | ```` ```js ````（自动高亮） |
+| 目录 | 文章页自动生成（基于二/三级标题） |
+| 公式 / 图表 | 可直接嵌入 HTML（如 Mermaid iframe），或告诉我加原生支持 |
+
+> 写作台工具栏还提供：加粗、斜体、标题、链接、引用、代码块、列表的一键插入，记不住 Markdown 语法也没关系。
+
 ## 🏗️ 架构要点（重构后相比旧站的变化）
 
 | 能力 | 旧站（Hexo） | 新站（Vite + React） |
