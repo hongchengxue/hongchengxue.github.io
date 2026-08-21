@@ -1,4 +1,4 @@
-﻿import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { CategoryBreadcrumb } from '@/components/CategoryBreadcrumb'
 import { PageHeader } from '@/components/PageHeader'
 import { PostCard } from '@/components/PostCard'
@@ -12,6 +12,7 @@ export default function CategoryDetailPage() {
   const { t } = useLang()
   const { pathname } = useLocation()
 
+  // 兼容两种 URL 形式：/categories/技术文章/AI/ 与历史遗留的 /categories/技术文章%2FAI/
   const segments = pathname
     .replace(/^\/categories\/?/, '')
     .split('/')
@@ -23,6 +24,8 @@ export default function CategoryDetailPage() {
         return s
       }
     })
+    .flatMap((s) => s.split('/'))
+    .filter(Boolean)
   const catPath = segments.join('/')
   useTitle(catPath ? catPath : t('categories'))
 

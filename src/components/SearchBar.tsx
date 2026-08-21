@@ -1,13 +1,12 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Icon } from '@/components/Icon'
 import { useLang } from '@/hooks/useLang'
 
 /**
- * 站内搜索框：回车或点击按钮 → 跳转 /search/?q=...
- * variant: nav（导航栏药丸） | hero（首页英雄区大号）
+ * 站内搜索框（导航栏统一使用）：回车或点击按钮 → 跳转 /search/?q=...
  */
-export function SearchBar({ variant }: { variant: 'nav' | 'hero' }) {
+export function SearchBar() {
   const { t } = useLang()
   const navigate = useNavigate()
   const [value, setValue] = useState('')
@@ -19,7 +18,7 @@ export function SearchBar({ variant }: { variant: 'nav' | 'hero' }) {
   }
 
   return (
-    <div className={`search-bar search-bar-${variant}`}>
+    <div className="search-bar">
       <input
         type="text"
         value={value}
@@ -37,7 +36,7 @@ export function SearchBar({ variant }: { variant: 'nav' | 'hero' }) {
         onClick={go}
         aria-label={t('search')}
       >
-        <Icon name="arrow-right" size={variant === 'hero' ? 18 : 15} />
+        <Icon name="arrow-right" size={15} />
       </button>
     </div>
   )

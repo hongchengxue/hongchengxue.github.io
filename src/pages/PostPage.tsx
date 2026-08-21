@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Giscus } from '@/components/Giscus'
 import { Icon } from '@/components/Icon'
@@ -6,6 +6,7 @@ import { LikeButton } from '@/components/LikeButton'
 import { TocCard } from '@/components/AsideCards'
 import { useLang } from '@/hooks/useLang'
 import { useTitle } from '@/hooks/useUi'
+import { categoryUrl } from '@/lib/categories'
 import { formatDate, formatDateTime } from '@/lib/date'
 import { extractToc, highlightCodeBlocks, renderMarkdown } from '@/lib/markdown'
 import { getAdjacentPosts, getPost } from '@/lib/posts'
@@ -69,7 +70,7 @@ function PostContent({ post }: { post: Post }) {
                     <Link
                       key={cat.join('/')}
                       className="post-cat"
-                      to={`/categories/${encodeURIComponent(cat.join('/'))}/`}
+                      to={categoryUrl(cat.join('/'))}
                     >
                       <Icon name="folder" size={12} /> {cat.join(' / ')}
                     </Link>

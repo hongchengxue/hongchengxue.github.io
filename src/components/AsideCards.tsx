@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Icon, type IconName } from '@/components/Icon'
+import { categoryUrl } from '@/lib/categories'
 
 /** 侧边栏卡片容器 */
 export function AsideCard({
@@ -68,7 +69,7 @@ export function CategoriesCard({
       <ul className="card-list">
         {items.map((item) => (
           <li key={item.name}>
-            <Link to={`/categories/${encodeURIComponent(item.name)}/`} className="card-link">
+            <Link to={categoryUrl(item.name)} className="card-link">
               <span className="card-link-title">{item.name}</span>
               <span className="card-link-count">{item.count}</span>
             </Link>

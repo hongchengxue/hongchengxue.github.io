@@ -269,7 +269,7 @@ img {
   border-color: rgba(255, 255, 255, 0.14);
 }
 
-/* 当前页指示：蓝色胶囊 */
+/* 当前页指示：蓝色胶囊（透明导航上） */
 .nav-link.active {
   background: linear-gradient(135deg, rgba(66, 133, 244, 0.45), rgba(66, 133, 244, 0.2));
   border-color: rgba(66, 133, 244, 0.55);
@@ -278,18 +278,20 @@ img {
   text-shadow: none;
 }
 
+/* 实底态（白天模式）激活按钮：纯色蓝底 + 白字，保证对比度清晰 */
 #page-header.nav-solid .nav-link.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(66, 133, 244, 0.4);
   color: #fff;
+  text-shadow: none;
 }
 
-/* ---------- 导航搜索框（药丸） ---------- */
+/* ---------- 导航搜索框（玻璃药丸） ---------- */
 .search-bar {
   position: relative;
   display: inline-flex;
   align-items: center;
-}
-
-.search-bar-nav {
   height: 38px;
   margin: 0 6px;
   border: 1px solid rgba(255, 255, 255, 0.5);
@@ -301,17 +303,17 @@ img {
   transition: box-shadow 0.25s ease, background 0.25s ease;
 }
 
-.search-bar-nav:hover {
+.search-bar:hover {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.14));
   box-shadow: var(--glass-hover);
 }
 
-.search-bar-nav:focus-within {
+.search-bar:focus-within {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.14));
   box-shadow: 0 2px 14px rgba(66, 133, 244, 0.2), 0 0 0 3px rgba(66, 133, 244, 0.12);
 }
 
-.search-bar-nav input {
+.search-bar input {
   width: 200px;
   height: 100%;
   padding: 0 40px 0 16px;
@@ -325,35 +327,34 @@ img {
   transition: width 0.25s ease;
 }
 
-.search-bar-nav:focus-within input {
+.search-bar:focus-within input {
   width: 260px;
 }
 
-.search-bar-nav input::placeholder {
+.search-bar input::placeholder {
   color: rgba(255, 255, 255, 0.72);
 }
 
 /* 实底态搜索框文字切深色 */
-#page-header.nav-solid .search-bar-nav input {
+#page-header.nav-solid .search-bar input {
   color: var(--text-1);
   text-shadow: none;
 }
 
-#page-header.nav-solid .search-bar-nav input::placeholder {
+#page-header.nav-solid .search-bar input::placeholder {
   color: var(--text-3);
 }
 
-#page-header.nav-solid .search-bar-nav {
+#page-header.nav-solid .search-bar {
   border-color: rgba(31, 38, 55, 0.12);
   background: rgba(255, 255, 255, 0.6);
   box-shadow: 0 2px 8px rgba(31, 38, 55, 0.06);
 }
 
-[data-theme='dark'] #page-header.nav-solid .search-bar-nav {
+[data-theme='dark'] #page-header.nav-solid .search-bar {
   background: rgba(255, 255, 255, 0.07);
 }
 
-.search-bar-nav .search-btn,
 .search-bar button {
   position: absolute;
   right: 5px;
@@ -373,14 +374,14 @@ img {
   transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
 }
 
-.search-bar-nav button.visible,
-.search-bar-nav:focus-within button {
+.search-bar button.visible,
+.search-bar:focus-within button {
   opacity: 1;
   pointer-events: auto;
   transform: scale(1);
 }
 
-.search-bar-nav button:hover {
+.search-bar button:hover {
   background: var(--accent-deep);
 }
 
@@ -594,67 +595,14 @@ img {
 }
 
 /* ============================================================
-   首页英雄区
+   首页横幅（纯背景图，搜索统一在导航栏）
    ============================================================ */
 .hero {
   position: relative;
-  display: flex;
-  justify-content: center;
+  height: 320px;
   margin-top: calc(var(--nav-h) * -1);
-  padding: 150px 0 90px;
   background: linear-gradient(160deg, rgba(15, 23, 32, 0.82), rgba(27, 42, 68, 0.62)),
     url('/img/index-bg.jpg') center / cover no-repeat;
-}
-
-.hero-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 900px;
-  padding: 0 20px;
-}
-
-/* 英雄区大搜索框（832×60px 玻璃药丸，用户最终选定的规格） */
-.search-bar-hero {
-  width: 100%;
-  max-width: 832px;
-  height: 60px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 10px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.1));
-  -webkit-backdrop-filter: blur(18px) saturate(1.6);
-  backdrop-filter: blur(18px) saturate(1.6);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  transition: box-shadow 0.25s ease;
-}
-
-.search-bar-hero:focus-within {
-  box-shadow: 0 8px 36px rgba(66, 133, 244, 0.35), 0 0 0 3px rgba(66, 133, 244, 0.15);
-}
-
-.search-bar-hero input {
-  width: 100%;
-  height: 100%;
-  padding: 0 64px 0 24px;
-  border: none;
-  background: transparent;
-  outline: none;
-  font-size: 1.08rem;
-  font-family: inherit;
-  color: var(--near-white);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
-}
-
-.search-bar-hero input::placeholder {
-  color: rgba(245, 247, 250, 0.75);
-}
-
-.search-bar-hero button {
-  right: 8px;
-  width: 44px;
-  height: 44px;
-  font-size: 0;
 }
 
 /* ============================================================
@@ -2254,7 +2202,7 @@ img {
 
 @media (max-width: 768px) {
   .nav-menus,
-  .nav-right .search-bar-nav,
+  .nav-right .search-bar,
   .nav-right .nav-about,
   .nav-right .lang-wrap,
   .nav-right .darkmode-btn {
@@ -2270,17 +2218,7 @@ img {
   }
 
   .hero {
-    min-height: 40vh;
-  }
-
-  .search-bar-hero {
-    height: 52px;
-    border-radius: 12px;
-  }
-
-  .search-bar-hero input {
-    font-size: 1rem;
-    padding: 0 56px 0 18px;
+    height: 220px;
   }
 
   .post-banner {

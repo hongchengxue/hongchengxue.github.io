@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { DarkModeToggle } from '@/components/DarkModeToggle'
 import { Icon, type IconName } from '@/components/Icon'
@@ -45,7 +45,7 @@ export function NavBar({ solid }: NavBarProps) {
         </ul>
 
         <div className="nav-right">
-          <SearchBar variant="nav" />
+          <SearchBar />
           <Link className="nav-link nav-about" to="/about/">
             <Icon name="user" size={13} />
             <span>ABOUT ME</span>

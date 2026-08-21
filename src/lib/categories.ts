@@ -47,3 +47,14 @@ export function countSubtree(node: CatNode): number {
   for (const child of node.children) total += countSubtree(child)
   return total
 }
+
+/**
+ * 分类 URL：每一级单独编码（不能用 encodeURIComponent 编码整个路径，
+ * 否则斜杠会变成 %2F，导致面包屑无法识别层级）。
+ * 例：技术文章/AI → /categories/%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0/AI/
+ */
+export function categoryUrl(path: string): string {
+  const segs = path.split('/').filter(Boolean)
+  if (!segs.length) return '/categories/'
+  return `/categories/${segs.map(encodeURIComponent).join('/')}/`
+}

@@ -1,24 +1,25 @@
-﻿import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useLang } from '@/hooks/useLang'
+import { categoryUrl } from '@/lib/categories'
 
-/** 分类页面包屑：全部分类 / 父级 / 当前 + 返回按钮 */
+/** 分类页面包屑：全部分类 / 父级 / 当前 + 返回上一级按钮 */
 export function CategoryBreadcrumb({ segments }: { segments: string[] }) {
   const { t } = useLang()
   if (!segments.length) return null
 
   const crumbs = []
-  let path = '/categories/'
+  let path = ''
   for (let i = 0; i < segments.length - 1; i++) {
-    path += `${encodeURIComponent(segments[i])}/`
+    path = path ? `${path}/${segments[i]}` : segments[i]
     crumbs.push(
       <span key={path} className="cat-bc-group">
         <span className="cat-bc-sep">/</span>
-        <Link to={path}>{segments[i]}</Link>
+        <Link to={categoryUrl(path)}>{segments[i]}</Link>
       </span>,
     )
   }
   const current = segments[segments.length - 1]
-  const parentPath = segments.length > 1 ? path : '/categories/'
+  const parentPath = segments.length > 1 ? categoryUrl(segments.slice(0, -1).join('/')) : '/categories/'
 
   return (
     <div className="cat-breadcrumb">

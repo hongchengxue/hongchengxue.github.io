@@ -1,6 +1,7 @@
-﻿import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Icon } from '@/components/Icon'
 import { useLang } from '@/hooks/useLang'
+import { categoryUrl } from '@/lib/categories'
 import { formatDate } from '@/lib/date'
 import type { Post } from '@/types/post'
 
@@ -16,7 +17,7 @@ export function PostCard({ post }: { post: Post }) {
           <Icon name="clock" size={13} /> {formatDate(post.date)}
         </time>
         {firstCat ? (
-          <Link to={`/categories/${encodeURIComponent(firstCat)}/`} className="post-card-cat">
+          <Link to={categoryUrl(firstCat)} className="post-card-cat">
             <Icon name="folder" size={12} /> {firstCat}
           </Link>
         ) : null}

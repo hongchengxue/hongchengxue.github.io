@@ -1,15 +1,15 @@
-﻿import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Icon } from '@/components/Icon'
 import { PageHeader } from '@/components/PageHeader'
 import { useLang } from '@/hooks/useLang'
 import { useTitle } from '@/hooks/useUi'
-import { buildCategoryTree, countSubtree, type CatNode } from '@/lib/categories'
+import { buildCategoryTree, categoryUrl, countSubtree, type CatNode } from '@/lib/categories'
 import { siteStats } from '@/lib/stats'
 
 function CatCard({ node }: { node: CatNode }) {
   return (
     <div className="cat-card">
-      <Link to={`/categories/${encodeURIComponent(node.path)}/`} className="cat-card-head">
+      <Link to={categoryUrl(node.path)} className="cat-card-head">
         <Icon name="folder" size={15} />
         <span className="cat-card-name">{node.name}</span>
         <span className="cat-card-count">{countSubtree(node)}</span>
@@ -17,7 +17,7 @@ function CatCard({ node }: { node: CatNode }) {
       {node.children.length > 0 ? (
         <div className="cat-card-children">
           {node.children.map((child) => (
-            <Link key={child.path} to={`/categories/${encodeURIComponent(child.path)}/`}>
+            <Link key={child.path} to={categoryUrl(child.path)}>
               {child.name}
               <span className="cat-card-count">{countSubtree(child)}</span>
             </Link>
