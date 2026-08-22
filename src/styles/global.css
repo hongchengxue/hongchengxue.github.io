@@ -25,7 +25,7 @@
   --glass-hover: 0 4px 14px rgba(96, 84, 64, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.8);
   --near-white: #fdfcfb;
   --nav-h: 66px;
-  --container-w: 1080px;
+  --container-w: 960px;
   --radius: 12px;
   --radius-sm: 8px;
   --mark-bg: #ffe9b8;
@@ -632,9 +632,10 @@ img {
   line-height: 1.05;
 }
 
-/* 渐变流光文字（mimo 式动效） */
+/* 渐变流光文字（mimo 式动效）——用 background-image 而非 background 简写，
+   否则会重置 background-clip: text，文字会变成整块色条 */
 .gradient-text {
-  background: linear-gradient(120deg, #7ba3c9, #a9c2dd, #dcbba0, #7ba3c9);
+  background-image: linear-gradient(120deg, #7ba3c9, #a9c2dd, #dcbba0, #7ba3c9);
   background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -732,13 +733,13 @@ img {
 
 /* 首页个人介绍与最新文章 */
 .home-about {
-  max-width: 760px;
+  max-width: 960px;
   margin: 0 auto;
   padding-top: 36px;
 }
 
 .home-posts {
-  max-width: 760px;
+  max-width: 960px;
   margin: 0 auto;
   padding-top: 6px;
 }
@@ -790,7 +791,7 @@ img {
 }
 
 [data-theme='dark'] .gradient-text {
-  background: linear-gradient(120deg, #8fb6da, #b7cde4, #e0c3ab, #8fb6da);
+  background-image: linear-gradient(120deg, #8fb6da, #b7cde4, #e0c3ab, #8fb6da);
   background-size: 300% 100%;
 }
 
@@ -950,6 +951,9 @@ img {
   padding: 3px 12px;
   border-radius: 999px;
   font-size: 0.82rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
 
 .post-cat {
@@ -957,9 +961,21 @@ img {
   color: var(--accent);
 }
 
+.post-cat:hover {
+  background: rgba(123, 163, 201, 0.24);
+  color: var(--accent-deep);
+  transform: translateY(-1px);
+}
+
 .post-tag {
   background: rgba(255, 152, 0, 0.12);
   color: #e08600;
+}
+
+.post-tag:hover {
+  background: rgba(255, 152, 0, 0.2);
+  color: #b26a00;
+  transform: translateY(-1px);
 }
 
 .post-desc-note {
@@ -1611,7 +1627,7 @@ img {
    关于页
    ============================================================ */
 .about-page {
-  max-width: 760px;
+  max-width: 960px;
 }
 
 .about-card {
@@ -1754,7 +1770,7 @@ img {
 
 /* 自我介绍 */
 .intro-page {
-  max-width: 760px;
+  max-width: 960px;
   margin: 0 auto;
 }
 
@@ -1782,7 +1798,7 @@ img {
    搜索页
    ============================================================ */
 .search-page {
-  max-width: 760px;
+  max-width: 960px;
   margin: 0 auto;
 }
 
@@ -2046,7 +2062,7 @@ img {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: 14px;
-  max-width: 900px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 20px 0 40px;
 }
@@ -2629,7 +2645,7 @@ img {
    主页评论
    ============================================================ */
 .home-comments {
-  max-width: 760px;
+  max-width: 960px;
   margin: 26px auto 20px;
   padding: 18px 20px;
   border-radius: 12px;
