@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Icon } from '@/components/Icon'
 import { VditorEditor, type VditorEditorHandle } from '@/components/VditorEditor'
 import { WriteCatPanel } from '@/components/WriteCatPanel'
 import { useLang } from '@/hooks/useLang'
@@ -398,124 +400,84 @@ export default function WritePage() {
       : t('writeModeNew')
 
   return (
-    <div className="container">
-      <div className="write-app">
-        <div className="card write-card">
-          <div className="write-head">{t('writeDesk')}</div>
-          <div className="write-token-row">
-            <input
-              type="password"
-              value={tokenInput}
-              onChange={(e) => setTokenInput(e.target.value)}
-              placeholder={t('writeTokenPlaceholder')}
-              autoComplete="off"
-            />
-            <button type="button" onClick={connect}>
-              {t('writeConnect')}
-            </button>
-          </div>
-          <p className={hint.ok ? 'write-hint ok' : 'write-hint'}>{hint.text}</p>
-        </div>
-
-        <details
-          className="write-help"
-          open={helpOpen}
-          onToggle={(e) => setHelpOpen(e.currentTarget.open)}
-        >
-          <summary>🔑 令牌获取教程（第一次使用必看 / 连接失败时自动展开）</summary>
-          <div className="write-help-body">
-            <p>
-              写作台通过你的 GitHub 令牌把文章写入仓库，令牌<b>只保存在你的浏览器里</b>，不会上传到任何地方。按下面 6 步获取：
-            </p>
-            <ol>
-              <li>
-                打开{' '}
-                <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer">
-                  github.com/settings/tokens
-                </a>{' '}
-                （需登录 GitHub）
-              </li>
-              <li>
-                点右上角 <b>Generate new token</b> → 选 <b>Fine-grained personal access token</b>
-              </li>
-              <li>
-                Token name 随便填（如 write-desk）；Expiration 有效期选 <b>90 天</b> 或 No expiration
-              </li>
-              <li>
-                Repository access → 选 <b>Only select repositories</b> → 勾选{' '}
-                <b>hongchengxue/hongchengxue.github.io</b>
-              </li>
-              <li>
-                Permissions → Repository permissions → 找到 <b>Contents</b> → 设为 <b>Read and write</b>
-              </li>
-              <li>
-                点最下方 <b>Generate token</b>，复制以 <code>github_pat_</code> 开头的字符串，粘贴到上方输入框，点「连接」
-              </li>
-            </ol>
-            <p className="write-help-faq-title">常见问题排查：</p>
-            <ul>
-              <li>
-                <b>403 / 401（权限不足）</b>：令牌过期，或没把 Contents 设为 Read and write → 重新生成或编辑令牌权限
-              </li>
-              <li>
-                <b>Not Found</b>：通常是草稿箱目录还不存在，属正常情况（已自动处理为空），不会影响连接
-              </li>
-              <li>
-                <b>网络失败</b>：检查网络 / 代理是否正常，稍后重试
-              </li>
-              <li>令牌建议 90 天过期；到期后重新生成并粘贴新令牌即可</li>
-            </ul>
-          </div>
-        </details>
-
-        <div className="card write-card">
-          <div className="write-row">
-            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t('writeTitle')} autoComplete="off" />
-            <div className="write-cat-box">
-              <input
-                value={catPath}
-                onChange={(e) => setCatPath(e.target.value)}
-                onFocus={() => setCatPanelOpen(true)}
-                onClick={() => setCatPanelOpen(true)}
-                placeholder={t('writeCat')}
-                autoComplete="off"
-              />
-              {catPanelOpen ? (
-                <WriteCatPanel
-                  catPaths={catPaths}
-                  onSelect={(p) => {
-                    setCatPath(p)
-                    setCatPanelOpen(false)
-                  }}
-                />
-              ) : null}
-            </div>
-            <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder={t('writeTags')} autoComplete="off" />
-          </div>
-          <VditorEditor
-            ref={vditorRef}
-            height={640}
-            placeholder="所见即所得写作：输入即渲染，点击段落即可编辑其 Markdown 源码（Typora 风格）"
-            onInput={onEditorInput}
-            uploadImages={uploadImages}
+    <div className="write-page">
+      {/* 顶栏：返回 + 标题/分类/标签 + 模式 + 操作按钮 */}
+      <header className="write-topbar">
+        <Link className="write-back" to="/" title={t('backToHome')}>
+          <Icon name="arrow-left" size={15} /> {t('backToHome')}
+        </Link>
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder={t('writeTitle')}
+          autoComplete="off"
+        />
+        <div className="write-cat-box">
+          <input
+            value={catPath}
+            onChange={(e) => setCatPath(e.target.value)}
+            onFocus={() => setCatPanelOpen(true)}
+            onClick={() => setCatPanelOpen(true)}
+            placeholder={t('writeCat')}
+            autoComplete="off"
           />
-          <div className="write-actions">
-            <span className="write-mode-badge">{modeBadge}</span>
-            {!isEditMode || isDraftMode ? (
-              <button type="button" onClick={saveDraft}>
-                {isDraftMode ? t('writeUpdateDraft') : t('writeDraft')}
-              </button>
-            ) : null}
-            <button type="button" onClick={publish}>
-              {t('writePublish')}
-            </button>
-            <button type="button" onClick={newPost}>
-              {t('writeClear')}
-            </button>
-          </div>
+          {catPanelOpen ? (
+            <WriteCatPanel
+              catPaths={catPaths}
+              onSelect={(p) => {
+                setCatPath(p)
+                setCatPanelOpen(false)
+              }}
+            />
+          ) : null}
         </div>
+        <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder={t('writeTags')} autoComplete="off" />
+        <div className="write-actions">
+          <span className="write-mode-badge">{modeBadge}</span>
+          {!isEditMode || isDraftMode ? (
+            <button type="button" onClick={saveDraft}>
+              {isDraftMode ? t('writeUpdateDraft') : t('writeDraft')}
+            </button>
+          ) : null}
+          <button type="button" onClick={publish}>
+            {t('writePublish')}
+          </button>
+          <button type="button" onClick={newPost}>
+            {t('writeClear')}
+          </button>
+        </div>
+      </header>
 
-        <div className="card write-card">
+      {/* 令牌行 */}
+      <div className="write-tokenbar">
+        <input
+          type="password"
+          value={tokenInput}
+          onChange={(e) => setTokenInput(e.target.value)}
+          placeholder={t('writeTokenPlaceholder')}
+          autoComplete="off"
+        />
+        <button type="button" onClick={connect}>
+          {t('writeConnect')}
+        </button>
+        <p className={hint.ok ? 'write-hint ok' : 'write-hint'}>{hint.text}</p>
+      </div>
+
+      {/* 编辑器：铺满剩余屏幕高度 */}
+      <div className="write-editor-area">
+        <VditorEditor
+          ref={vditorRef}
+          height="100%"
+          minHeight={420}
+          placeholder="所见即所得写作：输入即渲染，点击段落即可编辑其 Markdown 源码（Typora 风格）"
+          onInput={onEditorInput}
+          uploadImages={uploadImages}
+        />
+      </div>
+
+      {/* 草稿箱与已发布：双栏 */}
+      <div className="write-lists">
+        <section className="card write-list-card">
           <div className="write-head2">{t('writeDraftBox')}</div>
           <ul className="write-list">
             {drafts.length > 0 ? (
@@ -542,9 +504,9 @@ export default function WritePage() {
               </li>
             )}
           </ul>
-        </div>
+        </section>
 
-        <div className="card write-card">
+        <section className="card write-list-card">
           <div className="write-head2">{t('writePublishedBox')}</div>
           <ul className="write-list">
             {published.length > 0 ? (
@@ -568,8 +530,60 @@ export default function WritePage() {
               </li>
             )}
           </ul>
-        </div>
+        </section>
       </div>
+
+      {/* 令牌获取教程 */}
+      <details
+        className="write-help"
+        open={helpOpen}
+        onToggle={(e) => setHelpOpen(e.currentTarget.open)}
+      >
+        <summary>🔑 令牌获取教程（第一次使用必看 / 连接失败时自动展开）</summary>
+        <div className="write-help-body">
+          <p>
+            写作台通过你的 GitHub 令牌把文章写入仓库，令牌<b>只保存在你的浏览器里</b>，不会上传到任何地方。按下面 6 步获取：
+          </p>
+          <ol>
+            <li>
+              打开{' '}
+              <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer">
+                github.com/settings/tokens
+              </a>{' '}
+              （需登录 GitHub）
+            </li>
+            <li>
+              点右上角 <b>Generate new token</b> → 选 <b>Fine-grained personal access token</b>
+            </li>
+            <li>
+              Token name 随便填（如 write-desk）；Expiration 有效期选 <b>90 天</b> 或 No expiration
+            </li>
+            <li>
+              Repository access → 选 <b>Only select repositories</b> → 勾选{' '}
+              <b>hongchengxue/hongchengxue.github.io</b>
+            </li>
+            <li>
+              Permissions → Repository permissions → 找到 <b>Contents</b> → 设为 <b>Read and write</b>
+            </li>
+            <li>
+              点最下方 <b>Generate token</b>，复制以 <code>github_pat_</code> 开头的字符串，粘贴到上方输入框，点「连接」
+            </li>
+          </ol>
+          <p className="write-help-faq-title">常见问题排查：</p>
+          <ul>
+            <li>
+              <b>403 / 401（权限不足）</b>：令牌过期，或没把 Contents 设为 Read and write → 重新生成或编辑令牌权限
+            </li>
+            <li>
+              <b>Not Found</b>：通常是草稿箱目录还不存在，属正常情况（已自动处理为空），不会影响连接
+            </li>
+            <li>
+              <b>网络失败</b>：检查网络 / 代理是否正常，稍后重试
+            </li>
+            <li>令牌建议 90 天过期；到期后重新生成并粘贴新令牌即可</li>
+          </ul>
+        </div>
+      </details>
     </div>
   )
 }

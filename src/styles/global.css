@@ -1861,56 +1861,116 @@ img {
 }
 
 /* ============================================================
-   写作台
+   写作台（全屏布局）
    ============================================================ */
-.write-app {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding-bottom: 40px;
+.main-full {
+  padding-top: 0;
 }
 
-.write-card {
-  margin-top: 16px;
-}
-
-.write-head {
-  margin-bottom: 12px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text-1);
-}
-
-.write-head2 {
-  margin-bottom: 10px;
-  font-size: 1.02rem;
-  font-weight: 600;
-  color: var(--text-1);
-}
-
-.write-token-row {
+.write-page {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1600px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 24px 30px;
 }
 
-.write-token-row input {
+/* ---------- 顶栏：返回 + 元信息 + 操作 ---------- */
+.write-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 14px 0 10px;
+}
+
+.write-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.write-back:hover {
+  background: rgba(66, 133, 244, 0.2);
+  color: var(--accent);
+}
+
+.write-topbar > input,
+.write-topbar .write-cat-box {
   flex: 1;
+  min-width: 140px;
+}
+
+.write-topbar input {
   padding: 9px 14px;
   border: 1px solid rgba(31, 38, 55, 0.12);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--card-bg);
+  color: var(--text-1);
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+[data-theme='dark'] .write-topbar input {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.write-topbar input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.12);
+}
+
+/* ---------- 令牌行（紧凑） ---------- */
+.write-tokenbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 0 12px;
+}
+
+.write-tokenbar input {
+  flex: 0 1 420px;
+  min-width: 200px;
+  padding: 8px 14px;
+  border: 1px solid rgba(31, 38, 55, 0.12);
+  border-radius: 10px;
+  background: var(--card-bg);
   color: var(--text-1);
   font-family: inherit;
   outline: none;
 }
 
-[data-theme='dark'] .write-token-row input {
+[data-theme='dark'] .write-tokenbar input {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.14);
-  color: var(--text-1);
+}
+
+.write-tokenbar button {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .write-hint {
-  margin-top: 10px;
+  flex: 1;
+  min-width: 200px;
   color: var(--text-3);
   font-size: 0.85rem;
 }
@@ -1919,28 +1979,17 @@ img {
   color: #2f9e6e;
 }
 
-.write-row {
+/* ---------- 编辑器：铺满剩余高度 ---------- */
+.write-editor-area {
+  flex: 1 1 auto;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 10px;
+  flex-direction: column;
+  min-height: 420px;
 }
 
-.write-row input {
-  flex: 1;
-  min-width: 160px;
-  padding: 9px 14px;
-  border: 1px solid rgba(31, 38, 55, 0.12);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.8);
-  color: var(--text-1);
-  font-family: inherit;
-  outline: none;
-}
-
-[data-theme='dark'] .write-row input {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.14);
+.write-editor-area .vditor-mount {
+  flex: 1 1 auto;
+  min-height: 420px;
 }
 
 .write-cat-box {
@@ -2065,8 +2114,11 @@ img {
   margin-top: 12px;
 }
 
+.write-topbar .write-actions {
+  margin-top: 0;
+}
+
 .write-actions button,
-.write-token-row button,
 .write-cat-new-row button {
   padding: 9px 18px;
   border: none;
@@ -2078,8 +2130,12 @@ img {
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.write-actions button:hover,
-.write-token-row button:hover {
+.write-topbar .write-actions button {
+  padding: 8px 16px;
+  font-size: 0.88rem;
+}
+
+.write-actions button:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 18px rgba(66, 133, 244, 0.4);
 }
@@ -2090,6 +2146,30 @@ img {
 
 .write-actions button:last-child {
   background: linear-gradient(135deg, rgba(128, 128, 128, 0.5), rgba(128, 128, 128, 0.3));
+}
+
+/* ---------- 草稿箱 / 已发布（双栏） ---------- */
+.write-lists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 20px 0 8px;
+}
+
+.write-list-card {
+  min-width: 0;
+}
+
+.write-head2 {
+  margin-bottom: 10px;
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+/* 全屏编辑时兜底：解除可能形成包含块的 backdrop-filter */
+.write-page:has(.vditor--fullscreen) .write-editor-area {
+  position: static;
 }
 
 /* 分类选择面板 */
@@ -2227,7 +2307,10 @@ img {
   padding: 9px 4px;
 }
 
+/* 名称占满剩余宽度，把时间与操作按钮推向右对齐 */
 .write-item-name {
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2239,6 +2322,7 @@ img {
   flex-shrink: 0;
   color: var(--text-3);
   font-size: 0.75rem;
+  text-align: right;
 }
 
 .write-item-actions {
@@ -2414,6 +2498,29 @@ img {
 
   .nav-mobile-menu {
     display: flex;
+  }
+
+  .write-page {
+    padding: 0 14px 24px;
+  }
+
+  .write-topbar > input,
+  .write-topbar .write-cat-box {
+    min-width: 100%;
+  }
+
+  .write-topbar .write-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .write-lists {
+    grid-template-columns: 1fr;
+  }
+
+  .write-editor-area,
+  .write-editor-area .vditor-mount {
+    min-height: 340px;
   }
 
   .hero {

@@ -37,16 +37,18 @@ function SiteLayout() {
   const { pathname } = useLocation()
   const fixed = useNavFixed()
   const isHome = pathname === '/'
+  // 写作台使用全屏布局：隐藏站点导航与页脚，让编辑区铺满屏幕
+  const isWrite = pathname.startsWith('/write')
 
   return (
     <div id="app">
-      <NavBar solid={fixed || !isHome} />
-      <main id="main">
+      {!isWrite && <NavBar solid={fixed || !isHome} />}
+      <main id="main" className={isWrite ? 'main-full' : ''}>
         <Suspense fallback={<PageLoading />}>
           <Outlet />
         </Suspense>
       </main>
-      <Footer />
+      {!isWrite && <Footer />}
     </div>
   )
 }
