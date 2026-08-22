@@ -2285,7 +2285,10 @@ html.cursor-custom * {
   border-color: rgba(255, 255, 255, 0.12);
 }
 
-/* 正文：暖白高对比（!important 兜底，确保任何来源都无法覆盖成深色） */
+/* 正文：暖白高对比。
+   注意：Vditor 硬编码了 .vditor-reset { color: #24292e }（深色、不跟随深色主题），
+   编辑区正文位于 <pre class="vditor-reset">，必须直接覆盖该元素 */
+[data-theme='dark'] .vditor-mount .vditor-reset,
 [data-theme='dark'] .vditor-mount .vditor-ir,
 [data-theme='dark'] .vditor-mount .vditor-sv,
 [data-theme='dark'] .vditor-mount .vditor-wysiwyg,
@@ -2294,10 +2297,9 @@ html.cursor-custom * {
   color: #ece8e1 !important;
 }
 
-/* 展开的 Markdown 标记符：明确的浅灰（vditor 默认半透明灰在深底上太暗） */
-[data-theme='dark'] .vditor-mount .vditor-ir__marker,
-[data-theme='dark'] .vditor-mount .vditor-sv__marker {
-  color: #9aa3ad;
+/* 占位文字（pre 的 placeholder 提示）提亮 */
+[data-theme='dark'] .vditor-mount .vditor-reset[placeholder]:empty::before {
+  color: #8b857b;
 }
 
 .vditor-mount .vditor {
