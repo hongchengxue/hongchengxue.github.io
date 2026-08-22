@@ -29,3 +29,20 @@ export function useNavFixed(threshold = 10): boolean {
   }, [threshold])
   return fixed
 }
+
+/** 顶栏滚动显隐：向下滚动（超过阈值）收起，向上滚动弹出 */
+export function useNavHidden(threshold = 120): boolean {
+  const [hidden, setHidden] = useState(false)
+  useEffect(() => {
+    let lastY = window.scrollY
+    const onScroll = () => {
+      const y = window.scrollY
+      const scrollingDown = y > lastY
+      lastY = y
+      setHidden(scrollingDown && y > threshold)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [threshold])
+  return hidden
+}

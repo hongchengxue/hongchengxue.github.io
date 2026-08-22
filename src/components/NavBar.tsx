@@ -17,16 +17,21 @@ const NAV_ITEMS: { to: string; label: I18nKey; icon: IconName; end?: boolean }[]
 ]
 
 interface NavBarProps {
-  /** 是否处于"实底"态：滚动后或非首页时文字/背景切换为浅色方案 */
+  /** 是否处于"实底"态：文字/背景使用浅色方案（所有页面统一为 true） */
   solid: boolean
+  /** 向下滚动时收起顶栏（向上滚动自动弹出） */
+  hidden?: boolean
 }
 
-export function NavBar({ solid }: NavBarProps) {
+export function NavBar({ solid, hidden = false }: NavBarProps) {
   const { t } = useLang()
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <header id="page-header" className={solid ? 'nav-solid' : 'nav-hero'}>
+    <header
+      id="page-header"
+      className={`${solid ? 'nav-solid' : 'nav-hero'}${hidden ? ' nav-hide' : ''}`}
+    >
       <nav id="nav" className="nav-inner">
         <ul className="nav-menus" role="menubar">
           {NAV_ITEMS.map((item) => (
@@ -46,13 +51,6 @@ export function NavBar({ solid }: NavBarProps) {
 
         <div className="nav-right">
           <SearchBar />
-          <NavLink
-            className={({ isActive }) => (isActive ? 'nav-link nav-about active' : 'nav-link nav-about')}
-            to="/about/"
-          >
-            <Icon name="user" size={13} />
-            <span>ABOUT ME</span>
-          </NavLink>
           <LangSwitch />
           <DarkModeToggle />
           <button
@@ -81,14 +79,6 @@ export function NavBar({ solid }: NavBarProps) {
               <span>{t(item.label)}</span>
             </NavLink>
           ))}
-          <NavLink
-            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-            to="/about/"
-            onClick={() => setMobileOpen(false)}
-          >
-            <Icon name="user" size={14} />
-            <span>ABOUT ME</span>
-          </NavLink>
         </div>
       )}
     </header>

@@ -1,5 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react'
-import { Icon } from '@/components/Icon'
+import { useEffect, useRef, useState } from 'react'
 import { useLang } from '@/hooks/useLang'
 import type { Lang } from '@/lib/i18n'
 
@@ -8,7 +7,10 @@ const OPTIONS: { value: Lang; label: string }[] = [
   { value: 'en', label: 'English' },
 ]
 
-/** 语言切换：玻璃下拉面板，选择写入 localStorage（site-lang） */
+/**
+ * 语言切换：艺术字体「A」字按钮，悬停弹出选项（移动端点击切换）。
+ * 选择写入 localStorage（site-lang）。
+ */
 export function LangSwitch() {
   const { lang, setLang, t } = useLang()
   const [open, setOpen] = useState(false)
@@ -30,12 +32,14 @@ export function LangSwitch() {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
+        aria-label="Language"
+        title={lang === 'zh' ? t('langZh') : t('langEn')}
       >
-        <Icon name="globe" size={13} />
-        <span>{lang === 'zh' ? t('langZh') : t('langEn')}</span>
-        <Icon name="chevron-down" size={12} className="lang-caret" />
+        <span className="lang-letter" aria-hidden="true">
+          A
+        </span>
       </button>
-      <div className="lang-menu" role="listbox" aria-label={t('search')}>
+      <div className="lang-menu" role="listbox" aria-label="Language">
         {OPTIONS.map((o) => (
           <button
             key={o.value}

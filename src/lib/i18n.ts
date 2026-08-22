@@ -22,6 +22,7 @@ export const ZH = {
   heroSubLine: '记录技术与生活的知识库',
   readArticles: '阅读文章',
   viewAll: '查看全部',
+  learnMore: '了解更多',
   // 文章
   publishedOn: '发表于',
   updatedOn: '更新于',
@@ -56,7 +57,6 @@ export const ZH = {
   recentWorks: '最近作品',
   websiteInfo: '网站信息',
   viewMore: '查看更多',
-  moreAboutMe: '更多关于我',
   // 分类 / 标签
   allCategories: '全部分类',
   back: '返回上一级',
@@ -139,6 +139,7 @@ export const EN: Record<I18nKey, string> = {
   heroSubLine: 'A knowledge base for tech & life',
   readArticles: 'Read Articles',
   viewAll: 'View All',
+  learnMore: 'Learn More',
   publishedOn: 'Created',
   updatedOn: 'Updated',
   readMore: 'Read More',
@@ -171,7 +172,6 @@ export const EN: Record<I18nKey, string> = {
   recentWorks: 'Recent Works',
   websiteInfo: 'Website Info',
   viewMore: 'View More',
-  moreAboutMe: 'More About Me',
   allCategories: 'All Categories',
   back: 'Back',
   backAll: 'Back to All',

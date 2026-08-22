@@ -1,9 +1,8 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Outlet, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { Footer } from '@/components/Footer'
 import { NavBar } from '@/components/NavBar'
-import { ScrollToTop, useNavFixed } from '@/hooks/useUi'
-import AboutPage from '@/pages/AboutPage'
+import { ScrollToTop, useNavHidden } from '@/hooks/useUi'
 import ArchivesPage from '@/pages/ArchivesPage'
 import CategoriesPage from '@/pages/CategoriesPage'
 import CategoryDetailPage from '@/pages/CategoryDetailPage'
@@ -35,13 +34,13 @@ function PageLoading() {
 /** 站点骨架：导航 + 内容 + 页脚 */
 function SiteLayout() {
   const { pathname } = useLocation()
-  useNavFixed()
-  // 首页为浅色 hero，导航统一使用实底玻璃（深色字），所有页面一致
+  // 首页为浅色 hero，导航统一使用实底玻璃（深色字）；向下滚动收起、向上弹出
+  const navHidden = useNavHidden()
   const isWrite = pathname.startsWith('/write')
 
   return (
     <div id="app">
-      {!isWrite && <NavBar solid />}
+      {!isWrite && <NavBar solid hidden={navHidden} />}
       <main id="main" className={isWrite ? 'main-full' : ''}>
         <Suspense fallback={<PageLoading />}>
           <Outlet />
@@ -68,7 +67,8 @@ export default function App() {
           <Route path="tags/" element={<TagsPage />} />
           <Route path="tags/:name/" element={<TagDetailPage />} />
           <Route path="search/" element={<SearchPage />} />
-          <Route path="about/" element={<AboutPage />} />
+          {/* 关于我已并入首页，旧链接重定向 */}
+          <Route path="about/" element={<Navigate to="/" replace />} />
           <Route path="intro/" element={<IntroPage />} />
           <Route path="games/" element={<GamesPage />} />
           <Route path="tools/" element={<ToolsPage />} />

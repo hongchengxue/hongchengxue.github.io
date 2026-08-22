@@ -33,8 +33,8 @@ export default function HomePage() {
             <Link className="btn-primary" to="/archives/">
               {t('readArticles')} <Icon name="arrow-right" size={15} />
             </Link>
-            <Link className="btn-ghost" to="/about/">
-              {t('moreAboutMe')}
+            <Link className="btn-ghost" to="/intro/">
+              {t('learnMore')}
             </Link>
           </div>
         </Reveal>

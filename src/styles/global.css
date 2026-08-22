@@ -16,9 +16,9 @@
   --text-3: #a39c91;
   --bg: #fcfaf8;
   --bg-deep: #f5f0e9;
-  --card-bg: rgba(255, 255, 255, 0.85);
-  --card-border: rgba(240, 235, 229, 0.95);
-  --card-shadow: 0 1px 4px rgba(96, 84, 64, 0.06);
+  --card-bg: rgba(255, 255, 255, 0.72);
+  --card-border: rgba(240, 235, 229, 0.6);
+  --card-shadow: 0 1px 3px rgba(96, 84, 64, 0.04);
   --glass-grad: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.12));
   --glass-border: rgba(255, 255, 255, 0.6);
   --glass-shadow: 0 2px 10px rgba(96, 84, 64, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.65);
@@ -44,9 +44,9 @@
   --text-3: #7c7468;
   --bg: #141311;
   --bg-deep: #0e0d0c;
-  --card-bg: rgba(255, 255, 255, 0.05);
-  --card-border: rgba(255, 255, 255, 0.1);
-  --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  --card-bg: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   --glass-grad: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
   --glass-border: rgba(255, 255, 255, 0.13);
   --glass-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -198,7 +198,15 @@ img {
   height: var(--nav-h);
   display: flex;
   align-items: center;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+/* 向下滚动收起顶栏，向上滚动弹出 */
+#page-header.nav-hide {
+  transform: translateY(-100%);
 }
 
 /* 首页顶部：透明玻璃态（近白字 + 轻投影） */
@@ -413,20 +421,31 @@ img {
 .lang-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
-  padding: 6px 10px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
   border: 1px solid var(--glass-border);
   border-radius: 999px;
   background: var(--glass-grad);
   -webkit-backdrop-filter: blur(14px) saturate(1.6);
   backdrop-filter: blur(14px) saturate(1.6);
   box-shadow: var(--glass-shadow);
-  font-size: 0.86em;
   color: var(--near-white);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
   cursor: pointer;
   outline: none;
   transition: all 0.25s ease;
+}
+
+/* 语言按钮「A」：艺术衬线字体，不倾斜 */
+.lang-letter {
+  font-family: var(--font-serif);
+  font-style: normal;
+  font-size: 1.12rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .lang-btn:hover {
@@ -455,7 +474,7 @@ img {
   transform: rotate(180deg);
 }
 
-/* 下拉面板：深色液态玻璃 */
+/* 下拉面板：深色液态玻璃（悬停 / 点击 / 聚焦时弹出） */
 .lang-menu {
   position: absolute;
   top: calc(100% + 10px);
@@ -476,7 +495,9 @@ img {
   transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
 }
 
-.lang-wrap.open .lang-menu {
+.lang-wrap:hover .lang-menu,
+.lang-wrap.open .lang-menu,
+.lang-wrap:focus-within .lang-menu {
   visibility: visible;
   opacity: 1;
   transform: translate(-50%, 0) scale(1);
@@ -878,9 +899,11 @@ img {
 .post-banner {
   position: relative;
   margin-top: calc(var(--nav-h) * -1);
-  padding: 96px 0 48px;
-  background: linear-gradient(160deg, rgba(32, 29, 24, 0.76), rgba(58, 50, 40, 0.54)),
-    url('/img/page-bg.jpg') center / cover no-repeat;
+  padding: 88px 0 44px;
+  background:
+    radial-gradient(50% 70% at 12% 0%, rgba(123, 163, 201, 0.14), transparent 70%),
+    radial-gradient(45% 60% at 90% 10%, rgba(217, 184, 160, 0.16), transparent 70%),
+    linear-gradient(180deg, #fdfbf9 0%, var(--bg) 100%);
 }
 
 .post-banner-title {
@@ -888,8 +911,7 @@ img {
   font-size: 1.9rem;
   font-weight: 700;
   line-height: 1.4;
-  color: var(--near-white);
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  color: var(--text-1);
 }
 
 .post-banner-meta {
@@ -897,9 +919,8 @@ img {
   flex-wrap: wrap;
   gap: 16px;
   margin-top: 12px;
-  color: rgba(245, 247, 250, 0.85);
+  color: var(--text-2);
   font-size: 0.88rem;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .post-banner-meta span {
@@ -1454,32 +1475,63 @@ img {
   font-size: 0.8rem;
 }
 
-/* 目录 */
-.card-toc {
+/* 目录（eonova 式：圆点指示 + 当前项高亮，无边框极简） */
+.toc-nav {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  max-height: 60vh;
+  max-height: 65vh;
   overflow-y: auto;
+  padding: 4px 0;
 }
 
-.toc-link {
-  padding: 4px 6px;
-  border-radius: 7px;
-  color: var(--text-2);
+.toc-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 4px;
+  color: var(--text-3);
   font-size: 0.88rem;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-.toc-link:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
+.toc-item:hover {
+  color: var(--text-1);
+}
+
+.toc-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 18%, transparent);
+  transition: background-color 0.25s ease, width 0.25s ease;
+}
+
+.toc-item.active {
+  color: var(--text-1);
+  font-weight: 700;
+}
+
+.toc-item.active .toc-dot {
+  background: var(--accent);
+  width: 13px;
 }
 
 .toc-level-3 {
   padding-left: 20px;
   font-size: 0.84rem;
-  color: var(--text-3);
+}
+
+.toc-level-3 .toc-dot {
+  width: 6px;
+  height: 4px;
+}
+
+.toc-level-3.active .toc-dot {
+  width: 10px;
 }
 
 /* 全部文章折叠树 */
@@ -1580,7 +1632,8 @@ img {
 }
 
 .about-name {
-  font-size: 1.35rem;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-1);
 }
@@ -1588,7 +1641,8 @@ img {
 .about-intro {
   margin-top: 2px;
   color: var(--text-2);
-  font-size: 0.92rem;
+  font-size: 0.95rem;
+  font-family: var(--font-serif);
 }
 
 .about-contact {
@@ -1658,8 +1712,9 @@ img {
 .about-bio {
   margin-top: 16px;
   color: var(--text-2);
-  font-size: 0.94rem;
-  line-height: 1.8;
+  font-size: 0.95rem;
+  line-height: 1.9;
+  font-family: var(--font-serif);
 }
 
 .about-bio p {
@@ -1685,6 +1740,7 @@ img {
 }
 
 .tag-item {
+  font-family: var(--font-serif);
   text-decoration: none;
   transition: transform 0.15s ease, opacity 0.15s ease;
 }

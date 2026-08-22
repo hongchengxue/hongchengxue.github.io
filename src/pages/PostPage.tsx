@@ -35,6 +35,7 @@ function PostContent({ post }: { post: Post }) {
   const contentRef = useRef<HTMLDivElement>(null)
   const [lightbox, setLightbox] = useState<string | null>(null)
   const [sorting, setSorting] = useState<GiscusSorting>('newest')
+  const [activeToc, setActiveToc] = useState('')
 
   const LICENSE_NAME = LICENSE.name
   const LICENSE_URL = LICENSE.url
@@ -47,6 +48,28 @@ function PostContent({ post }: { post: Post }) {
   useEffect(() => {
     if (contentRef.current) void highlightCodeBlocks(contentRef.current)
   }, [html])
+
+  // 目录滚动高亮（scrollspy）：顶部观察带内的标题为当前章节
+  useEffect(() => {
+    const el = contentRef.current
+    if (!el || !toc.length) return
+    const headings = toc
+      .map((item) => el.querySelector(`#${CSS.escape(item.id)}`))
+      .filter((h): h is HTMLElement => h !== null)
+    if (!headings.length) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .map((e) => e.target as HTMLElement)
+          .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)
+        if (visible.length) setActiveToc(visible[0].id)
+      },
+      { rootMargin: '-72px 0px -72% 0px', threshold: 0 },
+    )
+    headings.forEach((h) => io.observe(h))
+    return () => io.disconnect()
+  }, [toc, html])
 
   // 正文图片：懒加载 + 点击放大（lightbox，容器级事件委托）
   useEffect(() => {
@@ -213,7 +236,7 @@ function PostContent({ post }: { post: Post }) {
         </div>
 
         <aside className="aside-content">
-          {toc.length > 0 ? <TocCard title={t('toc')} items={toc} /> : null}
+          {toc.length > 0 ? <TocCard title={t('toc')} items={toc} activeId={activeToc} /> : null}
         </aside>
       </div>
 

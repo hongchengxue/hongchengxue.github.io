@@ -104,17 +104,28 @@ export function ArchivesCard({
   )
 }
 
-/** 目录卡（文章页） */
-export function TocCard({ title, items }: { title: string; items: { id: string; depth: number; text: string }[] }) {
+/** 目录（eonova 式：圆点指示 + 当前项高亮，无边框极简） */
+export function TocCard({
+  title,
+  items,
+  activeId,
+}: {
+  title: string
+  items: { id: string; depth: number; text: string }[]
+  activeId?: string
+}) {
   return (
-    <AsideCard icon="list" title={title}>
-      <nav className="card-toc">
-        {items.map((item) => (
-          <a key={item.id} href={`#${item.id}`} className={`toc-link toc-level-${item.depth}`}>
-            {item.text}
-          </a>
-        ))}
-      </nav>
-    </AsideCard>
+    <nav className="toc-nav" aria-label={title}>
+      {items.map((item) => (
+        <a
+          key={item.id}
+          href={`#${item.id}`}
+          className={`toc-item toc-level-${item.depth}${activeId === item.id ? ' active' : ''}`}
+        >
+          <span className="toc-dot" aria-hidden="true" />
+          <span className="toc-text">{item.text}</span>
+        </a>
+      ))}
+    </nav>
   )
 }
