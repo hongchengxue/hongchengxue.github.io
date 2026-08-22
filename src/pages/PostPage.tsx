@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Giscus, type GiscusSorting } from '@/components/Giscus'
 import { Icon } from '@/components/Icon'
-import { LikeButton } from '@/components/LikeButton'
 import { PageViews } from '@/components/PageViews'
 import { ShareBar } from '@/components/ShareBar'
 import { TocCard } from '@/components/AsideCards'
@@ -176,11 +175,9 @@ function PostContent({ post }: { post: Post }) {
             </div>
           </section>
 
-          {/* 互动区：点赞 + 分享 一组居中，下方评论 */}
+          {/* 互动区：分享居中；下方评论（Giscus 自带 reactions，不再重复点赞） */}
           <section className="card post-comments">
             <div className="post-interact">
-              <LikeButton path={post.url} />
-              <span className="post-interact-divider" aria-hidden="true" />
               <ShareBar url={post.url} title={post.meta.title} />
             </div>
             <div className="post-comments-head">
@@ -188,6 +185,9 @@ function PostContent({ post }: { post: Post }) {
                 <Icon name="comments" size={15} /> {t('comments')}
               </div>
               <div className="post-comments-tools">
+                <span className="comment-sort-tip" title={t('commentSortTip')}>
+                  ⓘ
+                </span>
                 <PageViews path={post.url} />
                 <div className="comment-sort" role="group" aria-label="评论排序">
                   <button
@@ -205,10 +205,6 @@ function PostContent({ post }: { post: Post }) {
                     {t('sortOldest')}
                   </button>
                 </div>
-                <span className="comment-sort-tip" title={t('commentSortTip')}>
-                  ⓘ
-                </span>
-                <LikeButton path={post.url} />
               </div>
             </div>
             <Giscus sorting={sorting} />

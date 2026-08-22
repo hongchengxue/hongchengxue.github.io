@@ -1126,70 +1126,6 @@ html.cursor-custom * {
   color: var(--text-1);
 }
 
-/* 点赞 */
-.post-like-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  width: fit-content;
-  max-width: 100%;
-  margin: 20px auto;
-  padding: 12px 22px;
-  border-radius: 999px;
-  border: 1px solid var(--card-border);
-  background: var(--card-bg);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  box-shadow: var(--card-shadow);
-}
-
-.post-like-text {
-  color: var(--text-1);
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.iine-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--accent);
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.iine-button .icon {
-  display: inline-flex;
-  align-items: center;
-  transition: transform 0.2s ease;
-}
-
-.iine-button:hover .icon {
-  transform: scale(1.2);
-}
-
-.iine-button .icon.pop {
-  animation: like-pop 0.45s ease;
-}
-
-@keyframes like-pop {
-  0% {
-    transform: scale(1);
-  }
-  40% {
-    transform: scale(1.6);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
 /* ============================================================
    文章正文（Markdown）
    ============================================================ */
@@ -2950,7 +2886,7 @@ html.cursor-custom * {
   margin-bottom: 0;
 }
 
-/* 互动区：点赞 + 分享 一组居中 */
+/* 互动区：分享居中 */
 .post-interact {
   display: flex;
   align-items: center;
@@ -2960,17 +2896,6 @@ html.cursor-custom * {
   margin-bottom: 18px;
   padding: 2px 0 16px;
   border-bottom: 1px dashed var(--card-border);
-}
-
-.post-interact .post-like-wrap {
-  margin: 0;
-  padding: 8px 20px;
-}
-
-.post-interact-divider {
-  width: 1px;
-  height: 26px;
-  background: var(--card-border);
 }
 
 .post-interact .share-bar {
@@ -3018,11 +2943,6 @@ html.cursor-custom * {
   color: var(--text-3);
   font-size: 0.8rem;
   cursor: help;
-}
-
-/* 评论区右上角的紧凑点赞 */
-.post-comments-tools .iine-button {
-  color: var(--accent);
 }
 
 /* 阅读数 */

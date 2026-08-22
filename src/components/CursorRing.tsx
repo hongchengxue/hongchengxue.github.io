@@ -41,8 +41,20 @@ export function CursorRing() {
     const INTERACTIVE = 'a, button, input, textarea, select, summary, [contenteditable="true"], .nav-inner'
     const onOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement
+      // iframe（如 Giscus 评论）内部事件无法穿透：进入 iframe 区域时隐藏光圈，
+      // 避免光圈残影停在评论区
+      if (target instanceof HTMLIFrameElement) {
+        ring.style.opacity = '0'
+        return
+      }
+      ring.style.opacity = '1'
       if (target.closest?.(INTERACTIVE)) ring.classList.add('cursor-hover')
       else ring.classList.remove('cursor-hover')
+    }
+
+    const onOut = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (target instanceof HTMLIFrameElement) ring.style.opacity = '1'
     }
 
     const onLeaveDoc = () => {
@@ -54,6 +66,7 @@ export function CursorRing() {
 
     document.addEventListener('mousemove', onMove)
     document.addEventListener('mouseover', onOver)
+    document.addEventListener('mouseout', onOut)
     document.documentElement.addEventListener('mouseleave', onLeaveDoc)
     document.documentElement.addEventListener('mouseenter', onEnterDoc)
     raf = requestAnimationFrame(update)
@@ -62,6 +75,7 @@ export function CursorRing() {
       cancelAnimationFrame(raf)
       document.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseover', onOver)
+      document.removeEventListener('mouseout', onOut)
       document.documentElement.removeEventListener('mouseleave', onLeaveDoc)
       document.documentElement.removeEventListener('mouseenter', onEnterDoc)
       document.documentElement.classList.remove('cursor-custom')
