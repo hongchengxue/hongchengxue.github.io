@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 
 /**
  * MiMo 光圈自定义光标：
@@ -6,13 +7,16 @@ import { useEffect, useRef } from 'react'
  * - 悬停链接/按钮/输入框等可交互元素时放大（24px → 56px）
  * - 鼠标移出窗口隐藏、移入恢复
  * - 触屏设备（pointer: coarse）不启用，保留原生交互
+ * - 写作页（Vditor 编辑器）禁用：编辑场景保留原生光标与文本插入符
  */
 export function CursorRing() {
+  const { pathname } = useLocation()
   const ringRef = useRef<HTMLDivElement>(null)
+  const disabled = pathname.startsWith('/write')
 
   useEffect(() => {
     const ring = ringRef.current
-    if (!ring) return
+    if (!ring || disabled) return
     // 触屏设备不启用
     if (window.matchMedia('(pointer: coarse)').matches) return
 
@@ -80,7 +84,8 @@ export function CursorRing() {
       document.documentElement.removeEventListener('mouseenter', onEnterDoc)
       document.documentElement.classList.remove('cursor-custom')
     }
-  }, [])
+  }, [disabled])
 
+  if (disabled) return null
   return <div ref={ringRef} className="cursor-ring" aria-hidden="true" />
 }
