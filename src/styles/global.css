@@ -643,7 +643,7 @@ img {
 
 .home-hero-name {
   margin: 8px 0 0;
-  font-size: clamp(3.2rem, 9vw, 5.6rem);
+  font-size: clamp(3.5rem, 10vw, 6.2rem);
   /* 衬线斜体字形底部易溢出，行高与底部留白保证不与副标题重叠 */
   line-height: 1.2;
   padding-bottom: 0.06em;
