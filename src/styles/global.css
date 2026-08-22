@@ -83,9 +83,21 @@ body {
   font-size: 16px;
   line-height: 1.7;
   color: var(--text-1);
-  background: var(--bg);
+  /* 全站底色统一为首页风格：米白 + 柔和雾蓝/暖沙光斑 */
+  background:
+    radial-gradient(60% 45% at 18% 0%, rgba(123, 163, 201, 0.08), transparent 65%),
+    radial-gradient(50% 40% at 85% 4%, rgba(217, 184, 160, 0.1), transparent 65%),
+    var(--bg);
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme='dark'] body {
+  background:
+    radial-gradient(60% 45% at 18% 0%, rgba(123, 163, 201, 0.06), transparent 65%),
+    radial-gradient(50% 40% at 85% 4%, rgba(217, 184, 160, 0.05), transparent 65%),
+    var(--bg);
 }
 
 a {
@@ -630,9 +642,10 @@ img {
 }
 
 .home-hero-name {
-  margin-top: 8px;
-  font-size: clamp(3.2rem, 9vw, 5.6rem);
-  line-height: 1.05;
+  margin: 8px 0 0;
+  /* 衬线斜体字形底部易溢出，行高与底部留白保证不与副标题重叠 */
+  line-height: 1.2;
+  padding-bottom: 0.06em;
 }
 
 /* 渐变流光文字（mimo 式动效）——用 background-image 而非 background 简写，
