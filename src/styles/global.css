@@ -243,7 +243,7 @@ img {
 
 /* 胶囊内的导航项：去掉各自的玻璃底，融入胶囊（保持激活态） */
 .nav-inner .nav-link,
-.nav-inner .search-bar,
+.nav-inner .nav-search-btn,
 .nav-inner .lang-btn,
 .nav-inner .darkmode-btn,
 .nav-inner .nav-burger {
@@ -255,6 +255,7 @@ img {
 
 /* 胶囊内文字统一深色 */
 .nav-inner .nav-link,
+.nav-inner .nav-search-btn,
 .nav-inner .lang-btn,
 .nav-inner .darkmode-btn,
 .nav-inner .nav-burger {
@@ -262,17 +263,8 @@ img {
   text-shadow: none;
 }
 
-.nav-inner .search-bar input {
-  color: var(--text-1);
-  text-shadow: none;
-}
-
-.nav-inner .search-bar input::placeholder {
-  color: var(--text-3);
-}
-
 .nav-inner .nav-link:hover,
-.nav-inner .search-bar:hover,
+.nav-inner .nav-search-btn:hover,
 .nav-inner .lang-btn:hover,
 .nav-inner .darkmode-btn:hover {
   background: rgba(96, 84, 64, 0.06);
@@ -280,6 +272,7 @@ img {
 }
 
 [data-theme='dark'] .nav-inner .nav-link:hover,
+[data-theme='dark'] .nav-inner .nav-search-btn:hover,
 [data-theme='dark'] .nav-inner .lang-btn:hover,
 [data-theme='dark'] .nav-inner .darkmode-btn:hover {
   background: rgba(255, 255, 255, 0.08);
@@ -292,18 +285,6 @@ img {
   box-shadow: none;
 }
 
-.nav-inner .search-bar {
-  margin: 0 2px;
-}
-
-.nav-inner .search-bar input {
-  width: 180px;
-}
-
-.nav-inner .search-bar:focus-within input {
-  width: 240px;
-}
-
 .nav-menus {
   display: flex;
   align-items: center;
@@ -314,8 +295,101 @@ img {
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   margin-left: auto;
+}
+
+/* ---------- 导航搜索：按钮 → 左侧弹出搜索栏 ---------- */
+.nav-search {
+  position: relative;
+  display: inline-flex;
+}
+
+.nav-search-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--glass-border);
+  border-radius: 50%;
+  background: var(--glass-grad);
+  color: var(--near-white);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  outline: none;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.25s ease;
+}
+
+.nav-search-pop {
+  position: absolute;
+  right: calc(100% + 8px);
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 270px;
+  padding: 4px 4px 4px 6px;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  background: rgba(252, 250, 248, 0.95);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  backdrop-filter: blur(18px) saturate(1.5);
+  box-shadow: 0 6px 24px rgba(96, 84, 64, 0.12);
+  animation: search-pop-in 0.18s ease;
+  transform-origin: right center;
+}
+
+[data-theme='dark'] .nav-search-pop {
+  background: rgba(28, 26, 24, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+@keyframes search-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+.nav-search-pop input {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 8px;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: var(--text-1);
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.nav-search-pop input::placeholder {
+  color: var(--text-3);
+}
+
+.nav-search-go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.nav-search-go:hover {
+  background: var(--accent-deep);
 }
 
 /* 玻璃胶囊导航项 */
@@ -350,84 +424,6 @@ img {
   box-shadow: 0 4px 16px rgba(66, 133, 244, 0.35);
   color: #fff;
   text-shadow: none;
-}
-
-/* ---------- 导航搜索框（玻璃药丸） ---------- */
-.search-bar {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  height: 38px;
-  margin: 0 6px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 999px;
-  background: var(--glass-grad);
-  -webkit-backdrop-filter: blur(14px) saturate(1.6);
-  backdrop-filter: blur(14px) saturate(1.6);
-  box-shadow: var(--glass-shadow);
-  transition: box-shadow 0.25s ease, background 0.25s ease;
-}
-
-.search-bar:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.14));
-  box-shadow: var(--glass-hover);
-}
-
-.search-bar:focus-within {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.14));
-  box-shadow: 0 2px 14px rgba(66, 133, 244, 0.2), 0 0 0 3px rgba(66, 133, 244, 0.12);
-}
-
-.search-bar input {
-  width: 200px;
-  height: 100%;
-  padding: 0 40px 0 16px;
-  border: none;
-  background: transparent;
-  outline: none;
-  font-size: 0.95rem;
-  font-family: inherit;
-  color: var(--near-white);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-  transition: width 0.25s ease;
-}
-
-.search-bar:focus-within input {
-  width: 260px;
-}
-
-.search-bar input::placeholder {
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.search-bar button {
-  position: absolute;
-  right: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
-  cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
-  transform: scale(0.6);
-  transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
-}
-
-.search-bar button.visible,
-.search-bar:focus-within button {
-  opacity: 1;
-  pointer-events: auto;
-  transform: scale(1);
-}
-
-.search-bar button:hover {
-  background: var(--accent-deep);
 }
 
 /* ---------- 语言切换 ---------- */
@@ -2982,8 +2978,7 @@ img {
 
 @media (max-width: 768px) {
   .nav-menus,
-  .nav-inner > .search-bar,
-  .nav-right .nav-about,
+  .nav-right .nav-search,
   .nav-right .lang-wrap,
   .nav-right .darkmode-btn {
     display: none;

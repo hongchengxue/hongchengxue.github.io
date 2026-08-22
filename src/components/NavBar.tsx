@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { DarkModeToggle } from '@/components/DarkModeToggle'
 import { Icon, type IconName } from '@/components/Icon'
 import { LangSwitch } from '@/components/LangSwitch'
-import { SearchBar } from '@/components/SearchBar'
+import { NavSearch } from '@/components/NavSearch'
 import { useLang } from '@/hooks/useLang'
 import type { I18nKey } from '@/lib/i18n'
 
@@ -49,9 +49,8 @@ export function NavBar({ solid, hidden = false }: NavBarProps) {
           ))}
         </ul>
 
-        <SearchBar />
-
         <div className="nav-right">
+          <NavSearch />
           <LangSwitch />
           <DarkModeToggle />
           <button
