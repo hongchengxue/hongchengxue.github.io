@@ -483,25 +483,25 @@ img {
   transform: rotate(180deg);
 }
 
-/* 下拉面板：浅色玻璃（与整体米白主题协调） */
+/* 下拉面板：极简浅色小卡片 */
 .lang-menu {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 8px);
   left: 50%;
   z-index: 120;
-  min-width: 150px;
-  padding: 8px;
+  min-width: 130px;
+  padding: 6px;
   visibility: hidden;
   opacity: 0;
-  transform: translate(-50%, -8px) scale(0.96);
+  transform: translate(-50%, -6px);
   transform-origin: top center;
   border: 1px solid var(--card-border);
-  border-radius: 14px;
+  border-radius: 10px;
   background: var(--card-bg);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  backdrop-filter: blur(20px) saturate(1.4);
-  box-shadow: 0 12px 32px rgba(96, 84, 64, 0.14);
-  transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 24px rgba(96, 84, 64, 0.1);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
 }
 
 .lang-wrap:hover .lang-menu,
@@ -509,55 +509,31 @@ img {
 .lang-wrap:focus-within .lang-menu {
   visibility: visible;
   opacity: 1;
-  transform: translate(-50%, 0) scale(1);
+  transform: translate(-50%, 0);
 }
 
 .lang-option {
-  display: flex;
-  align-items: center;
-  gap: 9px;
+  display: block;
   width: 100%;
-  padding: 9px 12px;
+  padding: 7px 14px;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   background: transparent;
-  color: var(--text-1);
-  font-size: 0.9em;
-  cursor: pointer;
+  color: var(--text-2);
+  font-size: 0.88rem;
   text-align: left;
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .lang-option:hover {
-  background: var(--accent-soft);
-  transform: translateX(2px);
-}
-
-.lang-option::before {
-  content: '';
-  flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--text-3) 45%, transparent);
-  transition: all 0.2s ease;
+  background: var(--bg-deep);
+  color: var(--text-1);
 }
 
 .lang-option.active {
-  background: var(--accent-soft);
   color: var(--accent);
   font-weight: 600;
-}
-
-.lang-option.active::before {
-  background: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
-}
-
-.lang-option.active::after {
-  content: '✓';
-  margin-left: auto;
-  color: var(--accent);
 }
 
 /* ---------- 夜间模式按钮 ---------- */
@@ -2728,7 +2704,7 @@ img {
   font-size: 0.85rem;
 }
 
-/* 品牌色圆形图标按钮 */
+/* 品牌色圆形图标按钮（颜色由组件内联注入官方品牌色） */
 .share-btn {
   display: inline-flex;
   align-items: center;
@@ -2756,34 +2732,6 @@ img {
   font-weight: 700;
   font-size: 0.9rem;
   line-height: 1;
-}
-
-.share-qq {
-  background: #12b7f5;
-}
-
-.share-wechat {
-  background: #07c160;
-}
-
-.share-x {
-  background: #14171a;
-}
-
-.share-weibo {
-  background: #e6162d;
-}
-
-.share-zhihu {
-  background: #0084ff;
-}
-
-.share-ins {
-  background: linear-gradient(45deg, #f09433, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888);
-}
-
-.share-youtube {
-  background: #ff0000;
 }
 
 .share-link {
@@ -2967,7 +2915,7 @@ img {
 
 @media (max-width: 768px) {
   .nav-menus,
-  .nav-right .search-bar,
+  .nav-inner > .search-bar,
   .nav-right .nav-about,
   .nav-right .lang-wrap,
   .nav-right .darkmode-btn {

@@ -49,8 +49,9 @@ export function NavBar({ solid, hidden = false }: NavBarProps) {
           ))}
         </ul>
 
+        <SearchBar />
+
         <div className="nav-right">
-          <SearchBar />
           <LangSwitch />
           <DarkModeToggle />
           <button

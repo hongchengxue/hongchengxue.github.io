@@ -19,6 +19,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.6.3",
+    "simple-icons": "^16.28.0",
     "vditor": "^3.11.3"
   },
   "devDependencies": {
