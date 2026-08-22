@@ -35,14 +35,13 @@ function PageLoading() {
 /** 站点骨架：导航 + 内容 + 页脚 */
 function SiteLayout() {
   const { pathname } = useLocation()
-  const fixed = useNavFixed()
-  const isHome = pathname === '/'
-  // 写作台使用全屏布局：隐藏站点导航与页脚，让编辑区铺满屏幕
+  useNavFixed()
+  // 首页为浅色 hero，导航统一使用实底玻璃（深色字），所有页面一致
   const isWrite = pathname.startsWith('/write')
 
   return (
     <div id="app">
-      {!isWrite && <NavBar solid={fixed || !isHome} />}
+      {!isWrite && <NavBar solid />}
       <main id="main" className={isWrite ? 'main-full' : ''}>
         <Suspense fallback={<PageLoading />}>
           <Outlet />

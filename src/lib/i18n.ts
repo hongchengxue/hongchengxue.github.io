@@ -18,6 +18,10 @@ export const ZH = {
   langEn: 'English',
   // 首页
   searchPlaceholder: 'Attention Is All You Need',
+  heroGreet: '你好，我是',
+  heroSubLine: '记录技术与生活的知识库',
+  readArticles: '阅读文章',
+  viewAll: '查看全部',
   // 文章
   publishedOn: '发表于',
   updatedOn: '更新于',
@@ -131,6 +135,10 @@ export const EN: Record<I18nKey, string> = {
   langZh: '简体中文',
   langEn: 'English',
   searchPlaceholder: 'Attention Is All You Need',
+  heroGreet: "Hi, I'm",
+  heroSubLine: 'A knowledge base for tech & life',
+  readArticles: 'Read Articles',
+  viewAll: 'View All',
   publishedOn: 'Created',
   updatedOn: 'Updated',
   readMore: 'Read More',
