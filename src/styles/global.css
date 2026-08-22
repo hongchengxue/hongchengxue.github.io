@@ -322,23 +322,24 @@ img {
   transition: all 0.25s ease;
 }
 
+/* 搜索栏弹出框：与按钮同一高度，从按钮位置向左水平展开浮现 */
 .nav-search-pop {
   position: absolute;
   right: calc(100% + 8px);
-  top: 50%;
+  top: 0;
   display: flex;
   align-items: center;
-  gap: 4px;
-  width: 270px;
-  padding: 4px 4px 4px 6px;
+  width: 260px;
+  height: 34px;
+  padding: 0 4px 0 14px;
   border: 1px solid var(--card-border);
   border-radius: 999px;
   background: rgba(252, 250, 248, 0.95);
   -webkit-backdrop-filter: blur(18px) saturate(1.5);
   backdrop-filter: blur(18px) saturate(1.5);
   box-shadow: 0 6px 24px rgba(96, 84, 64, 0.12);
-  animation: search-pop-in 0.18s ease;
   transform-origin: right center;
+  animation: search-pop-in 0.2s ease;
 }
 
 [data-theme='dark'] .nav-search-pop {
@@ -347,21 +348,23 @@ img {
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
 }
 
+/* 水平展开浮现：从按钮处向左展开（类似旧版搜索按钮浮现的动效） */
 @keyframes search-pop-in {
   from {
     opacity: 0;
-    transform: translateY(-50%) scale(0.96);
+    transform: scaleX(0.5);
   }
   to {
     opacity: 1;
-    transform: translateY(-50%) scale(1);
+    transform: scaleX(1);
   }
 }
 
 .nav-search-pop input {
   flex: 1;
   min-width: 0;
-  padding: 5px 8px;
+  height: 100%;
+  padding: 0 8px;
   border: none;
   background: transparent;
   outline: none;
@@ -372,24 +375,6 @@ img {
 
 .nav-search-pop input::placeholder {
   color: var(--text-3);
-}
-
-.nav-search-go {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border: none;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.nav-search-go:hover {
-  background: var(--accent-deep);
 }
 
 /* 玻璃胶囊导航项 */
