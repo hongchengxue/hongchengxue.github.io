@@ -2278,16 +2278,21 @@ html.cursor-custom * {
   background: var(--card-bg);
 }
 
+/* 夜间模式：编辑区使用明确的深色底 + 浅色字，保证可读性
+   （IR 编辑区本身透明，依赖外层容器背景；vditor--dark 负责 marker 等配色） */
+[data-theme='dark'] .vditor-mount {
+  background: #1f1e1c;
+}
+
+[data-theme='dark'] .vditor-mount .vditor-ir,
+[data-theme='dark'] .vditor-mount .vditor-sv,
+[data-theme='dark'] .vditor-mount .vditor-wysiwyg {
+  color: #d1d5da;
+}
+
 .vditor-mount .vditor {
   border: none;
   border-radius: 0;
-}
-
-/* 编辑器内容区背景与正文颜色跟随站点主题变量 */
-.vditor-mount .vditor-ir,
-.vditor-mount .vditor-sv,
-.vditor-mount .vditor-wysiwyg {
-  background: transparent;
 }
 
 /* 令牌获取教程 */

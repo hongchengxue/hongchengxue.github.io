@@ -41,13 +41,13 @@ export const VditorEditor = forwardRef<VditorEditorHandle, VditorEditorProps>(fu
   const { theme } = useTheme()
 
   // Vditor 只在挂载时读取一次配置，回调经 ref 间接取最新值，避免闭包过期
-  const initRef = useRef({ initialValue, height, minHeight, placeholder })
+  const initRef = useRef({ initialValue, height, minHeight, placeholder, theme })
   const onInputRef = useRef(onInput)
   const uploadRef = useRef(uploadImages)
 
   // 每次渲染后同步最新值到 ref（写入放在 effect 中，符合 React Compiler 规范）
   useEffect(() => {
-    initRef.current = { initialValue, height, minHeight, placeholder }
+    initRef.current = { initialValue, height, minHeight, placeholder, theme }
     onInputRef.current = onInput
     uploadRef.current = uploadImages
   })
@@ -104,7 +104,8 @@ export const VditorEditor = forwardRef<VditorEditorHandle, VditorEditorProps>(fu
       minHeight: init.minHeight,
       placeholder: init.placeholder ?? '',
       lang: 'zh_CN',
-      theme: 'classic',
+      // 初始化即使用站点当前主题（深色模式下编辑区不会先亮后暗）
+      theme: init.theme === 'dark' ? 'dark' : 'classic',
       // Tab 键插入 4 个空格（默认未配置时 Tab 无效果）
       tab: '    ',
       // 全部资源走本站路径，不依赖 unpkg CDN（国内常被拦截导致编辑器崩溃）
