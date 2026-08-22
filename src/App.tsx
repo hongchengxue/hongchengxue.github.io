@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
+import { CursorRing } from '@/components/CursorRing'
 import { Footer } from '@/components/Footer'
 import { NavBar } from '@/components/NavBar'
 import { ScrollToTop, useNavHidden } from '@/hooks/useUi'
@@ -56,6 +57,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      {/* MiMo 光圈自定义光标（全站） */}
+      <CursorRing />
       <Routes>
         <Route element={<SiteLayout />}>
           <Route index element={<HomePage />} />

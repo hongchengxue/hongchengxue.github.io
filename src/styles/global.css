@@ -621,6 +621,64 @@ img {
 }
 
 /* ============================================================
+   自定义光标（MiMo 光圈）
+   ============================================================ */
+html.cursor-custom,
+html.cursor-custom * {
+  cursor: none !important;
+}
+
+/* 触屏设备不启用自定义光标 */
+@media (pointer: coarse) {
+  .cursor-ring {
+    display: none !important;
+  }
+}
+
+.cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 30px color-mix(in srgb, var(--accent) 18%, transparent);
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 1;
+  /* transform 由 JS 逐帧驱动，不要在此过渡 */
+  transition: width 0.3s ease, height 0.3s ease, border-width 0.3s ease, opacity 0.3s ease;
+  will-change: transform;
+}
+
+.cursor-ring::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease;
+}
+
+/* 悬停可交互元素：光圈放大 */
+.cursor-ring.cursor-hover {
+  width: 56px;
+  height: 56px;
+  border-width: 3px;
+  box-shadow: 0 0 60px color-mix(in srgb, var(--accent) 26%, transparent);
+}
+
+.cursor-ring.cursor-hover::after {
+  width: 8px;
+  height: 8px;
+}
+
+/* ============================================================
    首页 hero（mimo 式浅色）+ 动效
    ============================================================ */
 .home-hero {
