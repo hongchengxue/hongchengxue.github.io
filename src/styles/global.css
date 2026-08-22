@@ -2281,13 +2281,23 @@ html.cursor-custom * {
 /* 夜间模式：编辑区使用明确的深色底 + 浅色字，保证可读性
    （IR 编辑区本身透明，依赖外层容器背景；vditor--dark 负责 marker 等配色） */
 [data-theme='dark'] .vditor-mount {
-  background: #1f1e1c;
+  background: #1b1a18;
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
+/* 正文：暖白高对比（!important 兜底，确保任何来源都无法覆盖成深色） */
 [data-theme='dark'] .vditor-mount .vditor-ir,
 [data-theme='dark'] .vditor-mount .vditor-sv,
-[data-theme='dark'] .vditor-mount .vditor-wysiwyg {
-  color: #d1d5da;
+[data-theme='dark'] .vditor-mount .vditor-wysiwyg,
+[data-theme='dark'] .vditor-mount .vditor-ir__node,
+[data-theme='dark'] .vditor-mount .vditor-sv__node {
+  color: #ece8e1 !important;
+}
+
+/* 展开的 Markdown 标记符：明确的浅灰（vditor 默认半透明灰在深底上太暗） */
+[data-theme='dark'] .vditor-mount .vditor-ir__marker,
+[data-theme='dark'] .vditor-mount .vditor-sv__marker {
+  color: #9aa3ad;
 }
 
 .vditor-mount .vditor {
