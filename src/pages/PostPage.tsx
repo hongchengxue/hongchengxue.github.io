@@ -8,10 +8,10 @@ import { TocCard } from '@/components/AsideCards'
 import { useLang } from '@/hooks/useLang'
 import { useTitle } from '@/hooks/useUi'
 import { categoryUrl } from '@/lib/categories'
-import { formatDate, formatDateTime } from '@/lib/date'
+import { formatDateTime } from '@/lib/date'
+import { parseDateStr } from '@/lib/frontmatter'
 import { extractToc, highlightCodeBlocks, renderMarkdown } from '@/lib/markdown'
 import { getAdjacentPosts, getPost } from '@/lib/posts'
-import { LICENSE, SITE } from '@/lib/site'
 import type { Post } from '@/types/post'
 import NotFoundPage from '@/pages/NotFoundPage'
 
@@ -35,9 +35,6 @@ function PostContent({ post }: { post: Post }) {
   const [lightbox, setLightbox] = useState<string | null>(null)
   const [sorting, setSorting] = useState<GiscusSorting>('newest')
   const [activeToc, setActiveToc] = useState('')
-
-  const LICENSE_NAME = LICENSE.name
-  const LICENSE_URL = LICENSE.url
 
   // Markdown 渲染结果与目录（渲染期间派生，不做状态，避免多余渲染）
   const html = useMemo(() => renderMarkdown(post.raw), [post])
@@ -105,11 +102,11 @@ function PostContent({ post }: { post: Post }) {
           <h1 className="post-banner-title">{post.meta.title}</h1>
           <div className="post-banner-meta">
             <span>
-              <Icon name="clock" size={13} /> {t('publishedOn')} {formatDate(post.date)}
+              <Icon name="clock" size={13} /> {t('publishedOn')} {formatDateTime(post.date)}
             </span>
             {post.meta.updated ? (
               <span>
-                <Icon name="clock" size={13} /> {t('updatedOn')} {formatDateTime(new Date(post.meta.updated))}
+                <Icon name="clock" size={13} /> {t('updatedOn')} {formatDateTime(parseDateStr(post.meta.updated))}
               </span>
             ) : null}
           </div>
@@ -146,34 +143,6 @@ function PostContent({ post }: { post: Post }) {
 
             {post.meta.description ? <p className="post-desc-note">{post.meta.description}</p> : null}
           </article>
-
-          {/* 版权声明 */}
-          <section className="card post-copyright">
-            <div className="post-section-title">
-              <Icon name="link" size={15} /> {t('copyrightNotice')}
-            </div>
-            <div className="post-copyright-row">
-              <span className="post-copyright-label">{t('articleAuthor')}</span>
-              <span>{SITE.author}</span>
-            </div>
-            <div className="post-copyright-row">
-              <span className="post-copyright-label">{t('articleLink')}</span>
-              <a href={post.url} target="_blank" rel="noopener noreferrer">
-                {post.url}
-              </a>
-            </div>
-            <div className="post-copyright-row">
-              <span className="post-copyright-label">{t('copyrightNotice')}</span>
-              <span>
-                {t('licenseText', { license: LICENSE_NAME })}
-                {'（'}
-                <a href={LICENSE_URL} target="_blank" rel="noopener noreferrer">
-                  {LICENSE_NAME}
-                </a>
-                {'）'}
-              </span>
-            </div>
-          </section>
 
           {/* 互动区：分享居中；下方评论（Giscus 自带 reactions，不再重复点赞） */}
           <section className="card post-comments">

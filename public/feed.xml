@@ -15,20 +15,20 @@
     
   </item>
   <item>
-    <title>PCB+SMT下单</title>
-    <link>https://hongchengxue.github.io/2026/08/22/2026-08-15-PCB%2BSMT%E4%B8%8B%E5%8D%95/</link>
-    <guid>https://hongchengxue.github.io/2026/08/22/2026-08-15-PCB%2BSMT%E4%B8%8B%E5%8D%95/</guid>
-    <pubDate>Fri, 21 Aug 2026 18:30:42 GMT</pubDate>
-    <description>文件导出 PCB打板 需导出两个文件： Gerber（光绘）文件，为布线数据。 NC Drill Files（钻孔）文件，为焊盘和过孔数据。 （1）Gerber（光绘）文件的输出 首先先选择工程文件中的PCB板 按下图依次选择</description>
-    
-  </item>
-  <item>
     <title>相同主题模板</title>
     <link>https://hongchengxue.github.io/2026/08/15/2026-8-15-%E7%9B%B8%E5%90%8C%E4%B8%BB%E9%A2%98%E6%A8%A1%E6%9D%BF/</link>
     <guid>https://hongchengxue.github.io/2026/08/15/2026-8-15-%E7%9B%B8%E5%90%8C%E4%B8%BB%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid>
     <pubDate>Sat, 15 Aug 2026 14:52:00 GMT</pubDate>
     <description>同模板主题</description>
         <category>个人主页</category>
+  </item>
+  <item>
+    <title>PCB+SMT下单</title>
+    <link>https://hongchengxue.github.io/2026/08/15/2026-08-15-PCB%2BSMT%E4%B8%8B%E5%8D%95/</link>
+    <guid>https://hongchengxue.github.io/2026/08/15/2026-08-15-PCB%2BSMT%E4%B8%8B%E5%8D%95/</guid>
+    <pubDate>Sat, 15 Aug 2026 13:44:48 GMT</pubDate>
+    <description>嘉立创EDA中可以很方便的直接进行PCB下单，AD相对应的会复杂一点。同时SMT一般来说自费的情况下也不太会选用。这篇文章介绍了使用AD画板的情况下如何进行PCB+SMT下单。</description>
+        <category>教程</category>
   </item>
   <item>
     <title>AI的一些基础概念</title>

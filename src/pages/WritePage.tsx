@@ -44,6 +44,10 @@ export default function WritePage() {
   const [catPath, setCatPath] = useState('')
   const [tags, setTags] = useState('')
   const [content, setContent] = useState('')
+  /** 编辑已有文章时的原始 date（保留发布时间，避免保存后被覆盖成当前时间） */
+  const [origDate, setOrigDate] = useState<string | undefined>(undefined)
+  /** 编辑已有文章时的原始 description（写作台无编辑入口，编辑时保留避免丢失） */
+  const [origDesc, setOrigDesc] = useState<string | undefined>(undefined)
   const [catPanelOpen, setCatPanelOpen] = useState(false)
 
   const [editing, setEditing] = useState<{ path: string; sha: string; isDraft: boolean } | null>(null)
@@ -217,10 +221,14 @@ export default function WritePage() {
             setTitle(parsed.meta.title)
             setCatPath(parsed.meta.categories[0]?.join('/') ?? '')
             setTags(parsed.meta.tags.join(', '))
+            setOrigDate(parsed.meta.date)
+            setOrigDesc(parsed.meta.description)
           } else {
             setTitle('')
             setCatPath('')
             setTags('')
+            setOrigDate(undefined)
+            setOrigDesc(undefined)
           }
           setContent(body)
           vditorRef.current?.setValue(body)
@@ -239,6 +247,8 @@ export default function WritePage() {
     setCatPath('')
     setTags('')
     setContent('')
+    setOrigDate(undefined)
+    setOrigDesc(undefined)
     vditorRef.current?.setValue('')
     showHint('新建文章模式', true)
   }, [showHint])
@@ -249,8 +259,18 @@ export default function WritePage() {
       .split(/[,，]/)
       .map((s) => s.trim())
       .filter(Boolean)
-    return buildFrontmatter({ title: title.trim(), categoryPath: catPath, tags: tagList }) + content
-  }, [title, catPath, tags, content])
+    return (
+      buildFrontmatter({
+        title: title.trim(),
+        categoryPath: catPath,
+        tags: tagList,
+        // 编辑已发布文章：保留原始发布时间，并更新 updated
+        origDate,
+        updated: editing && !editing.isDraft && origDate ? nowStr() : undefined,
+        description: origDesc,
+      }) + content
+    )
+  }, [title, catPath, tags, content, origDate, origDesc, editing])
 
   // ---------- 暂存草稿 ----------
   const saveDraft = useCallback(() => {

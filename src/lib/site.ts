@@ -28,12 +28,6 @@ export const GISCUS = {
   lang: 'zh-CN',
 }
 
-/** 版权声明（文章页展示，与旧站 Butterfly 配置一致） */
-export const LICENSE = {
-  name: 'CC BY-NC-SA 4.0',
-  url: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
-} as const
-
 /** 阅读数统计（Waline）配置。
  * 留空 = 关闭；部署 Waline 服务端后填入其地址（如 https://xxx.vercel.app），
  * 文章页即显示「👁 阅读数」。部署指南见 README「阅读数统计」。
