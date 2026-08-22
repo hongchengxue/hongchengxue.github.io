@@ -1,15 +1,20 @@
-﻿import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTheme } from '@/hooks/useTheme'
 import { useLang } from '@/hooks/useLang'
 import { GISCUS } from '@/lib/site'
 
+export type GiscusSorting = 'newest' | 'oldest'
+
 /**
- * Giscus 评论：按 pathname 映射讨论。
- * 主题/语言变化时重建 iframe；路由切换时随组件卸载自动清理。
+ * Giscus 评论。
+ * - 排序（最新/最早）：Giscus 的 setConfig 不支持动态切换排序，
+ *   这里通过重建 iframe 并设置 data-default-comment-order 实现（切换时评论区重载）
+ * - 主题/语言变化时同样重建；路由切换时随组件卸载自动清理
  */
-export function Giscus() {
+export function Giscus({ sorting }: { sorting?: GiscusSorting }) {
   const { theme } = useTheme()
   const { lang } = useLang()
+  const order = sorting ?? 'newest'
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -32,11 +37,12 @@ export function Giscus() {
     script.setAttribute('data-lang', lang === 'zh' ? 'zh-CN' : 'en')
     script.setAttribute('data-theme', theme)
     script.setAttribute('data-loading', 'lazy')
+    script.setAttribute('data-default-comment-order', order)
     el.appendChild(script)
     return () => {
       el.innerHTML = ''
     }
-  }, [theme, lang])
+  }, [theme, lang, order])
 
   return <div className="giscus" ref={ref} />
 }

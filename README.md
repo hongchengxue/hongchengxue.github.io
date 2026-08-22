@@ -156,6 +156,20 @@ Markdown 之外，站点还支持这些"教程友好"的扩展语法，**在 Git
 
 > 写作台工具栏还提供：加粗、斜体、标题、链接、引用、代码块、列表的一键插入，记不住 Markdown 语法也没关系。
 
+## 📡 RSS 订阅
+
+站点提供 RSS 订阅源：`https://hongchengxue.github.io/feed.xml`（构建时自动生成，含全部文章），页脚有 RSS 入口，用任意阅读器（Feedly / Inoreader / 浏览器扩展等）订阅即可。
+
+## 👁 阅读数统计（Waline，可选）
+
+站点已内置阅读数组件 —— 与 [esyka.top](https://www.esyka.top/) 同款技术（Waline 评论系统的 pageview 计数）。部署 Waline 服务端后即可显示「👁 阅读数」：
+
+1. 按 [Waline 部署文档](https://waline.js.org/guide/deploy/vercel.html) 在 Vercel 一键部署（需一个 LeanCloud 或自建数据库）
+2. 把服务端地址填入 `src/lib/site.ts` 的 `WALINE.serverURL`（如 `https://xxx.vercel.app`）
+3. 重新构建推送，文章页横幅即显示阅读数
+
+> 不想用 Vercel 也可用 Docker 自建（`walinejs/waline` 镜像）。未配置 `serverURL` 时组件自动隐藏，不影响任何功能。Giscus 评论保持不变。
+
 ## 🏗️ 架构要点（重构后相比旧站的变化）
 
 | 能力 | 旧站（Hexo） | 新站（Vite + React） |

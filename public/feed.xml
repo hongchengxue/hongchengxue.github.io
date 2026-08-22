@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>hong 的知识库</title>
+  <link>https://hongchengxue.github.io</link>
+  <description>hong 的个人主页与博客：分享技术文章和生活随笔</description>
+  <language>zh-CN</language>
+  <atom:link href="https://hongchengxue.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+    <title>PCB+SMT下单</title>
+    <link>https://hongchengxue.github.io/2026/08/22/2026-08-15-PCB%2BSMT%E4%B8%8B%E5%8D%95/</link>
+    <guid>https://hongchengxue.github.io/2026/08/22/2026-08-15-PCB%2BSMT%E4%B8%8B%E5%8D%95/</guid>
+    <pubDate>Fri, 21 Aug 2026 18:30:42 GMT</pubDate>
+    <description>文件导出 PCB打板 需导出两个文件： Gerber（光绘）文件，为布线数据。 NC Drill Files（钻孔）文件，为焊盘和过孔数据。 （1）Gerber（光绘）文件的输出 首先先选择工程文件中的PCB板 按下图依次选择</description>
+    
+  </item>
+  <item>
+    <title>相同主题模板</title>
+    <link>https://hongchengxue.github.io/2026/08/15/2026-8-15-%E7%9B%B8%E5%90%8C%E4%B8%BB%E9%A2%98%E6%A8%A1%E6%9D%BF/</link>
+    <guid>https://hongchengxue.github.io/2026/08/15/2026-8-15-%E7%9B%B8%E5%90%8C%E4%B8%BB%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid>
+    <pubDate>Sat, 15 Aug 2026 14:52:00 GMT</pubDate>
+    <description>同模板主题</description>
+        <category>个人主页</category>
+  </item>
+  <item>
+    <title>AI的一些基础概念</title>
+    <link>https://hongchengxue.github.io/2026/08/15/2026-08-15-AI/</link>
+    <guid>https://hongchengxue.github.io/2026/08/15/2026-08-15-AI/</guid>
+    <pubDate>Sat, 15 Aug 2026 04:35:00 GMT</pubDate>
+    <description>ai的一些概念</description>
+        <category>教程</category>
+  </item>
+  <item>
+    <title>零基础搭建 Hexo 博客并部署到 GitHub Pages</title>
+    <link>https://hongchengxue.github.io/2026/08/15/how-i-built-this-blog/</link>
+    <guid>https://hongchengxue.github.io/2026/08/15/how-i-built-this-blog/</guid>
+    <pubDate>Sat, 15 Aug 2026 03:40:00 GMT</pubDate>
+    <description>不需要懂代码，教你把这个博客从零搭起来：Hexo + Butterfly 主题 + GitHub Actions 自动部署。</description>
+        <category>Hexo</category>
+    <category>GitHub Pages</category>
+    <category>教程</category>
+  </item>
+  <item>
+    <title>你好，世界</title>
+    <link>https://hongchengxue.github.io/2026/08/15/hello-world/</link>
+    <guid>https://hongchengxue.github.io/2026/08/15/hello-world/</guid>
+    <pubDate>Sat, 15 Aug 2026 03:30:00 GMT</pubDate>
+    <description>我的个人网站正式开通啦！</description>
+        <category>随笔</category>
+    <category>博客</category>
+  </item>
+</channel>
+</rss>

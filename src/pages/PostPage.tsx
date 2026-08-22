@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Giscus } from '@/components/Giscus'
+import { Giscus, type GiscusSorting } from '@/components/Giscus'
 import { Icon } from '@/components/Icon'
 import { LikeButton } from '@/components/LikeButton'
+import { PageViews } from '@/components/PageViews'
+import { ShareBar } from '@/components/ShareBar'
 import { TocCard } from '@/components/AsideCards'
 import { useLang } from '@/hooks/useLang'
 import { useTitle } from '@/hooks/useUi'
@@ -10,12 +12,13 @@ import { categoryUrl } from '@/lib/categories'
 import { formatDate, formatDateTime } from '@/lib/date'
 import { extractToc, highlightCodeBlocks, renderMarkdown } from '@/lib/markdown'
 import { getAdjacentPosts, getPost } from '@/lib/posts'
+import { LICENSE, SITE } from '@/lib/site'
 import type { Post } from '@/types/post'
 import NotFoundPage from '@/pages/NotFoundPage'
 
 /**
  * 文章详情页（懒加载：marked / DOMPurify / highlight.js 只在此页进入时下载）。
- * 布局：横幅标题 + 正文 + 目录侧栏 + 点赞 + Giscus 评论 + 上下篇。
+ * 布局：横幅标题（含阅读数）+ 正文 + 分享栏 + 版权声明 + 评论（排序/点赞）+ 上下篇。
  */
 export default function PostPage() {
   const { year, month, day, slug } = useParams()
@@ -31,6 +34,10 @@ function PostContent({ post }: { post: Post }) {
   const { prev, next } = getAdjacentPosts(post)
   const contentRef = useRef<HTMLDivElement>(null)
   const [lightbox, setLightbox] = useState<string | null>(null)
+  const [sorting, setSorting] = useState<GiscusSorting>('newest')
+
+  const LICENSE_NAME = LICENSE.name
+  const LICENSE_URL = LICENSE.url
 
   // Markdown 渲染结果与目录（渲染期间派生，不做状态，避免多余渲染）
   const html = useMemo(() => renderMarkdown(post.raw), [post])
@@ -83,6 +90,7 @@ function PostContent({ post }: { post: Post }) {
                 <Icon name="clock" size={13} /> {t('updatedOn')} {formatDateTime(new Date(post.meta.updated))}
               </span>
             ) : null}
+            <PageViews path={post.url} />
           </div>
         </div>
       </div>
@@ -116,15 +124,68 @@ function PostContent({ post }: { post: Post }) {
             />
 
             {post.meta.description ? <p className="post-desc-note">{post.meta.description}</p> : null}
+
+            <ShareBar url={post.url} title={post.meta.title} />
           </article>
 
-          <LikeButton path={post.url} />
-
-          <section className="card post-comments">
+          {/* 版权声明 */}
+          <section className="card post-copyright">
             <div className="post-section-title">
-              <Icon name="comments" size={15} /> {t('comments')}
+              <Icon name="link" size={15} /> {t('copyrightNotice')}
             </div>
-            <Giscus />
+            <div className="post-copyright-row">
+              <span className="post-copyright-label">{t('articleAuthor')}</span>
+              <span>{SITE.author}</span>
+            </div>
+            <div className="post-copyright-row">
+              <span className="post-copyright-label">{t('articleLink')}</span>
+              <a href={post.url} target="_blank" rel="noopener noreferrer">
+                {post.url}
+              </a>
+            </div>
+            <div className="post-copyright-row">
+              <span className="post-copyright-label">{t('copyrightNotice')}</span>
+              <span>
+                {t('licenseText', { license: LICENSE_NAME })}
+                {'（'}
+                <a href={LICENSE_URL} target="_blank" rel="noopener noreferrer">
+                  {LICENSE_NAME}
+                </a>
+                {'）'}
+              </span>
+            </div>
+          </section>
+
+          {/* 评论区：右上角点赞 + 排序切换 */}
+          <section className="card post-comments">
+            <div className="post-comments-head">
+              <div className="post-section-title">
+                <Icon name="comments" size={15} /> {t('comments')}
+              </div>
+              <div className="post-comments-tools">
+                <div className="comment-sort" role="group" aria-label="评论排序">
+                  <button
+                    type="button"
+                    className={sorting === 'newest' ? 'active' : ''}
+                    onClick={() => setSorting('newest')}
+                  >
+                    {t('sortNewest')}
+                  </button>
+                  <button
+                    type="button"
+                    className={sorting === 'oldest' ? 'active' : ''}
+                    onClick={() => setSorting('oldest')}
+                  >
+                    {t('sortOldest')}
+                  </button>
+                </div>
+                <span className="comment-sort-tip" title={t('commentSortTip')}>
+                  ⓘ
+                </span>
+                <LikeButton path={post.url} />
+              </div>
+            </div>
+            <Giscus sorting={sorting} />
           </section>
 
           <nav className="post-pagination" aria-label="pagination">

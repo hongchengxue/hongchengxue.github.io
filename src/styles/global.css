@@ -1,52 +1,70 @@
 /* ============================================================
    全局样式与设计系统
-   审美基调（用户偏好）：液态玻璃 —— 近白字 + 轻投影、blur、克制的折射高光
+   审美基调：小清新 · 简约（参考 mimo.mi.com / eonova.me）
+   —— 米白底 + 暖灰卡片 + 暖黑文字 + 雾蓝点缀 + 衬线斜体标题，
+      轻边框轻阴影、克制的圆角，保留克制的玻璃质感
    结构：设计令牌（变量）→ 布局 → 各模块样式 → 响应式
    ============================================================ */
 
 /* ---------- 设计令牌 ---------- */
 :root {
-  --accent: #4285f4;
-  --accent-deep: #2f6fe0;
-  --accent-soft: rgba(66, 133, 244, 0.12);
-  --text-1: #1f2637;
-  --text-2: #4b5563;
-  --text-3: #8b93a3;
-  --bg: #f4f6fb;
-  --bg-deep: #e9edf5;
-  --card-bg: rgba(255, 255, 255, 0.78);
-  --card-border: rgba(255, 255, 255, 0.6);
-  --card-shadow: 0 2px 12px rgba(31, 38, 55, 0.07);
-  --glass-grad: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.08));
-  --glass-border: rgba(255, 255, 255, 0.45);
-  --glass-shadow: 0 4px 16px rgba(31, 38, 55, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.55);
-  --glass-hover: 0 6px 20px rgba(31, 38, 55, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.75);
-  --near-white: #f5f7fa;
+  --accent: #7ba3c9;
+  --accent-deep: #5d87b0;
+  --accent-soft: rgba(123, 163, 201, 0.14);
+  --text-1: #33302b;
+  --text-2: #6b665e;
+  --text-3: #a39c91;
+  --bg: #fcfaf8;
+  --bg-deep: #f5f0e9;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-border: rgba(240, 235, 229, 0.95);
+  --card-shadow: 0 1px 4px rgba(96, 84, 64, 0.06);
+  --glass-grad: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.12));
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-shadow: 0 2px 10px rgba(96, 84, 64, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  --glass-hover: 0 4px 14px rgba(96, 84, 64, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --near-white: #fdfcfb;
   --nav-h: 62px;
   --container-w: 1080px;
-  --radius: 16px;
-  --radius-sm: 10px;
-  --mark-bg: #ffe08a;
-  --code-bg: rgba(31, 38, 55, 0.07);
-  --font: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --mark-bg: #ffe9b8;
+  --code-bg: rgba(96, 84, 64, 0.07);
+  --font: 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', 'Songti SC', 'SimSun', serif;
   --mono: 'Cascadia Code', Consolas, 'JetBrains Mono', monospace;
 }
 
 [data-theme='dark'] {
-  --text-1: #e6e8ee;
-  --text-2: #a9b1c0;
-  --text-3: #7d8595;
-  --bg: #12151b;
-  --bg-deep: #0d1015;
-  --card-bg: rgba(255, 255, 255, 0.06);
+  --accent: #8fb6da;
+  --accent-deep: #6f9cc4;
+  --accent-soft: rgba(143, 182, 218, 0.14);
+  --text-1: #e9e5de;
+  --text-2: #a39b8f;
+  --text-3: #7c7468;
+  --bg: #141311;
+  --bg-deep: #0e0d0c;
+  --card-bg: rgba(255, 255, 255, 0.05);
   --card-border: rgba(255, 255, 255, 0.1);
-  --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.32);
-  --glass-grad: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
-  --glass-border: rgba(255, 255, 255, 0.14);
-  --glass-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  --glass-hover: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.16);
-  --mark-bg: rgba(255, 214, 102, 0.35);
+  --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  --glass-grad: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+  --glass-border: rgba(255, 255, 255, 0.13);
+  --glass-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --glass-hover: 0 4px 14px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --mark-bg: rgba(255, 214, 130, 0.3);
   --code-bg: rgba(255, 255, 255, 0.08);
+}
+
+/* 标题衬线斜体（小清新文艺感的来源，参考 mimo.mi.com） */
+.page-title,
+.post-banner-title,
+.about-name,
+.notfound-code,
+.post-card-title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 /* ---------- Reset ---------- */
@@ -190,14 +208,14 @@ img {
 
 /* 滚动后 / 子页面：实底玻璃（深色字） */
 #page-header.nav-solid {
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(252, 250, 248, 0.85);
   -webkit-backdrop-filter: blur(18px) saturate(1.6);
   backdrop-filter: blur(18px) saturate(1.6);
-  box-shadow: 0 1px 0 rgba(31, 38, 55, 0.06), 0 6px 24px rgba(31, 38, 55, 0.08);
+  box-shadow: 0 1px 0 rgba(96, 84, 64, 0.06), 0 6px 24px rgba(96, 84, 64, 0.06);
 }
 
 [data-theme='dark'] #page-header.nav-solid {
-  background: rgba(18, 21, 27, 0.85);
+  background: rgba(20, 19, 17, 0.85);
 }
 
 .nav-inner {
@@ -601,7 +619,7 @@ img {
   position: relative;
   height: 320px;
   margin-top: calc(var(--nav-h) * -1);
-  background: linear-gradient(160deg, rgba(15, 23, 32, 0.82), rgba(27, 42, 68, 0.62)),
+  background: linear-gradient(160deg, rgba(32, 29, 24, 0.78), rgba(58, 50, 40, 0.56)),
     url('/img/index-bg.jpg') center / cover no-repeat;
 }
 
@@ -697,7 +715,7 @@ img {
   position: relative;
   margin-top: calc(var(--nav-h) * -1);
   padding: 96px 0 48px;
-  background: linear-gradient(160deg, rgba(15, 23, 32, 0.78), rgba(27, 42, 68, 0.6)),
+  background: linear-gradient(160deg, rgba(32, 29, 24, 0.76), rgba(58, 50, 40, 0.54)),
     url('/img/page-bg.jpg') center / cover no-repeat;
 }
 
@@ -2459,6 +2477,195 @@ img {
 
 .footer-dot {
   opacity: 0.6;
+}
+
+/* ============================================================
+   文章分享栏 / 版权声明 / 评论区工具
+   ============================================================ */
+/* 分享栏 */
+.share-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--card-border);
+}
+
+.share-bar-label {
+  margin-right: 4px;
+  color: var(--text-3);
+  font-size: 0.85rem;
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.share-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* 微信分享二维码弹层 */
+.share-qr-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 18, 15, 0.6);
+  animation: lightbox-fade 0.2s ease;
+}
+
+.share-qr-card {
+  width: 300px;
+  padding: 24px 24px 18px;
+  border-radius: 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.share-qr-card img {
+  width: 220px;
+  height: 220px;
+  border-radius: 8px;
+}
+
+.share-qr-title {
+  margin-top: 12px;
+  color: var(--text-1);
+  font-size: 0.95rem;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.share-qr-tip {
+  margin-top: 4px;
+  color: var(--text-3);
+  font-size: 0.82rem;
+}
+
+.share-qr-card button {
+  margin-top: 14px;
+  padding: 7px 22px;
+  border: none;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+/* 版权声明 */
+.post-copyright {
+  margin-top: 16px;
+}
+
+.post-copyright-row {
+  display: flex;
+  gap: 10px;
+  padding: 7px 2px;
+  border-bottom: 1px dashed var(--card-border);
+  color: var(--text-2);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.post-copyright-row:last-child {
+  border-bottom: none;
+}
+
+.post-copyright-label {
+  flex-shrink: 0;
+  min-width: 64px;
+  color: var(--text-3);
+}
+
+.post-copyright-row a {
+  color: var(--accent);
+  word-break: break-all;
+}
+
+/* 评论区头部：标题 + 排序 + 点赞 */
+.post-comments-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.post-comments-head .post-section-title {
+  margin-bottom: 0;
+}
+
+.post-comments-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.comment-sort {
+  display: inline-flex;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.comment-sort button {
+  padding: 4px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  font-size: 0.8rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.comment-sort button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.comment-sort-tip {
+  color: var(--text-3);
+  font-size: 0.8rem;
+  cursor: help;
+}
+
+/* 评论区右上角的紧凑点赞 */
+.post-comments-tools .iine-button {
+  color: var(--accent);
+}
+
+/* 阅读数 */
+.page-views {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
 }
 
 /* ============================================================

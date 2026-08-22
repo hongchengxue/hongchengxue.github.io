@@ -25,6 +25,7 @@ export type IconName =
   | 'link'
   | 'list'
   | 'comments'
+  | 'rss'
   | 'ellipsis'
   | 'arrow-right'
   | 'arrow-left'
@@ -131,6 +132,13 @@ const PATHS: Record<IconName, ReactNode> = {
   comments: (
     <>
       <path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.3 8.8 8.8 0 0 1-3.8-.8L3 21l1.9-5a8.3 8.3 0 0 1-.9-3.7 8.4 8.4 0 0 1 8.5-8.3 8.4 8.4 0 0 1 8.5 7.5z" />
+    </>
+  ),
+  rss: (
+    <>
+      <path d="M4 11a9 9 0 0 1 9 9" />
+      <path d="M4 4a16 16 0 0 1 16 16" />
+      <circle cx="5" cy="19" r="1.6" />
     </>
   ),
   ellipsis: (
