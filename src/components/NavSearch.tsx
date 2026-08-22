@@ -66,6 +66,9 @@ export function NavSearch() {
             aria-label={t('search')}
             autoComplete="off"
           />
+          <button type="button" className="nav-search-go" onClick={go} aria-label={t('search')}>
+            <Icon name="arrow-right" size={14} />
+          </button>
         </div>
       ) : null}
     </div>
