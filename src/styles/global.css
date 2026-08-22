@@ -148,6 +148,15 @@ img {
   order: 1;
 }
 
+/* 文章详情页：正文在左、目录在右 */
+.layout-post > .page-main {
+  order: 1;
+}
+
+.layout-post > .aside-content {
+  order: 2;
+}
+
 /* 玻璃卡片 */
 .card {
   padding: 22px;
@@ -474,7 +483,7 @@ img {
   transform: rotate(180deg);
 }
 
-/* 下拉面板：深色液态玻璃（悬停 / 点击 / 聚焦时弹出） */
+/* 下拉面板：浅色玻璃（与整体米白主题协调） */
 .lang-menu {
   position: absolute;
   top: calc(100% + 10px);
@@ -486,12 +495,12 @@ img {
   opacity: 0;
   transform: translate(-50%, -8px) scale(0.96);
   transform-origin: top center;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 16px;
-  background: linear-gradient(160deg, rgba(31, 38, 55, 0.92), rgba(31, 38, 55, 0.68));
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  backdrop-filter: blur(24px) saturate(1.4);
-  box-shadow: 0 16px 40px rgba(31, 38, 55, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  background: var(--card-bg);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(20px) saturate(1.4);
+  box-shadow: 0 12px 32px rgba(96, 84, 64, 0.14);
   transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
 }
 
@@ -512,8 +521,7 @@ img {
   border: none;
   border-radius: 10px;
   background: transparent;
-  color: var(--near-white);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  color: var(--text-1);
   font-size: 0.9em;
   cursor: pointer;
   text-align: left;
@@ -521,7 +529,7 @@ img {
 }
 
 .lang-option:hover {
-  background: rgba(66, 133, 244, 0.25);
+  background: var(--accent-soft);
   transform: translateX(2px);
 }
 
@@ -531,25 +539,25 @@ img {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #8b93a3;
+  background: color-mix(in srgb, var(--text-3) 45%, transparent);
   transition: all 0.2s ease;
 }
 
 .lang-option.active {
-  background: linear-gradient(135deg, rgba(66, 133, 244, 0.38), rgba(66, 133, 244, 0.16));
-  color: #fff;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-weight: 600;
 }
 
 .lang-option.active::before {
-  background: #7db1ff;
-  box-shadow: 0 0 0 3px rgba(125, 177, 255, 0.3);
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 .lang-option.active::after {
   content: '✓';
   margin-left: auto;
-  color: #9ec5ff;
+  color: var(--accent);
 }
 
 /* ---------- 夜间模式按钮 ---------- */
@@ -2720,26 +2728,72 @@ img {
   font-size: 0.85rem;
 }
 
+/* 品牌色圆形图标按钮 */
 .share-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
-  padding: 4px 12px;
-  border: 1px solid var(--card-border);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--text-2);
-  font-size: 0.82rem;
-  font-family: inherit;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
   cursor: pointer;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 .share-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(96, 84, 64, 0.18);
+  opacity: 0.92;
+}
+
+.share-letter {
+  font-family: var(--font-serif);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.share-qq {
+  background: #12b7f5;
+}
+
+.share-wechat {
+  background: #07c160;
+}
+
+.share-x {
+  background: #14171a;
+}
+
+.share-weibo {
+  background: #e6162d;
+}
+
+.share-zhihu {
+  background: #0084ff;
+}
+
+.share-ins {
+  background: linear-gradient(45deg, #f09433, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888);
+}
+
+.share-youtube {
+  background: #ff0000;
+}
+
+.share-link {
+  background: var(--card-border);
+  color: var(--text-2);
+  font-size: 0.85rem;
+}
+
+[data-theme='dark'] .share-link {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /* 微信分享二维码弹层 */

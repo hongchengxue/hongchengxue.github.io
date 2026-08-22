@@ -113,14 +113,13 @@ function PostContent({ post }: { post: Post }) {
                 <Icon name="clock" size={13} /> {t('updatedOn')} {formatDateTime(new Date(post.meta.updated))}
               </span>
             ) : null}
-            <PageViews path={post.url} />
           </div>
         </div>
       </div>
 
-      <div className="container layout">
+      <div className="container layout layout-post">
         <div className="page-main">
-          <article className="card post-article">
+          <article className="post-article">
             <div className="post-tags">
               {cats.length > 0
                 ? cats.map((cat) => (
@@ -179,13 +178,14 @@ function PostContent({ post }: { post: Post }) {
             </div>
           </section>
 
-          {/* 评论区：右上角点赞 + 排序切换 */}
+          {/* 互动区：阅读数 + 排序 + 点赞 + 评论 */}
           <section className="card post-comments">
             <div className="post-comments-head">
               <div className="post-section-title">
                 <Icon name="comments" size={15} /> {t('comments')}
               </div>
               <div className="post-comments-tools">
+                <PageViews path={post.url} />
                 <div className="comment-sort" role="group" aria-label="评论排序">
                   <button
                     type="button"
