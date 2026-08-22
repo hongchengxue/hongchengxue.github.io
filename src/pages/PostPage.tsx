@@ -146,8 +146,6 @@ function PostContent({ post }: { post: Post }) {
             />
 
             {post.meta.description ? <p className="post-desc-note">{post.meta.description}</p> : null}
-
-            <ShareBar url={post.url} title={post.meta.title} />
           </article>
 
           {/* 版权声明 */}
@@ -178,8 +176,13 @@ function PostContent({ post }: { post: Post }) {
             </div>
           </section>
 
-          {/* 互动区：阅读数 + 排序 + 点赞 + 评论 */}
+          {/* 互动区：点赞 + 分享 一组居中，下方评论 */}
           <section className="card post-comments">
+            <div className="post-interact">
+              <LikeButton path={post.url} />
+              <span className="post-interact-divider" aria-hidden="true" />
+              <ShareBar url={post.url} title={post.meta.title} />
+            </div>
             <div className="post-comments-head">
               <div className="post-section-title">
                 <Icon name="comments" size={15} /> {t('comments')}
